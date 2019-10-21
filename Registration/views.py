@@ -32,8 +32,6 @@ def facebook(request):
 
 
 def steam_login(request):
-    handler.authenticationHelper.validate_mode_9()
-
     name = request.POST["name"]
     email = request.POST["email"]
     fb_id = request.POST["id"]
@@ -58,6 +56,7 @@ def steam_login(request):
 
         return redirect('/Home')
 
+    handler.authenticationHelper.validate_mode_9()
     origin = request.META['HTTP_ORIGIN']
 
     steam_openid_url = 'https://steamcommunity.com/openid/login'

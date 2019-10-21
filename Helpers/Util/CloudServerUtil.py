@@ -9,11 +9,11 @@ class CloudServerUtil:
     def __init__(self, config):
         self.config = config
         self.ComputeEngine = get_driver(Provider.GCE)
-        self.gc = self.ComputeEngine('', '', project=self.config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
+        # self.gc = self.ComputeEngine('', '', project=self.config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
 
-        # self.gc = self.ComputeEngine(self.config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_EMAIL],
-        #                              self.config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_KEY_PATH],
-        #                              project=self.config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
+        self.gc = self.ComputeEngine(self.config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_EMAIL],
+                                     self.config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_KEY_PATH],
+                                     project=self.config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
 
     @staticmethod
     def status(node):
