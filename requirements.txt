@@ -1,0 +1,11 @@
+requests
+django
+google-cloud-firestore
+python3-openid
+steam
+xlsxwriter
+pandas
+channels
+apache-libcloud
+mysql-connector-python
+google-cloud-storage

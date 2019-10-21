@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ SITE_NAME }} | Home</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="bg-dark wide" style="margin: 0 auto; padding: 2%;">
+    <div class='headline'>
+        <div style="text-align: center;">
+            <a id='my-headings'>Welcome, {{ name }}!</a>
+        </div>
+    </div>
+
+    <div style='text-align: center; font-family: \"Righteous\", cursive;'>
+        <br><a>Your Details : </a>
+        <img src="https://graph.facebook.com/{{ fb_id }}/picture?type=normal" height="30vh" width="30vh"
+             style="margin-left:1vw;" alt="">
+        <a target="_blank" href="https://www.facebook.com/app_scoped_user_id/{{ fb_id }}"> {{ name }}</a>
+        <img src="{{ avatar_url }}" title="" alt="" height="30vh" width="30vh" style="margin-left:1vw;"/>
+        <a target="_blank" href="https://steamcommunity.com/profiles/{{ steam_url_id }}"> {{ username }}</a>
+        <div>
+            <br><a style="font-size: 1.5rem; color: #cc0606;">You are not part of any team </a>
+            {% if mode == '1' or mode == '2' %}
+                <br><br><!--suppress HtmlUnknownTarget -->
+                <a href="/TeamFormation/create" class="btn btn-primary" role="button">Create a Team</a>&nbsp;&nbsp;&nbsp;
+                <a href="/Teams" class="btn btn-primary" role="button">Join a Team</a>
+            {% endif %}
+            {% if mode == '3' %}
+                {% if 'fb_link' in row %}
+                    <form action="#" method="POST" class="form-group" style="margin: 4vh auto 2vh auto;">
+                        {% csrf_token %}
+                        <a style="color: #FF5722;">You need to provide your FB URL to complete your registration.</a>
+                        <br><a target="_blank" href="https://www.facebook.com/me" style="font-size: 0.7rem;">Click here,
+                        copy the URL of the page that opens and paste it below.</a>
+                        <div class="form-tab">
+                            <label for="link" class="form-tab-label">Facebook Profile URL:</label>
+                            <input type="text" class="button_form" placeholder="Enter Full Facebook URL here." id="link"
+                                   name="link" required>
+                            <input type="submit" value="Confirm" class="btn btn-success" style="margin: 2vh 0 2vh 2vw;">
+                        </div>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div id="join_req_handle" name="<?php echo $team_id ?>" style='display:none'></div>
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2@4.0.2/dist/bootstrap-confirmation.min.js"
+        integrity="sha256-kXOU25SzGb87lJUwyN168lZkoc8s5XwbNuvt8VaBEl4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+</body>

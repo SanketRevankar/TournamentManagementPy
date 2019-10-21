@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ SITE_NAME }} | Teams</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="{% static "css/sidebar.css" %}">
+
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="wrapper">
+    <nav id="sidebar" style="background: #434a50 !important; height: 100vh;" {% if sidebar_active %}class="active"{% endif %}>
+        <ul class="list-unstyled components" style="padding-top: 7vh; padding-bottom: 4vh;">
+            {% for i, team_, team_name, team_tag, team_logo in teams %}
+                <li id='{{ team_ }}' {% if team_ == team_id %}class="active"{% endif %}>
+                    <a href='{{ team_ }}'>
+                        <img src="{{ team_logo }}" alt="{{ team_name }}" style="height: 5vh; width: 5vh;">
+                        <x>{{ team_name }}</x>
+                        <y>{{ team_tag }}</y>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+
+    <div id="content" style="padding-top: 7vh; padding-bottom: 4vh; display: block">
+        {% if team_id %}
+            <div class="row no-gutters p-3" style="background: #bfbfbf91;">
+                <div class="col-md-2">
+                    <img src="{{ team_logo_url }}" class="card-img" alt="{{ team_name }}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body" style="font-size: 1.2rem;">
+                        <h5 class="card-title" style="font-size: 2.5rem; font-weight: 800; font-family: righteous,cursive;"><a href="#" class="fas fa-link text-dark" id="copy-team-link" style="text-decoration: none;" title="Click to copy link!"></a> {{ team_name }} ({{ team_tag }})</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="card-text">Captain: </h3>
+                                <div class="mt-3">
+                                    <img src="https://graph.facebook.com/{{ captain_fb_id }}/picture?type=normal"
+                                         style="width: 5vh; height: 5vh;" alt="">
+                                    <a target="_blank" style="vertical-align: middle;"
+                                       href="https://www.facebook.com/app_scoped_user_id/{{ captain_fb_id }}"> {{ captain_name }}</a>
+                                </div>
+                                <div class="mt-3">
+                                    <img src="{{ captain_avatar_url }}" title="" alt="" style="width: 5vh; height: 5vh;" />
+                                    <a target="_blank" style="vertical-align: middle;"
+                                       href="https://steamcommunity.com/profiles/{{ captain_steam_url }}"> {{ captain_username }}</a>
+                                </div>
+                            </div>
+                            {% if vc_fb_id %}
+                            <div class="col-md-6">
+                                <h3 class="card-text">Vice Captain: </h3>
+                                <div class="mt-3">
+                                    <img src="https://graph.facebook.com/{{ vc_fb_id }}/picture?type=normal"
+                                         style="width: 5vh; height: 5vh;" alt="">
+                                    <a target="_blank" style="vertical-align: middle;"
+                                       href="https://www.facebook.com/app_scoped_user_id/{{ vc_fb_id }}"> {{ vc_name }}</a>
+                                </div>
+                                <div class="mt-3">
+                                    <img src="{{ vc_avatar_url }}" title="" alt="" style="width: 5vh; height: 5vh;" />
+                                    <a target="_blank" style="vertical-align: middle;"
+                                       href="https://steamcommunity.com/profiles/{{ vc_steam_url }}"> {{ vc_username }}</a>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 mt-3" style="text-align: center;">
+                    {% if mode == '1' or mode == '2' %}
+                        {% if not player_team %}
+                            {% if team_id in join_team %}
+                                <button class="btn btn-success pull-right" id="already-req"
+                                        data-btn-ok-label="Request" data-btn-ok-class="btn-success"
+                                        data-btn-ok-icon-class="material-icons" data-btn-ok-icon-content="check"
+                                        data-btn-cancel-label="Cancel!" data-btn-cancel-class="btn-danger"
+                                        data-btn-cancel-icon-class="material-icons"
+                                        data-btn-cancel-icon-content="close" data-singleton="true"
+                                        data-content="This will remove all previous requests."
+                                        data-title="Request to join this team?">Already Requested!
+                                </button>
+                            {% else %}
+                                <button class="btn btn-primary pull-right" data-btn-ok-label="Request"
+                                        data-toggle="confirmation" href="/TeamFormation/join/{{ team_id }}"
+                                        data-btn-ok-class="btn-success" data-btn-ok-icon-class="material-icons"
+                                        data-btn-ok-icon-content="check" data-btn-cancel-label="Cancel!"
+                                        data-btn-cancel-class="btn-danger" data-btn-cancel-icon-content="close"
+                                        data-content="This will remove all previous requests."
+                                        data-singleton="true" data-title="Request to join this team?"
+                                        data-btn-cancel-icon-class="material-icons">Request to Join
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        <ul class="list-group list-group-flush">
+                            {% for i, fb_id, name, avatar_url, steam_url_id, username, player_idr in players %}
+                                <li class="list-group-item" style="background: transparent;">
+                                    <img src="{{ avatar_url }}" title="" alt="" style="height: 4vh; width: 4vh">
+                                    <a target="_blank" href="https://steamcommunity.com/profiles/{{ steam_url_id }}" style='vertical-align: sub; padding-right: .75rem;'>{{ username }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-8"></div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card-columns">
+                {% for i, team_, team_name, team_tag, team_logo in teams %}
+                    <div class="card bg-transparent">
+                        <img src="{{ team_logo }}" class="card-img-top" alt="{{ team_name }} ({{ team_tag }})">
+                        <a class="btn {% if team_ in join_team %}btn-primary{% elif player_team == team_ %}btn-success{% else %}btn-dark{% endif %} w-100 p-2" href='{{ team_ }}'>
+                            {% if team_ in join_team %}<i class="far fa-check-square"></i>{% elif player_team == team_ %}<i class="fas fa-check-double"></i>{% endif %} {{ team_name }} ({{ team_tag }})</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2@4.0.2/dist/bootstrap-confirmation.min.js"
+        integrity="sha256-kXOU25SzGb87lJUwyN168lZkoc8s5XwbNuvt8VaBEl4=" crossorigin="anonymous"></script>
+</body>
+
+<script src="{% static 'js/confirmation.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+
+        $('#copy-team-link').click(function() {
+            var textArea = document.createElement("textarea");
+            textArea.value = window.location.href;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        });
+    });
+</script>

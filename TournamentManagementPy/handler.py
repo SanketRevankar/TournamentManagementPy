@@ -1,0 +1,11 @@
+fireStoreHelper = None
+cloudServerHelper = None
+localDataHelper = None
+mySQLHelper = None
+cloudStorageHelper = None
+logHelper = None
+config = None
+authenticationHelper = None
+ftpHelper = None
+dataHelper = None
+adminHelper = None

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ SITE_NAME }} | Home</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="bg-dark wide" style="margin: 0 auto; padding: 2%;">
+    <div class='headline'>
+        <div style="text-align: center;">
+            <a id='my-headings'>Welcome, {{ name }}!</a>
+        </div>
+    </div>
+
+    <div style='text-align: center; font-family: \"Righteous\", cursive;'>
+        <br><a>Your Details : </a>
+        <img src="https://graph.facebook.com/{{ fb_id }}/picture?type=normal" height="30vh" width="30vh"
+             style="margin-left:1vw;" alt="">
+        <a target="_blank" href="https://www.facebook.com/app_scoped_user_id/{{ fb_id }}"> {{ name }}</a>
+        <img src="{{ avatar_url }}" title="" alt="" height="30vh" width="30vh" style="margin-left:1vw;"/>
+        <a target="_blank" href="https://steamcommunity.com/profiles/{{ steam_url_id }}"> {{ username }}</a>
+        <div>
+            <div style="margin: 2vh 0 2vh 0">
+                <a>Team : </a>
+                <img src="{{ team_logo_url }}" title="" alt="" height="30vh" width="30vh" style="margin-left:1vw;"/>
+                <a>  {{ team_name }} ({{ team_tag }}) </a><br><br>
+                {% if mode == '1' or mode == '2' %}
+                    {% if team_id == id %}
+                        <!--suppress HtmlUnknownTarget -->
+                        <a href="/TeamFormation/manage" class="btn btn-info" role="button" style="margin-left: 1vw;">Manage Your Team</a>
+                    {% else %}
+                        <!--suppress HtmlUnknownTarget -->
+                        <a href="/TeamFormation/leave" class="btn btn-danger" role="button" style="margin: 0 2vw;">Leave this Team</a>
+                    {% endif %}
+                {% endif %}
+{#                {% if mode == '3' %}#}
+{#                    {% if 'fb_link' in row %}#}
+{#                        <br><br><a>Your FB Link is: <a href="{{ fb_link }}">Link {{ fb_link }}</a></a>#}
+{#                        <br><a>Please check your link by clicking on it once.</a>#}
+{#                        <br><a href="/TeamFormation/remove_link" class="btn btn-danger" role="button" style="font-weight: 700; font-family: Montserrat, sans-serif; margin: 2vh 2vw;">Remove Link</a><br>#}
+{#                        <a style="color: #4CAF50; font-size: 1.2rem;">Your registration is complete.</a>#}
+{#                        <div style="margin: 3vh 0;"></div>#}
+{#                    {% endif %}#}
+{#                {% endif %}#}
+            </div>
+        </div>
+    </div>
+    {% if join_requests > 0 %}
+        <div id="join_req_handle">
+        <div>
+            <table class="table">
+                <thead>
+                <tr><th>Facebook</th><th>Steam</th><th class="small"></th></tr>
+                </thead>
+                <tbody class="thead-dark">
+                {% for i, fb_id, name, avatar_url, steam_url_id, username, player_id in players %}
+                    <tr>
+                        <td>
+                            <img src="https://graph.facebook.com/{{ fb_id }}/picture?type=large" height="30vh" width="30vh" alt="">
+                            <a target="_blank" href = "https://www.facebook.com/app_scoped_user_id/{{ fb_id }}"> {{ name }}</a>
+                        </td>
+                        <td>
+                            <img src="{{ avatar_url }}" title="" alt="" height="30vh" width="30vh" />
+                            <a target="_blank" href = "https://steamcommunity.com/profiles/{{ steam_url_id }}"> {{ username }}</a>
+                        </td>
+                        <td class='small'>
+                            <a href="#" class="btn btn-success pull-right btn-lg" style="float: right; padding: 0.5vw; min-width: unset;    margin: 0 0.5vw;" id="accept-{{ player_id }}"
+                               data-toggle="tooltip" title="Accept!"><span class="fas fa-user-check"></span></a>
+                            <a href="#" class="btn btn-danger pull-right btn-lg" style="float: right; padding: 0.5vw; min-width: unset;    margin: 0 0.5vw;" id="ignore-{{ player_id }}"
+                               data-toggle="tooltip" title="Ignore"><span class="fas fa-user-times"></span></a>
+                            <a href="#" class="btn btn-success" style="display:none" id="show_message_{{ player_id }}"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    </div>
+</div>
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2@4.0.2/dist/bootstrap-confirmation.min.js"
+        integrity="sha256-kXOU25SzGb87lJUwyN168lZkoc8s5XwbNuvt8VaBEl4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+</body>
+
+<script>
+    {% if mode == '1' or mode == '2' %}
+        {% if team_id == id %}
+            let join_count = $('#join_count');
+            $.ajax({
+                url: "/TeamFormation/api/v1/func/team_count",
+                method: "post",
+                data: {
+                    'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+                },
+                success: function (data) {
+                    join_count.text(data);
+                }
+            });
+
+            $('[id^=accept-]').click(function() {
+                var id = $(this).attr('id');
+                console.log(id);
+                var query = id.replace("accept-", "");
+                let show_message = $('#show_message_'+query);
+                let ignore_id = $('#ignore-'+query);
+                let accept_id = $('#accept-'+query);
+
+                if (join_count.text() === 32) {
+                    accept_id.attr('style', 'display:none');
+                    ignore_id.attr('style', 'display:none');
+                    show_message.text('Team Full!');
+                    show_message.attr('class', 'btn btn-danger');
+                    show_message.attr('style', 'display:block');
+                } else {
+                    $.ajax({
+                        url: "/TeamFormation/api/v1/func/accept_player",
+                        method: "post",
+                        data: {
+                            'query': query,
+                            'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+                        },
+
+                        success: function (_) {
+                            accept_id.attr('style', 'display:none');
+                            ignore_id.attr('style', 'display:none');
+                            show_message.text('Accepted!');
+                            show_message.attr('style', 'display:block');
+
+                            setTimeout(function () {
+                                show_message.closest('tr').attr('style', 'display:none');
+                            }, 1000);
+
+                            $.ajax({
+                                url: "/TeamFormation/api/v1/func/team_count",
+                                method: "post",
+                                data: {
+                                    'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+                                },
+                                success: function (data) {
+                                    join_count.text(data);
+                                    if (data === '0') {
+                                        setTimeout(function () {
+                                            location.reload();
+                                        }, 1000);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('[id^=ignore-]').click(function() {
+                var id = $(this).attr('id');
+                var query = id.replace("ignore-", "");
+                let show_message = $('#show_message_'+query);
+                let ignore_id = $('#ignore-'+query);
+                let accept_id = $('#accept-'+query);
+
+                $.ajax({
+                    url: "/TeamFormation/api/v1/func/ignore_player",
+                    method: "post",
+                    data: {
+                        'query': query,
+                        'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+                    },
+
+                    success:function(_) {
+                        accept_id.attr('style', 'display:none');
+                        ignore_id.attr('style', 'display:none');
+                        show_message.text('Ignored!');
+                        show_message.attr('class', 'btn btn-danger');
+                        show_message.attr('style', 'display:block');
+
+                        setTimeout(function () {
+                            show_message.closest('tr').attr('style', 'display:none');
+                        }, 1000);
+
+                        $.ajax({
+                            url: "/TeamFormation/api/v1/func/team_count",
+                            method: "post",
+                            data: {
+                                'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+                            },
+
+                            success:function(data) {
+                                join_count.text(data);
+                                if (data === '0') {
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1000);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        {% endif %}
+    {% endif %}
+</script>

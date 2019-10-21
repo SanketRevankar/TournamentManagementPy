@@ -1,0 +1,14 @@
+runtime: python37
+
+handlers:
+  - url: /static/css
+    static_dir: static/css
+
+  - url: /static/js
+    static_dir: static/js
+
+  - url: /static/images
+    static_dir: static/images
+
+  - url: /.*
+    script: auto

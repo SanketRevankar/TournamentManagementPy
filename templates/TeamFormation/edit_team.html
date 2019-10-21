@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ SITE_NAME }} | Edit Team</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+
+<header id="header">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
+
+        <span class="navbar-brand mr-auto">
+            {{ SITE_NAME }}
+        </span>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Teams">Teams</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Matches">Matches</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" target="_blank" href="#">Fixtures</a>
+                </li>
+                <li class="nav-item mr-4">
+                    <a class="nav-link" id="logoutBtn" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+
+    </nav><!-- #nav-menu-container -->
+</header><!-- #header -->
+
+<div class="box-gradient wide">
+    <form action="#" method="POST" onsubmit="return photoValidate()">
+        {% csrf_token %}
+        <div class="form-head" style="display: table; margin: 3vw auto;">
+            <a id='my-headings'>Team Details</a>
+        </div>
+        <div class="form-tab">
+            <label for="usr" class="form-tab-label">Team Name: &nbsp;&nbsp;</label>
+            <input type="text" class="button_form" placeholder="Enter Full Team Name Here" id="usr" name="usr"
+                   required value="{{ team_name }}">
+        </div>
+        <div class="form-tab">
+            <label for="tag" class="form-tab-label">Team Tag: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            <input type="text" class="button_form" placeholder="Enter Tag of Your Team Here" id="tag" name="tag"
+                   required value="{{ team_tag }}">
+        </div>
+        <div class="form-tab">
+            <label for="logo_url" class="form-tab-label">Logo URL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            <input type="text" class="button_form" placeholder="Paste URL of High Quality Image of your Team's Logo"
+                   name="logo_url" id="logo_url" required value="{{ team_logo_url }}">
+        </div>
+        <div style="text-align: center;">
+            <div class="form-tab">
+                <img id="logo_show" style="width:0; height: 0; visibility:hidden;" alt="" src="">
+            </div>
+            <input type="submit" value="Confirm" class="btn btn-success" style="width: 20%;margin-right: 2%;">
+            <!--suppress HtmlUnknownTarget -->
+            <a href="manage" class="btn btn-secondary" style="width: 20%;">Back</a>
+        </div>
+        <br>
+    </form>
+</div>
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="{% static "js/load_photo.js" %}"></script>
+</body>

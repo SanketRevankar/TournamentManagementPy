@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ SITE_NAME }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+</head>
+
+<body>
+
+<!--==========================
+Header
+============================-->
+
+<header id="header">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
+
+        <span class="navbar-brand mr-auto">
+            {{ SITE_NAME }}
+        </span>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item mr-4">
+                    <!--suppress HtmlUnknownTarget -->
+                    <a class="nav-link" href="facebook">Login</a>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+</header>
+
+<div class="box-gradient wide text-center" style="margin: 10vh auto 1vh auto">
+    <div class="headline" style="padding: 2vh 0 2vh 0; background-color: rgba(0, 0, 0, 1);">
+        <div style="text-align: center;">
+            <a id="my-headings">Steam ID Already Registered!</a>
+        </div>
+    </div>
+
+    <h3 class="mt-5">Steam ID is already registered with another Facebook account.</h3>
+    <!--suppress HtmlUnknownTarget -->
+    <a href="facebook" class="btn btn-primary mt-3">Login</a>
+</div>
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+</body>
+</html>
