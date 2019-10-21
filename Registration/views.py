@@ -49,8 +49,6 @@ def steam_login(request):
                                                                                      ip, city, location)
 
     if status is True:
-        if 'team' not in doc_data:
-            handler.authenticationHelper.validate_mode_9()
         request.session["steam_id"] = doc_data['steam_id']
         request.session["username"] = doc_data['username']
         request.session["avatar_url"] = doc_data['avatar_url']
