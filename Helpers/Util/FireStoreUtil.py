@@ -14,6 +14,8 @@ class FireStoreUtil:
         self.PLAYERS = u'players'
         self.TEAMS = u'teams'
 
+        print('{} - Initialized'.format(__name__))
+
     def get_collection(self, collection_path):
         return self.db.collection(collection_path)
 
@@ -46,7 +48,7 @@ class FireStoreUtil:
             players_cur.remove(player_id)
             team_ref_cur.update({'join_requests': players_cur})
 
-    def fsh_get_teams(self):
+    def fsh_get_teams(self): 
         docs = self.db.collection(self.TEAMS).stream()
         teams = {}
         for doc in docs:

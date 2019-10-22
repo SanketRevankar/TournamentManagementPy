@@ -1,5 +1,4 @@
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
 
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
@@ -7,11 +6,14 @@ from firestore_data.PlayerData import PlayerList
 
 
 class AuthenticationHelper:
+    def __init__(self):
+        self.mode9 = handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9'
+
     def validate_login(self, request):
         if 'id' not in request.session:
             raise PermissionDenied
 
-        if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
+        if self.mode9:
             if 'team' not in PlayerList[request.session['id']]:
                 raise PermissionDenied
 
@@ -28,5 +30,5 @@ class AuthenticationHelper:
             raise PermissionDenied
 
     def validate_mode_9(self):
-        if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
-            raise Http404
+        if self.mode9:
+            raise PermissionDenied

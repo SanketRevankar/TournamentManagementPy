@@ -71,7 +71,11 @@ def get_matches(request):
             match_data += 'No matches found'
             continue
 
-        for match in matches:
+        sorted_matches = list(map(int, matches.keys()))
+        sorted_matches.sort()
+
+        for match_id in sorted_matches:
+            match = str(match_id)
             team_1 = matches[match]['team_1']
             team_2 = matches[match]['team_2']
             team_1_data = handler.dataHelper.get_team_data_by_id(team_1)

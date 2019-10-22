@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'w!=2mcpxf$(c6mc&9$^cuzo0m92dj%q5-3&^qm#&^*o+duvm!%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'narcogaming.appspot.com',

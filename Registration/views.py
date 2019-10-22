@@ -24,7 +24,7 @@ def welcome(request):
 def facebook(request):
     template = loader.get_template('Registration/facebook.html')
     context = {
-        'mode': 1,
+        'mode': handler.config[sC.PROJECT_DETAILS][sC.MODE],
         'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME]
     }
 
@@ -56,8 +56,9 @@ def steam_login(request):
 
         return redirect('/Home')
 
-    origin = request.META['HTTP_ORIGIN']
+    handler.authenticationHelper.validate_mode_9()
 
+    origin = request.META['HTTP_ORIGIN']
     steam_openid_url = 'https://steamcommunity.com/openid/login'
     u = {
         'openid.ns': "http://specs.openid.net/auth/2.0",
@@ -107,7 +108,7 @@ def steam_auth(request):
                                                request.session['id'], datetime.now()):
             template = loader.get_template('Registration/steamid.html')
             context = {
-                'mode': 1,
+                'mode': handler.config[sC.PROJECT_DETAILS][sC.MODE],
                 'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
                 'username': username,
             }

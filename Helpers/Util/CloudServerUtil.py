@@ -15,6 +15,8 @@ class CloudServerUtil:
         #                              self.config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_KEY_PATH],
         #                              project=self.config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
 
+        print('{} - Initialized'.format(__name__))
+
     @staticmethod
     def status(node):
         """
