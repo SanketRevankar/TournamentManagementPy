@@ -1,6 +1,5 @@
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
-from django.shortcuts import redirect
 
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
@@ -13,9 +12,8 @@ class AuthenticationHelper:
             raise PermissionDenied
 
         if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
-            print(PlayerList[request.session['id']])
             if 'team' not in PlayerList[request.session['id']]:
-                return redirect('logout')
+                return PermissionDenied
 
     def validate_admin(self, request):
         self.validate_login(request)
