@@ -13,6 +13,7 @@ class AuthenticationHelper:
             raise PermissionDenied
 
         if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
+            print(PlayerList[request.session['id']])
             if 'team' not in PlayerList[request.session['id']]:
                 return redirect('logout')
 
