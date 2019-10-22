@@ -13,7 +13,7 @@ class AuthenticationHelper:
 
         if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
             if 'team' not in PlayerList[request.session['id']]:
-                return PermissionDenied
+                raise PermissionDenied
 
     def validate_admin(self, request):
         self.validate_login(request)
