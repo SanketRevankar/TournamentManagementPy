@@ -53,7 +53,7 @@ class FTPHelper:
         ftp = FTP()
         ftp.connect(ip, 21)
         ftp.login(ServerList[server_id][sC.USERNAME], ServerList[server_id][sC.PASSWORD])
-        ftp.set_pasv(False)
+        ftp.set_pasv(True)
 
         return ftp
 
