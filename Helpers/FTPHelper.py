@@ -86,12 +86,14 @@ class FTPHelper:
         :param folder: Destination folder
         """
         ftp = self.get_ftp_connection(server_id)
-        mlsd = ftp.mlsd(sC.CSTRIKE)
-        self.close_ftp_connection(ftp)
-
-        for file in mlsd:
+        files = []
+        for file in ftp.mlsd(sC.CSTRIKE):
             if file[1][sC.TYPE] == sC.DIR or sC.DEMO_FORMAT not in file[0]:
                 continue
+            files.append(file)
+        self.close_ftp_connection(ftp)
+
+        for file in files:
             date_file = datetime.datetime.strptime(file[1][sC.MODIFY], pC.DATETIME_FORMAT)
 
             if date_file.astimezone() >= date:
@@ -119,12 +121,14 @@ class FTPHelper:
 
         for c_folder in folders:
             ftp = self.get_ftp_connection(server_id)
-            mlsd = ftp.mlsd(c_folder[0])
-            self.close_ftp_connection(ftp)
-
-            for file in mlsd:
+            files = []
+            for file in ftp.mlsd(c_folder[0]):
                 if file[1][sC.TYPE] == sC.DIR or (sC.LOG not in file[0] and sC.TXT not in file[0]):
                     continue
+                files.append(file)
+            self.close_ftp_connection(ftp)
+
+            for file in files:
                 date_file = datetime.datetime.strptime(file[1][sC.MODIFY], pC.DATETIME_FORMAT)
 
                 if date_file.astimezone() >= date:
