@@ -48,7 +48,7 @@ class FTPHelper:
         :return:
         """
         node = handler.cloudServerHelper.util.get_node(ServerList[server_id][sC.INSTANCE_NAME])
-        ip = handler.cloudServerHelper.ip(node)
+        ip = handler.cloudServerHelper.util.ip(node)
 
         ftp = FTP()
         ftp.connect(ip, 21)
