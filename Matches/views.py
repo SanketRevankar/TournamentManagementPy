@@ -41,7 +41,7 @@ def match_details(request, match_id=None):
 
 def get_matches(request):
     handler.authenticationHelper.validate_login(request)
-    handler.logHelper.log_it_api(request, __name__ + '.get_matches')
+    # handler.logHelper.log_it_api(request, __name__ + '.get_matches')
 
     statuses = {
         'Started': {
@@ -212,7 +212,7 @@ def get_match_data(request, match_id=None):
     if match_id is None:
         raise Http404
 
-    handler.logHelper.log_it_api(request, __name__ + '.get_match_data')
+    # handler.logHelper.log_it_api(request, __name__ + '.get_match_data')
 
     statuses = {
         'Started': {

@@ -179,9 +179,6 @@ class LocalDataHelper:
         handler.cloudStorageHelper.create_folder(self.score_starting_ + folder + '/')
         handler.cloudStorageHelper.create_folder(self.hltv_starting_ + folder + '/')
 
-        self.create_directory(self.temp + self.logs_starting_ + folder + '/')
-        self.create_directory(self.temp + self.score_starting_ + folder + '/')
-
     @staticmethod
     def create_directory(name):
         if not os.path.exists(name):

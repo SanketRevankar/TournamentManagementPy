@@ -52,6 +52,7 @@ def team_details(request, team_id):
     team_data = handler.dataHelper.get_team_data_by_id(team_id)
     captain_data = handler.dataHelper.get_captain_by_team_id(team_id)
     players = handler.dataHelper.get_player_data_arr_by_id(team_data['players'])
+    n_players = team_data['players'].__len__()
 
     join_team = handler.fireStoreHelper.util.get_join_team_for_player_id(id_)
 
@@ -74,6 +75,8 @@ def team_details(request, team_id):
         **team_data,
         **captain_data,
         'players': players,
+        'n_players': n_players,
+        'max_players': int(handler.config[sC.PROJECT_DETAILS][sC.MAX_PLAYERS]),
     }
 
     return HttpResponse(template.render(context, request))

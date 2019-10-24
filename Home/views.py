@@ -40,6 +40,7 @@ def welcome(request):
         id_ = request.session['id']
         team_id = handler.dataHelper.get_team_id_by_player_id(id_)
         team_data = handler.dataHelper.get_team_data_by_id(team_id)
+        max_players = int(handler.config[sC.PROJECT_DETAILS][sC.MAX_PLAYERS])
 
         context = {
             'mode': handler.config[sC.PROJECT_DETAILS][sC.MODE],
@@ -54,13 +55,15 @@ def welcome(request):
             'id': id_,
             'home': 'home',
             **team_data,
+            'n_players': team_data['players'].__len__(),
+            'max_players': max_players,
         }
 
         if team_id == id_:
-            players = handler.fireStoreHelper.util.get_join_requests_by_team_id(team_id)
+            players = team_data['join_requests']
             join_requests = players.__len__() if players else 0
             context['join_requests'] = join_requests
-            if join_requests > 0:
+            if join_requests > 0 and team_data['players'].__len__() < max_players:
                 player_data = handler.dataHelper.get_player_data_arr_by_id(players)
                 context['players'] = player_data
 

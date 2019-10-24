@@ -1,10 +1,11 @@
 from datetime import datetime
 
-from google.api_core.exceptions import AlreadyExists
+from google.api_core.exceptions import AlreadyExists, PermissionDenied
 from google.cloud import firestore_v1
 
 from Helpers.Util.FireStoreUtil import FireStoreUtil
 from TournamentManagementPy import handler
+from constants import StringConstants as sC
 
 
 class FireStoreHelper:
@@ -100,6 +101,8 @@ class FireStoreHelper:
     def accept_player(self, player_id, team_id):
         team_ref = self.util.get_team_ref_by_team_id(team_id)
         players = team_ref.get(['players']).get('players')
+        if players.__len__() >= int(handler.config[sC.PROJECT_DETAILS][sC.MAX_PLAYERS]):
+            raise PermissionDenied('Team already has max players')
         team_ref.update({
             'players': players + [player_id],
         })
