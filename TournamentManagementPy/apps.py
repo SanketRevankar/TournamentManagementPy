@@ -51,11 +51,6 @@ class MyAppConfig(AppConfig):
             handler.cloudStorageHelper.create_folder(handler.config[sC.BUCKET_LOCATIONS][sC.CERTIFICATES])
             handler.cloudStorageHelper.create_folder(handler.config[sC.BUCKET_LOCATIONS][sC.RESOURCES])
 
-            handler.localDataHelper.create_directory(handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER] +
-                                                     handler.config[sC.BUCKET_LOCATIONS][sC.LOGS_STARTING])
-            handler.localDataHelper.create_directory(handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER] +
-                                                     handler.config[sC.BUCKET_LOCATIONS][sC.SCORE_STARTING])
-
             handler.mySQLHelper.create_database(sC.CREATE_DATABASE.format(handler.config[sC.MY_SQL][sC.DATABASE]))
             handler.mySQLHelper.execute_query(sC.TABLE_MATCHES.format(sC.MATCHES))
             handler.mySQLHelper.execute_query(sC.TABLE_ADMINS.format(handler.config[sC.MY_SQL][sC.ADMIN_TABLE]))

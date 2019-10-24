@@ -168,7 +168,7 @@ def welcome(request):
 
 def api_handler(request, name=None):
     handler.authenticationHelper.validate_admin(request)
-    handler.logHelper.log_it_api(request, __name__ + '.api_handler')
+    # handler.logHelper.log_it_api(request, __name__ + '.api_handler')
 
     functions = {
         'new_match': ApiF.new_match,
@@ -198,7 +198,7 @@ def api_handler(request, name=None):
 
 def get_api_handler(request, name=None):
     handler.authenticationHelper.validate_admin(request)
-    handler.logHelper.log_it_api(request, __name__ + '.get_api_handler')
+    # handler.logHelper.log_it_api(request, __name__ + '.get_api_handler')
 
     functions = {
         'teams': GetR.teams,

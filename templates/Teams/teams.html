@@ -84,6 +84,7 @@ Header
                     </div>
                 </div>
                 <div class="col-md-2 mt-3" style="text-align: center;">
+                {% if n_players < max_players %}
                     {% if mode == '1' or mode == '2' %}
                         {% if not player_team %}
                             {% if team_id in join_team %}
@@ -109,6 +110,7 @@ Header
                             {% endif %}
                         {% endif %}
                     {% endif %}
+                {% endif %}
                 </div>
             </div>
             <div class="row no-gutters">

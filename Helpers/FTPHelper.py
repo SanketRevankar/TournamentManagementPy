@@ -123,8 +123,9 @@ class FTPHelper:
                 if date_file.astimezone() >= date:
                     source = c_folder[0] + sC.SEPARATOR + file[0]
                     destination = c_folder[1] + sC.SEPARATOR + file[0]
-                    temp_dest = self.temp + destination
+                    temp_dest = self.temp + file[0]
                     self.download(ftp, source, temp_dest)
                     handler.cloudStorageHelper.upload_file(destination, temp_dest)
+                    os.remove(temp_dest)
 
         self.close_ftp_connection(ftp)
