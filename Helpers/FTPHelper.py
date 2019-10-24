@@ -61,7 +61,7 @@ class FTPHelper:
     def close_ftp_connection(ftp):
         ftp.close()
 
-    def download(self, ftp, src, des):
+    def download(self, server_id, src, des):
         """
         Download file from FTP to local
 
@@ -69,9 +69,13 @@ class FTPHelper:
         :param src: Source path - Cloud
         :param des: Destination path - local
         """
+        ftp = self.get_ftp_connection(server_id)
+
         f = open(des, sC.WB_MODE)
         ftp.retrbinary(sC.RETR_ + src, f.write)
         self.close_ftp_connection(f)
+
+        self.close_ftp_connection(ftp)
 
     def get_hltv_demos_from_ftp(self, date, server_id, folder):
         """
@@ -82,8 +86,10 @@ class FTPHelper:
         :param folder: Destination folder
         """
         ftp = self.get_ftp_connection(server_id)
+        mlsd = ftp.mlsd(sC.CSTRIKE)
+        self.close_ftp_connection(ftp)
 
-        for file in ftp.mlsd(sC.CSTRIKE):
+        for file in mlsd:
             if file[1][sC.TYPE] == sC.DIR or sC.DEMO_FORMAT not in file[0]:
                 continue
             date_file = datetime.datetime.strptime(file[1][sC.MODIFY], pC.DATETIME_FORMAT)
@@ -92,11 +98,9 @@ class FTPHelper:
                 source = sC.CSTRIKE + sC.SEPARATOR + file[0]
                 destination = self.locations_hltv_starting_ + folder + sC.SEPARATOR + file[0]
                 temp_dest = self.temp + file[0]
-                self.download(ftp, source, temp_dest)
+                self.download(server_id, source, temp_dest)
                 handler.cloudStorageHelper.upload_file(destination, temp_dest)
                 os.remove(temp_dest)
-
-        self.close_ftp_connection(ftp)
 
     def get_logs_from_ftp(self, date, server_id, folder):
         """
@@ -106,7 +110,6 @@ class FTPHelper:
         :param server_id: Id of the server
         :param folder: Destination folder
         """
-        ftp = self.get_ftp_connection(server_id)
 
         folders = [
             [self.results_, self.score_starting_ + folder],
@@ -115,7 +118,11 @@ class FTPHelper:
         ]
 
         for c_folder in folders:
-            for file in ftp.mlsd(c_folder[0]):
+            ftp = self.get_ftp_connection(server_id)
+            mlsd = ftp.mlsd(c_folder[0])
+            self.close_ftp_connection(ftp)
+
+            for file in mlsd:
                 if file[1][sC.TYPE] == sC.DIR or (sC.LOG not in file[0] and sC.TXT not in file[0]):
                     continue
                 date_file = datetime.datetime.strptime(file[1][sC.MODIFY], pC.DATETIME_FORMAT)
@@ -127,5 +134,3 @@ class FTPHelper:
                     self.download(ftp, source, temp_dest)
                     handler.cloudStorageHelper.upload_file(destination, temp_dest)
                     os.remove(temp_dest)
-
-        self.close_ftp_connection(ftp)
