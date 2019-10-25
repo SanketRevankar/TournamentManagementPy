@@ -22,22 +22,8 @@ class FTPHelper:
         self.amxmodx_logs_ = config[sC.FOLDER_LOCATIONS][sC.ADDONS_AMXMODX_LOGS]
         self.cstrike_logs_ = config[sC.FOLDER_LOCATIONS][sC.CSTRIKE_LOGS]
 
-        _old_makepasv = FTP.makepasv
-
         print('{} - Initialized'.format(__name__))
 
-        def _new_makepasv(self_):
-            """
-            To use passive mode for FTP
-
-            :param self_: current reference
-            :return: host and port
-            """
-            host, port = _old_makepasv(self_)
-            host = self_.sock.getpeername()[0]
-            return host, port
-
-        FTP.makepasv = _new_makepasv
 
     @staticmethod
     def get_ftp_connection(server_id):
@@ -53,7 +39,7 @@ class FTPHelper:
         ftp = FTP()
         ftp.connect(ip, 21)
         ftp.login(ServerList[server_id][sC.USERNAME], ServerList[server_id][sC.PASSWORD])
-        ftp.makepasv()
+        ftp.set_pasv(True)
 
         return ftp
 
