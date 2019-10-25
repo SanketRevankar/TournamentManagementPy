@@ -27,7 +27,7 @@ def get_logs_from_ftp(request):
     ip = request_json['ip']
     username = request_json['username']
     password = request_json['password']
-    date = request_json['date']
+    date = datetime.datetime.utcfromtimestamp(request_json['date'])
 
     folders = [
         [results_, score_starting_ + folder],

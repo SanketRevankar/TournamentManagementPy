@@ -147,7 +147,7 @@ class FTPHelper:
             'ip': ip,
             'username': ServerList[server_id][sC.USERNAME],
             'password': ServerList[server_id][sC.PASSWORD],
-            'date': date,
+            'date': date.timestamp(),
         }
 
         data_json = json.dumps(request)
