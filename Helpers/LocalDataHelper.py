@@ -7,7 +7,7 @@ import requests
 
 from TournamentManagementPy import handler
 from constants import StringConstants as sC, PrintStrings as pS, PyConstants as pC, LogStrings as lS
-from firestore_data.PlayerData import PlayerList
+from firestore_data.PlayerData import PlayerList, SteamList
 from firestore_data.ServerData import ServerList
 from firestore_data.TeamData import TeamList
 
@@ -189,7 +189,7 @@ class LocalDataHelper:
         return re.sub(pC.REGEX_TO_REMOVE_UNWANTED_CHARS, sC.EMPTY_STRING, team_name)[:31]
 
     @staticmethod
-    def get_team(steam):
+    def get_team(steam_id):
         """
         Find team of a given player
 
@@ -197,12 +197,10 @@ class LocalDataHelper:
         :return: Team name of the player
         """
 
-        for player in PlayerList:
-            if PlayerList[player][sC.STEAM_ID] == steam:
-                return PlayerList[player][sC.TEAM]
+        return PlayerList[SteamList[steam_id]]['team']
 
     @staticmethod
-    def get_nick(steam):
+    def get_nick(steam_id):
         """
         Find nick of a given player
 
@@ -210,9 +208,7 @@ class LocalDataHelper:
         :return: Nick of the player
         """
 
-        for player in PlayerList:
-            if PlayerList[player][sC.S_STEAM_ID] == steam:
-                return PlayerList[player][sC.STEAM_NICK]
+        return PlayerList[SteamList[steam_id]]['username']
 
     def get_ip_data(self):
         """
