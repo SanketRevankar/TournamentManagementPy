@@ -24,7 +24,7 @@ class MyAppConfig(AppConfig):
         handler.config = configHelper.get_config()
 
         # Initialize Helper classes
-        handler.fireStoreHelper = FireStoreHelper()
+        handler.fireStoreHelper = FireStoreHelper(handler.config)
         handler.localDataHelper = LocalDataHelper(handler.config)
         handler.cloudStorageHelper = CloudStorageHelper(handler.config)
         handler.logHelper = LogHelper()
@@ -39,7 +39,6 @@ class MyAppConfig(AppConfig):
             handler.ftpHelper = FTPHelper(handler.config)
             handler.fireStoreHelper.util.load_player_data()
             handler.fireStoreHelper.util.load_team_data()
-            handler.fireStoreHelper.util.load_match_data()
             handler.fireStoreHelper.util.load_server_data()
 
         # Create Folders and Buckets for storing logs and Create Databases and tables for 1st time run

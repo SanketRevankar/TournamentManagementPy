@@ -1,18 +1,21 @@
+import pickle
+
 from google.cloud import firestore_v1
 
+from TournamentManagementPy import handler
+from constants import StringConstants as sC
+from firestore_data import PlayerData, TeamData, ServerData
 from firestore_data.MatchData import MatchList
-from firestore_data.PlayerData import PlayerList
-from firestore_data.ServerData import ServerList
-from firestore_data.TeamData import TeamList
 
 
 class FireStoreUtil:
-    def __init__(self):
+    def __init__(self, config):
         self.db = firestore_v1.Client()
         self.MATCHES = u'matches'
         self.SERVERS = u'servers'
         self.PLAYERS = u'players'
         self.TEAMS = u'teams'
+        self.temp = config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER]
 
         print('{} - Initialized'.format(__name__))
 
@@ -91,22 +94,62 @@ class FireStoreUtil:
         return self.get_team_ref_by_team_id(team_id).get(['join_requests']).get('join_requests')
 
     def load_player_data(self):
+        player_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/player_list.pk')
+        steam_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/steam_list.pk')
+        if player_data_blob.exists() and steam_data_blob.exists():
+            PlayerData.PlayerList = pickle.loads(player_data_blob.download_as_string())
+            PlayerData.SteamList = pickle.loads(steam_data_blob.download_as_string())
+            return
+
         collection_ref = self.get_collection(self.PLAYERS)
         docs = collection_ref.stream()
         for doc in docs:
-            PlayerList[doc.id] = doc.to_dict()
+            PlayerData.PlayerList[doc.id] = doc.to_dict()
+            PlayerData.SteamList[PlayerData.PlayerList[doc.id]['steam_id']] = doc.id
+
+        file_path = self.temp + 'player_list.pk'
+        with open(file_path, 'wb+') as f:
+            pickle.dump(PlayerData.PlayerList, f)
+        handler.cloudStorageHelper.upload_file('resources/player_list.pk', file_path)
+
+        file_path = self.temp + 'steam_list.pk'
+        with open(file_path, 'wb+') as f:
+            pickle.dump(PlayerData.SteamList, f)
+        handler.cloudStorageHelper.upload_file('resources/steam_list.pk', file_path)
 
     def load_team_data(self):
+        player_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/team_list.pk')
+        if player_data_blob.exists():
+            TeamData.TeamList = pickle.loads(player_data_blob.download_as_string())
+            return
+
         collection_ref = self.get_collection(self.TEAMS)
         docs = collection_ref.stream()
         for doc in docs:
-            TeamList[doc.id] = doc.to_dict()
+            TeamData.TeamList[doc.id] = doc.to_dict()
+
+        file_path = self.temp + 'team_list.pk'
+        with open(file_path, 'wb+') as f:
+            pickle.dump(TeamData.TeamList, f)
+
+        handler.cloudStorageHelper.upload_file('resources/team_list.pk', file_path)
 
     def load_server_data(self):
+        player_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/server_list.pk')
+        if player_data_blob.exists():
+            ServerData.ServerList = pickle.loads(player_data_blob.download_as_string())
+            return
+
         collection_ref = self.get_collection(self.SERVERS)
         docs = collection_ref.stream()
         for doc in docs:
-            ServerList[doc.id] = doc.to_dict()
+            ServerData.ServerList[doc.id] = doc.to_dict()
+
+        file_path = self.temp + 'server_list.pk'
+        with open(file_path, 'wb+') as f:
+            pickle.dump(ServerData.ServerList, f)
+
+        handler.cloudStorageHelper.upload_file('resources/server_list.pk', file_path)
 
     def load_match_data(self):
         collection_ref = self.get_collection(self.MATCHES)

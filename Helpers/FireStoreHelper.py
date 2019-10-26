@@ -9,8 +9,8 @@ from constants import StringConstants as sC
 
 
 class FireStoreHelper:
-    def __init__(self):
-        self.util = FireStoreUtil()
+    def __init__(self, config):
+        self.util = FireStoreUtil(config)
         self.db = firestore_v1.Client()
         self.MATCHES = u'matches'
         self.PLAYERS = u'players'

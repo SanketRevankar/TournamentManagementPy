@@ -53,3 +53,6 @@ class CloudStorageHelper:
 
     def get_blobs_by_prefix(self, prefix):
         return self.bucket.list_blobs(prefix=prefix)
+
+    def get_blob_with_path(self, path):
+        return Blob(path, self.bucket)
