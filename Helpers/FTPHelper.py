@@ -4,6 +4,8 @@ import os
 from ftplib import FTP
 
 import requests
+from django.http import HttpResponseServerError
+from django.views.defaults import server_error
 
 from TournamentManagementPy import handler
 from constants import StringConstants as sC, PyConstants as pC
@@ -83,22 +85,40 @@ class FTPHelper:
         :param server_id: Id of the server
         :param folder: Destination folder
         """
-        ftp = self.get_ftp_connection(server_id)
+        # ftp = self.get_ftp_connection(server_id)
+        #
+        # for file in ftp.mlsd(sC.CSTRIKE):
+        #     if file[1][sC.TYPE] == sC.DIR or sC.DEMO_FORMAT not in file[0]:
+        #         continue
+        #     date_file = datetime.datetime.strptime(file[1][sC.MODIFY], pC.DATETIME_FORMAT)
+        #
+        #     if date_file.astimezone() >= date:
+        #         source = sC.CSTRIKE + sC.SEPARATOR + file[0]
+        #         destination = self.locations_hltv_starting_ + folder + sC.SEPARATOR + file[0]
+        #         temp_dest = self.temp + file[0]
+        #         self.download(ftp, source, temp_dest)
+        #         handler.cloudStorageHelper.upload_file(destination, temp_dest)
+        #         os.remove(temp_dest)
+        #
+        # self.close_ftp_connection(ftp)
 
-        for file in ftp.mlsd(sC.CSTRIKE):
-            if file[1][sC.TYPE] == sC.DIR or sC.DEMO_FORMAT not in file[0]:
-                continue
-            date_file = datetime.datetime.strptime(file[1][sC.MODIFY], pC.DATETIME_FORMAT)
+        node = handler.cloudServerHelper.util.get_node(ServerList[server_id][sC.INSTANCE_NAME])
+        ip = handler.cloudServerHelper.util.ip(node)
 
-            if date_file.astimezone() >= date:
-                source = sC.CSTRIKE + sC.SEPARATOR + file[0]
-                destination = self.locations_hltv_starting_ + folder + sC.SEPARATOR + file[0]
-                temp_dest = self.temp + file[0]
-                self.download(ftp, source, temp_dest)
-                handler.cloudStorageHelper.upload_file(destination, temp_dest)
-                os.remove(temp_dest)
+        request = {
+            'locations_hltv_starting_': self.locations_hltv_starting_,
+            'folder': folder,
+            'ip': ip,
+            'username': ServerList[server_id][sC.USERNAME],
+            'password': ServerList[server_id][sC.PASSWORD],
+            'date': date.timestamp(),
+        }
 
-        self.close_ftp_connection(ftp)
+        data_json = json.dumps(request)
+        r = requests.post("https://asia-east2-narcogaming.cloudfunctions.net/get_hltv_demos_from_ftp", json=data_json)
+        if r.status_code != 200:
+            raise server_error
+
 
     def get_logs_from_ftp(self, date, server_id, folder):
         """
@@ -150,5 +170,7 @@ class FTPHelper:
         }
 
         data_json = json.dumps(request)
-        r = requests.post("https://us-central1-narcogaming.cloudfunctions.net/get_logs_from_ftp", json=data_json)
-        print(r)
+        r = requests.post("https://asia-east2-narcogaming.cloudfunctions.net/get_logs_from_ftp", json=data_json)
+
+        if r.status_code != 200:
+            raise server_error

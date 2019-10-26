@@ -7,7 +7,7 @@ from google.cloud import storage
 from google.cloud.storage import Blob
 
 
-def get_logs_from_ftp(request):
+def get_hltv_demos_from_ftp(request):
     """
     Get log data from instance
 
@@ -16,37 +16,27 @@ def get_logs_from_ftp(request):
 
     request_json = json.loads(request.get_json(silent=True))
 
-    score_starting_ = request_json['score_starting_']
-    logs_starting_ = request_json['logs_starting_']
+    locations_hltv_starting_ = request_json['locations_hltv_starting_']
     folder = request_json['folder']
-    results_ = request_json['results_']
-    amxmodx_logs_ = request_json['amxmodx_logs_']
-    cstrike_logs_ = request_json['cstrike_logs_']
     ip = request_json['ip']
     username = request_json['username']
     password = request_json['password']
     date = datetime.datetime.utcfromtimestamp(request_json['date'])
 
-    folders = [
-        [results_, score_starting_ + folder],
-        [amxmodx_logs_, logs_starting_ + folder],
-        [cstrike_logs_, logs_starting_ + folder],
-    ]
     ftp = get_ftp_connection(ip, username, password)
 
-    for c_folder in folders:
-        for file in ftp.mlsd(c_folder[0]):
-            if file[1]['type'] == 'dir' or (".log" not in file[0] and ".txt" not in file[0]):
-                continue
-            date_file = datetime.datetime.strptime(file[1]['modify'], "%Y%m%d%H%M%S")
+    for file in ftp.mlsd('cstrike'):
+        if file[1]['type'] == 'dir' or ".dem" not in file[0]:
+            continue
+        date_file = datetime.datetime.strptime(file[1]['modify'], "%Y%m%d%H%M%S")
 
-            if date_file >= date:
-                source = c_folder[0] + "/" + file[0]
-                destination = c_folder[1] + "/" + file[0]
-                temp_dest = '/tmp/' + file[0]
-                download(ftp, source, temp_dest)
-                upload_file(destination, temp_dest)
-                os.remove(temp_dest)
+        if date_file.astimezone() >= date:
+            source = 'cstrike/' + file[0]
+            destination = locations_hltv_starting_ + folder + '/' + file[0]
+            temp_dest = '/tmp/' + file[0]
+            download(ftp, source, temp_dest)
+            upload_file(destination, temp_dest)
+            os.remove(temp_dest)
 
     ftp.close()
 
