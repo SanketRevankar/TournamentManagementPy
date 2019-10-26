@@ -13,6 +13,8 @@ from Helpers.LogHelper import LogHelper
 from Helpers.MySQLHelper import MySQLHelper
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
+from firestore_data.PlayerData import PlayerList, SteamList
+from firestore_data.TeamData import TeamList
 
 
 class MyAppConfig(AppConfig):

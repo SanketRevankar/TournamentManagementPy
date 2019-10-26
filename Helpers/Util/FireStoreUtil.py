@@ -97,8 +97,8 @@ class FireStoreUtil:
         player_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/player_list.pk')
         steam_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/steam_list.pk')
         if player_data_blob.exists() and steam_data_blob.exists():
-            PlayerData.PlayerList = pickle.loads(player_data_blob.download_as_string())
-            PlayerData.SteamList = pickle.loads(steam_data_blob.download_as_string())
+            PlayerData.PlayerList.update(pickle.loads(player_data_blob.download_as_string()))
+            PlayerData.SteamList.update(pickle.loads(steam_data_blob.download_as_string()))
             return
 
         collection_ref = self.get_collection(self.PLAYERS)
@@ -120,7 +120,7 @@ class FireStoreUtil:
     def load_team_data(self):
         player_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/team_list.pk')
         if player_data_blob.exists():
-            TeamData.TeamList = pickle.loads(player_data_blob.download_as_string())
+            TeamData.TeamList.update(pickle.loads(player_data_blob.download_as_string()))
             return
 
         collection_ref = self.get_collection(self.TEAMS)
@@ -137,7 +137,7 @@ class FireStoreUtil:
     def load_server_data(self):
         player_data_blob = handler.cloudStorageHelper.get_blob_with_path('resources/server_list.pk')
         if player_data_blob.exists():
-            ServerData.ServerList = pickle.loads(player_data_blob.download_as_string())
+            ServerData.ServerList.update(pickle.loads(player_data_blob.download_as_string()))
             return
 
         collection_ref = self.get_collection(self.SERVERS)
