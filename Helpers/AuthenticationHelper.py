@@ -14,7 +14,6 @@ class AuthenticationHelper:
             raise PermissionDenied('You need to login')
 
         if self.mode9:
-            print(PlayerList)
             if 'team' not in PlayerList[request.session['id']]:
                 raise PermissionDenied('Player is not in a team!')
 
