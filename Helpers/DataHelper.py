@@ -110,3 +110,9 @@ class DataHelper:
             team_tag = team_data['team_tag']
 
         return team_name, team_tag
+
+    def get_team_nick_name_by_s_id(self, steam_id):
+        player_data = self.get_players()
+        for player in player_data:
+            if player_data[player]['steam_id'] == steam_id:
+                return player_data[player]['team'], player_data[player]['username'], player_data[player]['name']

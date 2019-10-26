@@ -631,9 +631,11 @@ class LocalDataHelper:
 
             for line in b_str.split('\n'):
                 stat = line.strip().split()
+                if stat.__len__() != 2:
+                    continue
 
                 try:
-                    team, nick, name = self.get_details_by_id(stat[0])
+                    team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(stat[0])
                 except TypeError:
                     print('[Exception]' + lS.NOT_FOUND_.format(stat[0]))
                     continue
@@ -657,6 +659,7 @@ class LocalDataHelper:
 
                 stats[team][stat[0]][stat[1]] += 1
 
+        print(stats)
         return stats
 
     def save_logs(self, match_name):
@@ -670,11 +673,11 @@ class LocalDataHelper:
 
         logs_starting_match = self.logs_starting_ + match_name
         say_logs_txt = logs_starting_match + sC.SEPARATOR + sC.SAY_LOGS_TXT
-        tmp_say_logs_txt = self.temp + say_logs_txt
+        tmp_say_logs_txt = self.temp + sC.SAY_LOGS_TXT
         write_file = open(tmp_say_logs_txt, sC.W_PLUS_MODE, encoding=pC.ENCODING)
 
         say_team_logs_txt = logs_starting_match + sC.SEPARATOR + sC.SAY_TEAM_LOGS_TXT
-        tmp_say_team_logs_txt = self.temp + say_team_logs_txt
+        tmp_say_team_logs_txt = self.temp + sC.SAY_TEAM_LOGS_TXT
         write_file_team = open(tmp_say_team_logs_txt, sC.W_PLUS_MODE, encoding=pC.ENCODING)
 
         for blob in handler.cloudStorageHelper.get_blobs_by_prefix(logs_starting_match):
