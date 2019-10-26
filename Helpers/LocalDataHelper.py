@@ -620,42 +620,43 @@ class LocalDataHelper:
         :return: Dict of stats of given match
         """
 
-        print(lS.INITIALIZING_STATS)
         stats = {}
-        starting_match_name = self.temp + self.score_starting_ + match_name
+        starting_match_name = self.score_starting_ + match_name
 
-        print(lS.LOADING_STATS_FROM_.format(starting_match_name))
-        for file_ip in os.listdir(starting_match_name):
-            with open(starting_match_name + sC.SEPARATOR + file_ip) as f:
-                for line in f:
-                    stat = line.strip().split()
+        for blob in handler.cloudStorageHelper.get_blobs_by_prefix(starting_match_name):
+            if blob.name[-1] == '/':
+                continue
 
-                    try:
-                        team, nick, name = self.get_details_by_id(stat[0])
-                    except TypeError:
-                        print('[Exception]' + lS.NOT_FOUND_.format(stat[0]))
-                        continue
+            b_str = blob.download_as_string().decode()
 
-                    if team not in stats:
-                        stats[team] = {}
+            for line in b_str.split('\n'):
+                stat = line.strip().split()
 
-                    if stat[0] not in stats[team]:
-                        stats[team][stat[0]] = {
-                            sC.KILLS: 0,
-                            sC.DEATHS: 0,
-                            sC.GRENADE: 0,
-                            sC.HEADSHOT: 0,
-                            sC.SUICIDE: 0,
-                            sC.BOMB_PLANT: 0,
-                            sC.BOMB_DEFUSE: 0,
-                            sC.KNIFE: 0,
-                            sC.NS_NAME: name,
-                            sC.NICK_SMALL: nick,
-                        }
+                try:
+                    team, nick, name = self.get_details_by_id(stat[0])
+                except TypeError:
+                    print('[Exception]' + lS.NOT_FOUND_.format(stat[0]))
+                    continue
 
-                    stats[team][stat[0]][stat[1]] += 1
+                if team not in stats:
+                    stats[team] = {}
 
-        print(lS.LOADING_STATS_COMPLETED)
+                if stat[0] not in stats[team]:
+                    stats[team][stat[0]] = {
+                        sC.KILLS: 0,
+                        sC.DEATHS: 0,
+                        sC.GRENADE: 0,
+                        sC.HEADSHOT: 0,
+                        sC.SUICIDE: 0,
+                        sC.BOMB_PLANT: 0,
+                        sC.BOMB_DEFUSE: 0,
+                        sC.KNIFE: 0,
+                        sC.NS_NAME: name,
+                        sC.NICK_SMALL: nick,
+                    }
+
+                stats[team][stat[0]][stat[1]] += 1
+
         return stats
 
     def save_logs(self, match_name):
@@ -667,56 +668,57 @@ class LocalDataHelper:
         file_split = match_name.split()
         team_len = max(file_split[1].__len__(), file_split[3].__len__()) + 2
 
-        say_logs_txt = self.logs_starting_ + match_name + sC.SEPARATOR + sC.SAY_LOGS_TXT
+        logs_starting_match = self.logs_starting_ + match_name
+        say_logs_txt = logs_starting_match + sC.SEPARATOR + sC.SAY_LOGS_TXT
         tmp_say_logs_txt = self.temp + say_logs_txt
-        print(lS.FILE_FOR_SAY_LOGS_.format(tmp_say_logs_txt))
         write_file = open(tmp_say_logs_txt, sC.W_PLUS_MODE, encoding=pC.ENCODING)
 
-        say_team_logs_txt = self.logs_starting_ + match_name + sC.SEPARATOR + sC.SAY_TEAM_LOGS_TXT
+        say_team_logs_txt = logs_starting_match + sC.SEPARATOR + sC.SAY_TEAM_LOGS_TXT
         tmp_say_team_logs_txt = self.temp + say_team_logs_txt
         write_file_team = open(tmp_say_team_logs_txt, sC.W_PLUS_MODE, encoding=pC.ENCODING)
 
-        for c_file in os.listdir(self.temp + self.logs_starting_ + match_name):
-            if sC.LOG not in c_file:
+        for blob in handler.cloudStorageHelper.get_blobs_by_prefix(logs_starting_match):
+            if sC.LOG not in blob.name:
                 continue
 
-            if sC.L_ in c_file:
+            if sC.L_ in blob.name:
                 continue
 
-            write_file.write(sC.STAR + sC.SPACE + c_file + sC.NEW_LINE)
-            write_file_team.write(sC.STAR + sC.SPACE + c_file + sC.NEW_LINE)
+            write_file.write(sC.STAR + sC.SPACE + logs_starting_match + sC.NEW_LINE)
+            write_file_team.write(sC.STAR + sC.SPACE + logs_starting_match + sC.NEW_LINE)
 
-            with open(self.temp + self.logs_starting_ + match_name + sC.SEPARATOR + c_file, encoding=pC.ENCODING) as f:
-                for line in f:
-                    if sC.SAY in line and sC.TSAY not in line:
-                        line_split = line.split(sC.DOUBLE_QUOTE)
+            b_str = blob.download_as_string().decode()
 
-                        try:
-                            pos_steam = line_split[1].index(sC.STEAM)
-                        except ValueError:
-                            print('[Exception]' + lS.VALUE_ERROR_.format(line_split[1]))
-                            continue
+            for line in b_str.split('\n'):
+                if sC.SAY in line and sC.TSAY not in line:
+                    line_split = line.split(sC.DOUBLE_QUOTE)
 
-                        steam_id = line_split[1][pos_steam:line_split[1].index(sC.GREATER_THAN, pos_steam)]
+                    try:
+                        pos_steam = line_split[1].index(sC.STEAM)
+                    except ValueError:
+                        print('[Exception]' + lS.VALUE_ERROR_.format(line_split[1]))
+                        continue
 
-                        try:
-                            nick = self.get_nick(steam_id)
-                        except AttributeError:
-                            print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
-                            nick = steam_id
+                    steam_id = line_split[1][pos_steam:line_split[1].index(sC.GREATER_THAN, pos_steam)]
 
-                        try:
-                            team = self.get_team(steam_id)
-                        except AttributeError:
-                            print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
-                            team = steam_id
+                    try:
+                        nick = self.get_nick(steam_id)
+                    except AttributeError:
+                        print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
+                        nick = steam_id
 
-                        if sC.SAY_TEAM not in line:
-                            write_file.write(sC.TAB + str(team).ljust(team_len) + str(nick).ljust(38) + sC.COLON +
-                                             sC.SPACE + line_split[3] + sC.NEW_LINE)
-                        else:
-                            write_file_team.write(sC.TAB + str(team).ljust(team_len) + str(nick).ljust(38) + sC.COLON +
-                                                  sC.SPACE + line_split[3] + sC.NEW_LINE)
+                    try:
+                        team = self.get_team(steam_id)
+                    except AttributeError:
+                        print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
+                        team = steam_id
+
+                    if sC.SAY_TEAM not in line:
+                        write_file.write(sC.TAB + str(team).ljust(team_len) + str(nick).ljust(38) + sC.COLON +
+                                         sC.SPACE + line_split[3] + sC.NEW_LINE)
+                    else:
+                        write_file_team.write(sC.TAB + str(team).ljust(team_len) + str(nick).ljust(38) + sC.COLON +
+                                              sC.SPACE + line_split[3] + sC.NEW_LINE)
 
         write_file.close()
         write_file_team.close()

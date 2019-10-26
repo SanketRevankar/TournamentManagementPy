@@ -30,7 +30,7 @@ def get_hltv_demos_from_ftp(request):
             continue
         date_file = datetime.datetime.strptime(file[1]['modify'], "%Y%m%d%H%M%S")
 
-        if date_file.astimezone() >= date:
+        if date_file >= date:
             source = 'cstrike/' + file[0]
             destination = locations_hltv_starting_ + folder + '/' + file[0]
             temp_dest = '/tmp/' + file[0]

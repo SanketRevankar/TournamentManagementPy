@@ -14,6 +14,7 @@ class CloudStorageHelper:
         """
         self.client = storage.Client()
         self.bucket_name = config[sC.BUCKET_LOCATIONS][sC.FILES_HOME]
+        self.bucket = self.get_bucket()
 
         print('{} - Initialized'.format(__name__))
 
@@ -32,7 +33,7 @@ class CloudStorageHelper:
         :param folder: Path of the folder to create
         :return: None
         """
-        blob = Blob(folder, self.get_bucket())
+        blob = Blob(folder, self.bucket)
         if blob.exists(self.client):
             return
         blob.upload_from_string('')
@@ -45,7 +46,10 @@ class CloudStorageHelper:
         :param file_name: Name of the file to upload. (Should include path from bucket)
         :param file_path: Path of the file in local system
         """
-        blob = Blob(file_name, self.get_bucket())
+        blob = Blob(file_name, self.bucket)
         with open(file_path, "rb") as my_file:
             blob.upload_from_file(my_file)
         handler.logHelper.log_it_storage(file_name, 'file')
+
+    def get_blobs_by_prefix(self, prefix):
+        return self.bucket.list_blobs(prefix=prefix)

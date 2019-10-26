@@ -866,7 +866,6 @@ def end_match():
                         'match_id': matches.val(),
                     },
                     success: function (data) {
-                        servers += 1;
                         match_server_stat.removeClass('fa-circle').removeClass('fa-grow').removeClass('text-primary');
                         match_server_stat.addClass('fa-check-circle').addClass('text-success');
                         match_server_status.removeAttr('hidden');
@@ -895,7 +894,6 @@ def end_match():
                         'match_id': matches.val(),
                     },
                     success: function (data) {
-                        servers += 1;
                         hltv_server_stat.removeClass('fa-circle').removeClass('fa-grow').removeClass('text-primary');
                         hltv_server_stat.addClass('fa-check-circle').addClass('text-success');
                         hltv_server_status.removeAttr('hidden');
