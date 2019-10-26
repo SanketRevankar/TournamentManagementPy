@@ -88,7 +88,7 @@ def download_match_logs(request):
     folder = handler.localDataHelper.get_match_name(match_id, match_data)
 
     start_time = match_data['start_time'].replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
-    # handler.ftpHelper.get_logs_from_ftp(start_time, match_data['match_server'], folder)
+    handler.ftpHelper.get_logs_from_ftp(start_time, match_data['match_server'], folder)
 
     return {'status': 'Completed'}
 
@@ -99,7 +99,7 @@ def download_match_demos(request):
     folder = handler.localDataHelper.get_match_name(match_id, match_data)
 
     start_time = match_data['start_time'].replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
-    # handler.ftpHelper.get_hltv_demos_from_ftp(start_time, match_data['hltv_server'], folder)
+    handler.ftpHelper.get_hltv_demos_from_ftp(start_time, match_data['hltv_server'], folder)
 
     return {'status': 'Completed'}
 
