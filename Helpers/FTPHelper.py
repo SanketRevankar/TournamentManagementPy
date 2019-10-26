@@ -74,7 +74,6 @@ class FTPHelper:
         """
         f = open(des, sC.WB_MODE)
         ftp.retrbinary(sC.RETR_ + src, f.write)
-        self.close_ftp_connection(f)
 
     def get_hltv_demos_from_ftp(self, date, server_id, folder):
         """
