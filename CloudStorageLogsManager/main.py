@@ -1,20 +1,16 @@
 import json
-from datetime import datetime
 
-from dateutil.tz import tz
 from google.cloud import storage, firestore_v1
 from google.cloud.storage import Blob
 
 
-def log_manager(data_in, context):
+# noinspection DuplicatedCode
+def log_manager(data_in, _):
     """Background Cloud Function to be triggered by Cloud Storage.
        This generic function logs relevant data when a file is changed.
 
-    Args:
-        data (dict): The Cloud Functions event payload.
-        context (google.cloud.functions.Context): Metadata of triggering event.
-    Returns:
-        None; the output is written to Stackdriver Logging
+    :param data_in: The Cloud Functions event payload.
+    :param _: The Cloud Functions event payload.
     """
 
     blob_name = data_in['name']
@@ -26,29 +22,45 @@ def log_manager(data_in, context):
 
     db = firestore_v1.Client()
 
-    if 'stdout' in blob_name:
-        pages = {}
-        for json_obj in blob.download_as_string().decode().strip().split('\n'):
-            data = json.loads(json_obj)
-            timestamp_ = data['timestamp']
-            utc = datetime.strptime(timestamp_, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=tz.tzutc())
-            local_time = utc.astimezone(tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S.%f')
-            if 'jsonPayload' in data:
-                if data['type'] == 'page':
-                    requester_ = data['requester']
-                    path_ = data['path']
-                    ip_ = data['ip']
-                    if path_ not in pages:
-                        pages[path_] = {'total_visits': {'total_visits': 0}}
-                    pages[path_]['total_visits']['total_visits'] += 1
-                    if requester_ not in pages[path_]:
-                        pages[path_][requester_] = {
-                            'ips': set(ip_),
-                            'visits': 1,
-                        }
-                    else:
-                        # noinspection PyUnresolvedReferences
-                        pages[path_][requester_]['ips'].add(ip_)
-                        pages[path_][requester_]['visits'] += 1
+    for json_obj in blob.download_as_string().decode().strip().split('\n'):
+        data = json.loads(json_obj)
+        timestamp_ = data['timestamp']
 
-        print(pages)
+        if 'jsonPayload' in data:
+            payload_ = data['jsonPayload']
+
+            if payload_['type'] == 'page':
+                requester_ = payload_['requester']
+                path_ = payload_['path']
+
+                if not payload_['authorized']:
+                    doc_ref = db.collection('unauthorized_requests').document(path_.replace('/', '_'))
+                    doc_ref.set({requester_: {timestamp_: {**payload_}}}, merge=True)
+                    continue
+
+                doc_ref = db.collection('page_requests').document(path_.replace('/', '_'))
+                doc_ref.set({requester_: {timestamp_: {**payload_}}}, merge=True)
+
+            elif payload_['type'] == 'api':
+                requester_ = payload_['requester']
+                path_ = payload_['path']
+
+                if not payload_['authorized']:
+                    doc_ref = db.collection('unauthorized_requests').document(path_.replace('/', '_'))
+                    doc_ref.set({requester_: {timestamp_: {**payload_}}}, merge=True)
+                    continue
+
+                doc_ref = db.collection('api_requests').document(path_.replace('/', '_'))
+                doc_ref.set({requester_: {timestamp_: {**payload_}}}, merge=True)
+
+            elif payload_['type'] == 'query':
+                doc_ref = db.collection('queries_mysql').document()
+                doc_ref.create({'datetime': timestamp_, **payload_})
+
+            elif payload_['type'] == 'storage':
+                doc_ref = db.collection('storage_operations').document()
+                doc_ref.create({'datetime': timestamp_, **payload_})
+
+            elif payload_['type'] == 'server':
+                doc_ref = db.collection('server_operations').document(payload_['node'])
+                doc_ref.set({payload_['action']: {timestamp_: {**payload_}}}, merge=True)

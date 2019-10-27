@@ -206,6 +206,7 @@ def get_api_handler(request, name=None):
         'matches_created': GetR.matches_created,
         'matches_started': GetR.matches_started,
         'vac_bans': GetR.vac_bans,
+        'connections': GetR.connections,
     }
 
     if not name or name not in functions:

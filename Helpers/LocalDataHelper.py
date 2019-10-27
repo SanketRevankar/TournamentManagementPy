@@ -193,7 +193,7 @@ class LocalDataHelper:
         """
         Find team of a given player
 
-        :param steam: Steam ID of the player
+        :param steam_id: Steam ID of the player
         :return: Team name of the player
         """
 
@@ -204,7 +204,7 @@ class LocalDataHelper:
         """
         Find nick of a given player
 
-        :param steam: Steam ID of the player
+        :param steam_id: Steam ID of the player
         :return: Nick of the player
         """
 
@@ -340,35 +340,36 @@ class LocalDataHelper:
 
         return steam_id
 
-    def get_connections(self, file, match, steam):
+    @staticmethod
+    def get_connections(blob_str, steam):
         """
         Returns connection to server by players
 
-        :param file: Name of the file to open
-        :param match: Name of the match folder
+        :param blob_str: String of file contents
         :param steam: steam Id of the player
         """
 
-        print(lS.LOADING_CONNECTIONS_OF_.format(steam))
+        resp = ''
         count = 0
-        with open(self.logs_starting_ + match + sC.SEPARATOR + file,
-                  encoding=pC.ENCODING) as f:
-            for line in f:
-                line_split = line.split(sC.DOUBLE_QUOTE)
+        for line in blob_str.split('\n'):
+            line_split = line.split(sC.DOUBLE_QUOTE)
 
-                if pS.CONNECTED in line or pS.WAS_KICKED_BY_CONSOLE_ in line or pS.ENTERED_THE_GAME in line:
-                    try:
-                        pos_steam = line_split[1].index(sC.STEAM)
-                    except ValueError:
-                        continue
-                    steam_id = line_split[1][pos_steam:line_split[1].index(sC.GREATER_THAN, pos_steam)]
-                    if steam_id == steam:
-                        print(sC.TAB, line.strip())
-                        count += 1
+            if pS.CONNECTED in line or pS.WAS_KICKED_BY_CONSOLE_ in line or pS.ENTERED_THE_GAME in line:
+                try:
+                    pos_steam = line_split[1].index(sC.STEAM)
+                except ValueError:
+                    continue
+                steam_id = line_split[1][pos_steam:line_split[1].index(sC.GREATER_THAN, pos_steam)]
+                if steam_id == steam:
+                    resp += '{} {}\n'.format(sC.TAB, line.strip())
+                    count += 1
+
         if count == 0:
-            print(lS.NO_CONNECTIONS_FOUND)
+            resp += lS.NO_CONNECTIONS_FOUND + sC.NEW_LINE
         else:
-            print(lS.FOUND_CONNECTIONS.format(count))
+            resp += lS.FOUND_CONNECTIONS.format(count) + sC.NEW_LINE
+
+        return resp
 
     @staticmethod
     def get_info(community_id):
@@ -380,16 +381,10 @@ class LocalDataHelper:
 
         for player in PlayerList:
             if PlayerList[player][sC.STEAM_URL_ID] == community_id:
-                return PlayerList[player][sC.TEAM] if sC.TEAM in PlayerList[player] else '' + sC.NEW_LINE + \
-                                                                                         sC.TAB + sC.STEAM_ID + sC.COLON + sC.SPACE + \
-                                                                                         PlayerList[player][
-                                                                                             sC.STEAM_URL_ID] + sC.NEW_LINE + \
-                                                                                         sC.TAB + sC.NAME_ + sC.COLON + sC.SPACE + \
-                                                                                         PlayerList[player][
-                                                                                             sC.NAME] + sC.NEW_LINE + \
-                                                                                         sC.TAB + sC.NICK_ + sC.COLON + sC.SPACE + \
-                                                                                         PlayerList[player][
-                                                                                             sC.STEAM_NICK]
+                return PlayerList[player][sC.TEAM] if sC.TEAM in PlayerList[player] else \
+                    '' + sC.NEW_LINE + sC.TAB + sC.STEAM_ID + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_URL_ID]\
+                    + sC.NEW_LINE + sC.TAB + sC.NAME_ + sC.COLON + sC.SPACE + PlayerList[player][sC.NAME] + \
+                    sC.NEW_LINE + sC.TAB + sC.NICK_ + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_NICK]
 
     def get_data(self, ac):
         """

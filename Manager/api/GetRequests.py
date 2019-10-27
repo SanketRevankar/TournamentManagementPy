@@ -127,3 +127,23 @@ def acc_check_vac(ac):
         resp += process_data_vac()
 
     return resp
+
+def connections(request):
+    steam_id = request.GET.get('steam_id')
+    response = ''
+    for blob in handler.cloudStorageHelper.get_blobs_by_prefix(handler.config[sC.BUCKET_LOCATIONS][sC.LOGS_STARTING]):
+        if blob.name[-1] == '/':
+            continue
+
+        if sC.LOG not in blob.name:
+            continue
+
+        if sC.L_ in blob.name:
+            continue
+
+        blob_str = blob.download_as_string().decode()
+
+        resp = handler.localDataHelper.get_connections(blob_str, steam_id)
+        response += blob.name + sC.NEW_LINE + resp + sC.NEW_LINE
+
+    return {'html': response}

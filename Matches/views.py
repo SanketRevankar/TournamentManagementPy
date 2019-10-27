@@ -9,7 +9,7 @@ from constants import StringConstants as sC
 
 def welcome(request):
     handler.authenticationHelper.validate_login(request)
-    handler.logHelper.log_it_visit(request, __name__ + '.welcome')
+    # handler.logHelper.log_it_visit(request, __name__ + '.welcome')
 
     template = loader.get_template('Matches/matches.html')
 

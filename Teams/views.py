@@ -8,7 +8,7 @@ from constants import StringConstants as sC
 def home(request):
     handler.authenticationHelper.validate_login(request)
 
-    handler.logHelper.log_it_visit(request, __name__ + '.home')
+    # handler.logHelper.log_it_visit(request, __name__ + '.home')
 
     template = loader.get_template('Teams/teams.html')
 

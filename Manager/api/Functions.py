@@ -244,7 +244,7 @@ def new_match():
                 datetime.addClass('is-invalid');                
             }
         });
-        
+
         preview_match.click(function () {
             if (match_servers.hasClass('is-valid') && team1.hasClass('is-valid') && team2.hasClass('is-valid') && 
                 match_id.hasClass('is-valid') && hltv_servers.hasClass('is-valid') && datetime.hasClass('is-valid')) {
@@ -265,7 +265,7 @@ def new_match():
                 preview_match.attr('hidden', '');
             }
         });
-        
+
         create_match.click(function () {
             $.ajax({
                 url: 'api/v1/func/put/create_match',
@@ -292,7 +292,7 @@ def new_match():
 
             $('#content').html('<i class="fas fa-spinner fa-spin" style="font-size: 100px;margin-top: 35vh;margin-left: 40vw;"></i>' +
                 '<h3 style="color: black; margin-left: 40vw; margin-top: 3vh;">Loading...</h3>');
-                
+
             $.ajax({
                 url: 'api/v1/func/new_match',
                 success: function (data) {
@@ -857,7 +857,7 @@ def end_match():
             match_server_stop.click(function () {
                 match_server_stop.attr('hidden', '');
                 match_server.removeAttr('hidden');
-                
+
                 $.ajax({
                     url: 'api/v1/func/put/stop_match_server',
                     method: 'post',
@@ -881,7 +881,7 @@ def end_match():
                     }
                 });
             });
-            
+
             hltv_server_stop.click(function () {
                 hltv_server_stop.attr('hidden', '');
                 hltv_server.removeAttr('hidden');
@@ -909,7 +909,7 @@ def end_match():
                     }
                 });
             });
-            
+
             function stop_servers() {
                 match_server_stop.removeAttr('hidden');
                 hltv_server_stop.removeAttr('hidden');
@@ -1093,10 +1093,6 @@ def end_match():
 </script>"""}
 
 
-def highest_stats():
-    return {}
-
-
 def match_scores():
     response = """<div class="pt-2 pb-1 mb-2" style="border-bottom: 1px solid;">
     <h1>Match Scores</h1>
@@ -1130,12 +1126,59 @@ def match_scores():
     return {'html': response}
 
 
+def player_stats():
+    return {}
+
+
+def highest_stats():
+    return {}
+
+
 def ip_matches():
     return {}
 
 
 def connections():
-    return {}
+    return {'html': """<div class="pt-2 pb-1 mb-2" style="border-bottom: 1px solid;">
+        <h2>Connections by Steam ID:</h2>
+        <h5>Check for Connections by Steam ID</h5>
+    </div>
+
+    <div class="form-group col-md-2" id='con'>
+        <label for="steam-id" id="label-steam-id">Steam ID</label>
+        <input type="text" class="form-control" aria-roledescription="steam-id-help" id="steam-id" 
+        placeholder="Enter steam ID">
+        <small id="steam-id-help" class="form-text text-muted">Enter Steam Id</small>
+        <button class='btn btn-success mt-3' id='conns'>Get Connections</button>
+    </div>
+
+    <div id="run-code" hidden class='mt-3'>
+        <label for="text-streaming">Checking for Connections...</label>
+        <textarea class="form-control btn-dark" id="text-streaming" style='height: 50vh;' disabled></textarea>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            let textarea = $('#text-streaming');
+            let conns = $('#conns');
+            let steam_id = $('#steam-id');
+
+            conns.click(function () {       
+                $.ajax({
+                    url: 'api/v1/func/get/connections',
+                    method: 'get',
+                    data: {
+                        'steam_id': steam_id.val(),
+                    },
+                    success: function (data) {
+                        $('#con').attr('hidden', '');
+                        $('#run-code').removeAttr('hidden');
+                        textarea.html(data['html']);
+                    }
+                });
+
+            })
+        });"""}
 
 
 def team_details():
@@ -1189,7 +1232,7 @@ def vac_bans():
     $(document).ready(function() {
         let textarea = $('#text-streaming');
         let vac_bans = $('#vac-bans');
-        
+
         vac_bans.click(function () {          
             $.ajax({
                 url: 'api/v1/func/get/vac_bans',
@@ -1282,35 +1325,18 @@ def access_list():
     handler.adminHelper.truncate_admin_table()
     handler.adminHelper.add_server_admins()
 
-    response = """
-    <h1>Access strings for all captains</h1>
-    <h3 class='mb-3'>You need to add captains manually to Team List</h3>
-    <label for="access-list"><button class='btn btn-primary' id='copy-access-list'> 
-    <i class='far fa-copy'></i> Click to Copy Access List</button></label>
-    <textarea class="form-control btn-dark" id="access-list" style="height: 70vh;" disabled>"""
     teams = handler.dataHelper.get_teams()
     for team in teams:
-        response += '; {}'.format(teams[team][sC.TEAM_NAME])
         try:
             handler.adminHelper.add_admin(teams[team][sC.CAPTAIN_1])
             handler.adminHelper.add_admin(teams[team][sC.CAPTAIN_2])
         except KeyError:
             pass
-        response += '\n\n'
 
-    response += """</textarea>
-    <script>
-        access_list = $("#access-list");
-        $("#copy-access-list").click(function(){
-            access_list.removeAttr('disabled');
-            access_list.select();
-            document.execCommand('copy');
-            access_list.attr('disabled', '');
-        });
-    </script>
+    response = """<div class="pt-2 pb-1 mb-2" style="border-bottom: 1px solid;">
+    <h1>Access strings for all captains</h1>
+    <h3 class='mb-3'>You need to add captains manually to Team List</h3>
+    </div>
+    <h3>Access for captains updated in database!</h3>
     """
     return {'html': response}
-
-
-def player_stats():
-    return {}
