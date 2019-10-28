@@ -1,20 +1,18 @@
 from django.apps import AppConfig
 
-from Helpers.AdminHelper import AdminHelper
-from Helpers.AuthenticationHelper import AuthenticationHelper
-from Helpers.CloudServerHelper import CloudServerHelper
-from Helpers.CloudStorageHelper import CloudStorageHelper
-from Helpers.ConfigHelper import ConfigHelper
-from Helpers.DataHelper import DataHelper
-from Helpers.FTPHelper import FTPHelper
-from Helpers.FireStoreHelper import FireStoreHelper
-from Helpers.LocalDataHelper import LocalDataHelper
-from Helpers.LogHelper import LogHelper
-from Helpers.MySQLHelper import MySQLHelper
+from helpers.AdminHelper import AdminHelper
+from helpers.AuthenticationHelper import AuthenticationHelper
+from helpers.CloudServerHelper import CloudServerHelper
+from helpers.CloudStorageHelper import CloudStorageHelper
+from helpers.ConfigHelper import ConfigHelper
+from helpers.DataHelper import DataHelper
+from helpers.FTPHelper import FTPHelper
+from helpers.FireStoreHelper import FireStoreHelper
+from helpers.LocalDataHelper import LocalDataHelper
+from helpers.LogHelper import LogHelper
+from helpers.MySQLHelper import MySQLHelper
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
-from firestore_data.PlayerData import PlayerList, SteamList
-from firestore_data.TeamData import TeamList
 
 
 class MyAppConfig(AppConfig):
@@ -30,7 +28,7 @@ class MyAppConfig(AppConfig):
         handler.localDataHelper = LocalDataHelper(handler.config)
         handler.cloudStorageHelper = CloudStorageHelper(handler.config)
         handler.logHelper = LogHelper()
-        handler.authenticationHelper = AuthenticationHelper()
+        handler.authenticationHelper = AuthenticationHelper(handler.config)
         handler.dataHelper = DataHelper()
         handler.adminHelper = AdminHelper(handler.config)
         handler.mySQLHelper = MySQLHelper(handler.config)

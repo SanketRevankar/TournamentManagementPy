@@ -72,7 +72,7 @@ def end_match(request):
     match_id = request.POST['match_id']
     match_server, hltv_server = handler.fireStoreHelper.util.get_servers_by_match_id(match_id)
     match_data = handler.fireStoreHelper.util.get_match_data_by_id(match_id)
-    folder = handler.localDataHelper.get_match_name(match_id, match_data)
+    folder = handler.dataHelper.get_match_name(match_id, match_data)
     handler.localDataHelper.create_dirs_for_match_data(folder)
 
     return {
@@ -85,7 +85,7 @@ def end_match(request):
 def download_match_logs(request):
     match_id = request.POST['match_id']
     match_data = handler.fireStoreHelper.util.get_match_data_by_id(match_id)
-    folder = handler.localDataHelper.get_match_name(match_id, match_data)
+    folder = handler.dataHelper.get_match_name(match_id, match_data)
 
     start_time = match_data['start_time'].replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
     handler.ftpHelper.get_logs_from_ftp(start_time, match_data['match_server'], folder)
@@ -96,7 +96,7 @@ def download_match_logs(request):
 def download_match_demos(request):
     match_id = request.POST['match_id']
     match_data = handler.fireStoreHelper.util.get_match_data_by_id(match_id)
-    folder = handler.localDataHelper.get_match_name(match_id, match_data)
+    folder = handler.dataHelper.get_match_name(match_id, match_data)
 
     start_time = match_data['start_time'].replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
     handler.ftpHelper.get_hltv_demos_from_ftp(start_time, match_data['hltv_server'], folder)
@@ -124,7 +124,7 @@ def parse_match_logs(request):
     match_id = request.POST['match_id']
     match_data = handler.fireStoreHelper.util.get_match_data_by_id(match_id)
 
-    match_name = handler.localDataHelper.get_match_name(match_id, match_data)
+    match_name = handler.dataHelper.get_match_name(match_id, match_data)
     stats = handler.localDataHelper.get_stats_from_logs(match_name)
     handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.MATCHES, match_id, {'stats': stats})
     handler.localDataHelper.save_logs(match_name)

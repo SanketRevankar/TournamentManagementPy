@@ -1,19 +1,24 @@
 import json
 import os
-import re
 from time import sleep
 
 import requests
 
 from TournamentManagementPy import handler
 from constants import StringConstants as sC, PrintStrings as pS, PyConstants as pC, LogStrings as lS
-from firestore_data.PlayerData import PlayerList, SteamList
-from firestore_data.ServerData import ServerList
+from firestore_data.PlayerData import PlayerList
 from firestore_data.TeamData import TeamList
 
 
 class LocalDataHelper:
     def __init__(self, config):
+        """
+        Initialize the Local Data Helper
+        This Class contains Local Data related Functions
+
+        :param config: Config object
+        """
+
         self.temp = config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER]
         self.ip_log_starting_ = config[sC.BUCKET_LOCATIONS][sC.IP_LOG_STARTING]
         self.hltv_starting_ = config[sC.BUCKET_LOCATIONS][sC.HLTV_STARTING]
@@ -26,88 +31,15 @@ class LocalDataHelper:
         print('{} - Initialized'.format(__name__))
 
     @staticmethod
-    def get_server_ip_from_server_id(server_id):
-        """
-        Returns Server Ip of server with given Id
-
-        :param server_id: Id of given server
-        :return: Ip of the server
-        """
-
-        return ServerList[server_id][sC.SERVER_IP]
-
-    @staticmethod
-    def load_match(file, file_split, matches):
-        """
-        Add match with given Id to Dict of matches
-
-        :param file: Folder for the match
-        :param file_split: File split for team names
-        :param matches: Dict of matches
-        """
-
-        # noinspection PyTypeChecker
-        match_id = file_split[0].split(sC.DASH)[1]
-        matches[match_id] = {
-            sC.NAME_: file,
-            sC.TEAM_1_: file_split[1],
-            sC.TEAM_2_: file_split[3],
-        }
-
-        print(pS.LOADED_ + sC.SPACE + matches[match_id][sC.NAME_])
-
-    @staticmethod
-    def get_team_details_from_id(team_id):
-        """
-        Returns Team name, Team tag and Captain id from Team Id
-
-        :param team_id: Id of the team
-        :return: Team name, Team tag and Captain id from Team Id
-        """
-
-        return TeamList[team_id][sC.TEAM_NAME_], TeamList[team_id][sC.TEAM_TAG_], TeamList[team_id][sC.EMAIL]
-
-    @staticmethod
-    def get_details_by_id(steam_id):
-        """
-        Get nick, name of a player by steam id
-
-        :param steam_id: Steam id of the player
-        :return: Nick, Name
-        """
-        from firestore_data.PlayerData import PlayerList
-
-        for player in PlayerList:
-            if PlayerList[player][sC.S_STEAM_ID] == steam_id:
-                return PlayerList[player][sC.TEAM], PlayerList[player][sC.STEAM_NICK], PlayerList[player][sC.NAME]
-
-    @staticmethod
-    def get_team_name_by_id(team_id):
-        """
-        Get original team name from team name
-
-        :param team_id: Team name without special chars
-        :return: Original team name
-        """
-
-        return TeamList[team_id][sC.TEAM_NAME]
-
-    @staticmethod
-    def get_name_nick_team(steam):
-        """
-        Get details of a player
-
-        :param steam: Steam ID of the Player
-        :return: Name, Nick and team of the Player
-        """
-        from firestore_data.PlayerData import PlayerList
-
-        for player in PlayerList:
-            if PlayerList[player][sC.S_STEAM_ID] == steam:
-                return PlayerList[player][sC.NAME_], PlayerList[player][sC.NICK_], PlayerList[player][sC.TEAM]
-
-    @staticmethod
     def count_wins(i, scores):
+        """
+        Count wins
+
+        :param i: Which team to count wins
+        :param scores: Scores Dict Object
+        :return: Wins of team
+        """
+
         print(pS.MATCH_ + sC.COLON, i)
         print(sC.TAB, scores[i][sC.TEAM_1_], sC.VERSUS,
               scores[i][sC.TEAM_2_])
@@ -143,72 +75,16 @@ class LocalDataHelper:
             count_matches[file_split[3]] = 0
         count_matches[file_split[3]] += 1
 
-    @staticmethod
-    def get_steam_id(index, current_team):
-        """
-        Get steam id of a player with given index belonging to a team if exists
-
-        :param index: Index of the player
-        :param current_team: Name of the team
-        :return: Steam ID of the player
-        """
-        from firestore_data.PlayerData import PlayerList
-
-        try:
-            return PlayerList[TeamList[current_team][sC.PLAYERS][index]][sC.S_STEAM_ID]
-        except IndexError:
-            return sC.NO_PLAYER
-
-    def get_match_name(self, match_id, matches):
-        """
-        Generate Folder name and create directories to store Logs,Scores and HLTV
-
-        :param match_id: Id of the match
-        :param matches: Dict of all matches
-        :return: Name of the folder created
-        """
-        team_1 = self.get_clean_team_name(handler.dataHelper.get_team_data_by_id(matches['team_1'])['team_name'])
-        team_2 = self.get_clean_team_name(handler.dataHelper.get_team_data_by_id(matches['team_2'])['team_name'])
-
-        folder = pS.MATCH_VS_.format(match_id, team_1, team_2)
-
-        return folder
-
     def create_dirs_for_match_data(self, folder):
+        """
+        Create Folders in Cloud Storage for storing match data
+
+        :param folder: Folder name
+        """
+
         handler.cloudStorageHelper.create_folder(self.logs_starting_ + folder + '/')
         handler.cloudStorageHelper.create_folder(self.score_starting_ + folder + '/')
         handler.cloudStorageHelper.create_folder(self.hltv_starting_ + folder + '/')
-
-    @staticmethod
-    def create_directory(name):
-        if not os.path.exists(name):
-            os.mkdir(name)
-
-    @staticmethod
-    def get_clean_team_name(team_name):
-        return re.sub(pC.REGEX_TO_REMOVE_UNWANTED_CHARS, sC.EMPTY_STRING, team_name)[:31]
-
-    @staticmethod
-    def get_team(steam_id):
-        """
-        Find team of a given player
-
-        :param steam_id: Steam ID of the player
-        :return: Team name of the player
-        """
-
-        return PlayerList[SteamList[steam_id]]['team']
-
-    @staticmethod
-    def get_nick(steam_id):
-        """
-        Find nick of a given player
-
-        :param steam_id: Steam ID of the player
-        :return: Nick of the player
-        """
-
-        return PlayerList[SteamList[steam_id]]['username']
 
     def get_ip_data(self):
         """
@@ -283,7 +159,7 @@ class LocalDataHelper:
                 with open(starting_ + file + sC.SEPARATOR + file_ip) as f:
                     for line in f:
                         stat = line.strip().split()
-                        team, nick, name = self.get_details_by_id(stat[0])
+                        team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(stat[0])
 
                         if stat[0] not in temp_ids:
                             temp_ids.append(stat[0])
@@ -299,7 +175,8 @@ class LocalDataHelper:
 
         files = {}
         for team in TeamList:
-            file_name = self.ip_log_starting_ + self.get_clean_team_name(TeamList[team][sC.TEAM_NAME]) + sC.TXT
+            file_name = self.ip_log_starting_ + handler.dataHelper.get_clean_team_name(TeamList[team][sC.TEAM_NAME]) +\
+                        sC.TXT
             if os.path.exists(file_name):
                 files[team] = open(file_name, sC.READ_MODE, encoding=pC.ENCODING)
         return files
@@ -323,7 +200,7 @@ class LocalDataHelper:
                             log = line.strip().split(sC.TAB_)
 
                             try:
-                                _, _, _ = self.get_name_nick_team(log[2])
+                                _ = handler.dataHelper.get_team_by_steam_id(log[2])
                             except TypeError:
                                 continue
 
@@ -455,7 +332,7 @@ class LocalDataHelper:
                     max_stat[sC.S_STEAM_ID] = steam_id
 
         try:
-            team_name, nick_name, name_this = self.get_details_by_id(max_stat[sC.S_STEAM_ID])
+            team_name, nick_name, name_this = handler.dataHelper.get_team_nick_name_by_s_id(max_stat[sC.S_STEAM_ID])
         except KeyError:
             return
 
@@ -463,7 +340,7 @@ class LocalDataHelper:
                str(max_stat[sC.S_STEAM_ID]).ljust(25) + sC.PIPE + \
                str(max_stat[stat_current]).center(7) + sC.PIPE + sC.SPACE + \
                name_this.ljust(30) + sC.PIPE + sC.SPACE + \
-               str(count_matches[self.remove_spl_chars(team_name)]) + sC.SPACE + sC.SPACE + \
+               str(count_matches[handler.dataHelper.get_clean_team_name(team_name)]) + sC.SPACE + sC.SPACE + \
                sC.PIPE + sC.SPACE + team_name.ljust(37) + sC.PIPE + \
                sC.SPACE + nick_name.ljust(40) + sC.PIPE
 
@@ -489,7 +366,7 @@ class LocalDataHelper:
                         stat = line.strip().split()
 
                         if stat[0] not in stats:
-                            team, nick, name = self.get_details_by_id(stat[0])
+                            team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(stat[0])
                             stats[stat[0]] = {
                                 sC.KILLS: 0,
                                 sC.DEATHS: 0,
@@ -588,7 +465,7 @@ class LocalDataHelper:
                             log_c = line_c.strip().split(sC.TAB_)
 
                             try:
-                                _, _, _ = self.get_name_nick_team(log_c[2])
+                                _ = handler.dataHelper.get_team_by_steam_id(log_c[2])
                             except TypeError:
                                 continue
 
@@ -659,6 +536,7 @@ class LocalDataHelper:
 
         :param match_name:
         """
+
         file_split = match_name.split()
         team_len = max(file_split[1].__len__(), file_split[3].__len__()) + 2
 
@@ -696,13 +574,13 @@ class LocalDataHelper:
                     steam_id = line_split[1][pos_steam:line_split[1].index(sC.GREATER_THAN, pos_steam)]
 
                     try:
-                        nick = self.get_nick(steam_id)
+                        nick = handler.dataHelper.get_username_by_steam_id(steam_id)
                     except AttributeError:
                         print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
                         nick = steam_id
 
                     try:
-                        team = self.get_team(steam_id)
+                        team = handler.dataHelper.get_team_name_by_steam_id(steam_id)
                     except AttributeError:
                         print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
                         team = steam_id
@@ -726,16 +604,17 @@ class LocalDataHelper:
 
         :param steam_id: Steam id of the player
         """
+
         ip_log_starting_ = self.ip_log_starting_
         files = {}
 
         for team in TeamList:
-            files[team] = open(ip_log_starting_ + self.get_clean_team_name(TeamList[team][sC.TEAM_NAME]) + sC.TXT,
-                               sC.W_PLUS_MODE, encoding=pC.ENCODING)
+            files[team] = open(ip_log_starting_ + handler.dataHelper.get_clean_team_name(TeamList[team][sC.TEAM_NAME])
+                               + sC.TXT, sC.W_PLUS_MODE, encoding=pC.ENCODING)
 
         for steam in steam_id:
             try:
-                name, nick, team = self.get_name_nick_team(steam)
+                team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(steam)
             except TypeError:
                 print('[Exception] ' + lS.STEAM_ID_NOT_FOUND_.format(steam))
                 continue
@@ -787,19 +666,6 @@ class LocalDataHelper:
         print(lS.WITH_FOR_EACH_PLAYER)
         return stats
 
-    @staticmethod
-    def remove_spl_chars(team_name):
-        """
-        Remove special characters from team name
-
-        :param team_name: Name of the team
-        :return: Team name with removed special characters
-        """
-
-        for team_c in TeamList:
-            if TeamList[team_c][sC.TEAM_NAME_OG] == team_name:
-                return TeamList[team_c][sC.TEAM_NAME_]
-
     def average_stats(self, count_matches, stats):
         """
         Average all player stats by number of matches played
@@ -813,10 +679,12 @@ class LocalDataHelper:
                 if stat == sC.NAME_SMALL or stat == sC.NICK_SMALL:
                     continue
 
-                team, _, _ = self.get_details_by_id(steam)
-                stats[steam][stat] = round(stats[steam][stat] / count_matches[self.remove_spl_chars(team)], 1)
+                team = handler.dataHelper.get_team_name_by_steam_id(steam)
+                clean_team_name = handler.dataHelper.get_clean_team_name(team)
+                stats[steam][stat] = round(stats[steam][stat] / count_matches[clean_team_name], 1)
 
-    def print_ip_matches(self, ips):
+    @staticmethod
+    def print_ip_matches(ips):
         """
         Print Ip which match with some player
 
@@ -830,7 +698,7 @@ class LocalDataHelper:
                 count += 1
 
                 for steam in ips[ip]:
-                    name, nick, team = self.get_name_nick_team(steam)
+                    team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(steam)
                     print(sC.TAB + sC.STAR + team[:pC.TEAM_PRINT_PADDING].ljust(pC.TEAM_PRINT_PADDING),
                           name[:pC.NAME_PRINT_PADDING].ljust(pC.NAME_PRINT_PADDING),
                           nick[:pC.NICK_PRINT_PADDING].ljust(pC.NICK_PRINT_PADDING),

@@ -1188,10 +1188,11 @@ def team_details():
     teams = handler.dataHelper.get_teams()
     players = handler.dataHelper.get_players()
     for team in teams:
-        team_name = re.sub(pC.REGEX_TO_REMOVE_UNWANTED_CHARS, sC.EMPTY_STRING,
-                           handler.localDataHelper.get_team_name_by_id(team))[:31]
+        team_name = handler.dataHelper.get_team_name_by_steam_id(team)
+        team_name = re.sub(pC.REGEX_TO_REMOVE_UNWANTED_CHARS, sC.EMPTY_STRING, team_name)[:31]
         player_dict = {}
         count = 1
+
         for player in teams[team][sC.PLAYERS]:
             player_dict[count] = {
                 "Steam ID": players[player][sC.S_STEAM_ID],
@@ -1307,7 +1308,7 @@ def steam_ids_db():
     for team in handler.dataHelper.get_teams():
         query = sC.INSERT_INTO_TEAMS_VALUES_.format(team)
         for i in range(32):
-            query += sC.INSERT_VALUE_.format(handler.localDataHelper.get_steam_id(i, team))
+            query += sC.INSERT_VALUE_.format(handler.dataHelper.get_steam_id(i, team))
         query = query[:-2] + sC.CLOSE_CIRCULAR_BRACE_
 
         mysql_.execute_query(query)

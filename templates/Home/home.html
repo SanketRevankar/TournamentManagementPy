@@ -134,7 +134,6 @@ Footer
 
             $('[id^=accept-]').click(function() {
                 var id = $(this).attr('id');
-                console.log(id);
                 var query = id.replace("accept-", "");
                 let show_message = $('#show_message_'+query);
                 let ignore_id = $('#ignore-'+query);

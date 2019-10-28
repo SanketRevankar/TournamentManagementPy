@@ -104,6 +104,8 @@ STOPPED = "stopped"
 HLTV = "HLTV"
 START_TIME = "start_time"
 END_TIME = "end_time"
+SERVER_STATUS_STOP = 'stop'
+SERVER_STATUS_START = 'start'
 
 """ --------------------------------------------------------------------------------------------------------------------
     Team constants
@@ -297,3 +299,6 @@ ADMIN_IDS = 'ADMIN_IDS'
 DISPLAY_NAME = 'DISPLAY_NAME'
 MODE = 'MODE'
 ADMIN_TABLE = 'ADMIN_TABLE'
+CLOUD_FUNCTIONS_URLS = 'Cloud Function URLS'
+HLTV_DEMOS_FUNC = 'HLTV_DEMOS_FUNC'
+FTP_LOGS_FUNC = 'FTP_LOGS_FUNC'

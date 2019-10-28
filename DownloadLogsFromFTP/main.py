@@ -9,7 +9,7 @@ from google.cloud.storage import Blob
 
 def get_logs_from_ftp(request):
     """
-    Get log data from instance
+    Download Match Logs from FTP Server and Save them to Cloud Storage
 
     :param request: Http Request Object
     """
@@ -53,7 +53,12 @@ def get_logs_from_ftp(request):
 
 def get_ftp_connection(ip, username, password):
     """
-    Get a connection for server with server Id from ServerList
+    Get a connection for server using IP, Username and Password
+
+    :param ip: Server IP for connecting to FTP
+    :param username: Username of FTP Server
+    :param password: Password of FTP Server
+    :return: ftp object
     """
 
     _old_makepasv = FTP.makepasv
@@ -61,6 +66,7 @@ def get_ftp_connection(ip, username, password):
     def _new_makepasv(self_):
         """
         To use passive mode for FTP
+
         :param self_: current reference
         :return: host and port
         """
@@ -78,17 +84,17 @@ def get_ftp_connection(ip, username, password):
     return ftp
 
 
-def download(ftp, src, des):
+def download(ftp, source, destination):
     """
     Download file from FTP to local
 
     :param ftp: FTP connection var
-    :param src: Source path - Cloud
-    :param des: Destination path - local
+    :param source: Source path - FTP location
+    :param destination: Destination path - Temp Storage location
     """
 
-    f = open(des, 'wb')
-    ftp.retrbinary("RETR " + src, f.write)
+    f = open(destination, 'wb')
+    ftp.retrbinary("RETR " + source, f.write)
 
 
 def upload_file(file_name, file_path):
@@ -110,6 +116,12 @@ def upload_file(file_name, file_path):
 
 
 def log_it_storage(location, file_type):
+    """
+    Log for storage finalize
+
+    :param location: Path of the saved file
+    :param file_type: Type of object uploaded [File or Dir]
+    """
     log_ = {
         'location': location,
         'type': 'storage',

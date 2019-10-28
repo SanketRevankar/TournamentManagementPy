@@ -21,6 +21,7 @@ from TournamentManagementPy import views
 urlpatterns = [
     #    path('admin/', admin.site.urls),
     path('logout', views.logout, name='logout'),
+    path('me', views.me, name='me'),
     path('', views.home, name='nome'),
     path('Registration/', include('Registration.urls')),
     path('TeamFormation/', include('TeamFormation.urls')),

@@ -7,13 +7,19 @@ from constants import StringConstants as sC, PrintStrings as pS
 
 class CloudServerUtil:
     def __init__(self, config):
-        self.config = config
-        self.ComputeEngine = get_driver(Provider.GCE)
-        self.gc = self.ComputeEngine('', '', project=self.config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
+        """
+        Initiate Cloud Server Util.
+        This Class contains utilities for helping with Cloud Server operations
 
-        # self.gc = self.ComputeEngine(self.config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_EMAIL],
-        #                              self.config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_KEY_PATH],
-        #                              project=self.config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
+        :param config: Config object
+        """
+
+        self.ComputeEngine = get_driver(Provider.GCE)
+        # self.gc = self.ComputeEngine('', '', project=config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
+
+        self.gc = self.ComputeEngine(config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_EMAIL],
+                                     config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_KEY_PATH],
+                                     project=config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
 
         print('{} - Initialized'.format(__name__))
 
@@ -25,6 +31,7 @@ class CloudServerUtil:
         :param node: Node Object
         :return: Status of the server
         """
+
         return node.state
 
     def start(self, node):
@@ -34,7 +41,8 @@ class CloudServerUtil:
         :param node: Node Object
         :return: Server start success status
         """
-        handler.logHelper.log_it_server(node.name, 'start')
+
+        handler.logHelper.log_it_server(node.name, sC.SERVER_STATUS_START)
         return self.gc.ex_start_node(node) if self.status(node) == sC.STOPPED else pS.ALREADY_RUNNING
 
     def stop(self, node):
@@ -44,7 +52,8 @@ class CloudServerUtil:
         :param node: Node Object
         :return: Server stop success status
         """
-        handler.logHelper.log_it_server(node.name, 'stop')
+
+        handler.logHelper.log_it_server(node.name, sC.SERVER_STATUS_STOP)
         return self.gc.ex_stop_node(node) if self.status(node) == sC.RUNNING else pS.ALREADY_STOPPED
 
     def ip(self, node):
@@ -54,6 +63,7 @@ class CloudServerUtil:
         :param node: Node Object
         :return: Server IP
         """
+
         return node.public_ips[0] if self.status(node) == sC.RUNNING else pS.SERVER_TO_GET_IP
 
     def get_node(self, node_name):
@@ -64,4 +74,5 @@ class CloudServerUtil:
         :param node_name: Name of the node
         :return: node object
         """
+
         return self.gc.ex_get_node(node_name)

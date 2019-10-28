@@ -6,10 +6,24 @@ from firestore_data.PlayerData import PlayerList
 
 
 class AuthenticationHelper:
-    def __init__(self):
-        self.mode9 = handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9'
+    def __init__(self, config):
+        """
+        Initiate Authentication Helper
+        This Class contains functions for helping with Authentication
+
+        :param config: Config object
+        """
+
+        self.mode9 = config[sC.PROJECT_DETAILS][sC.MODE] == '9'
+        self.admins = eval(handler.config[sC.PROJECT_DETAILS][sC.ADMIN_IDS])
 
     def validate_login(self, request):
+        """
+        Validate Login for given Request, checking Http session object for id
+
+        :param request: Http Request Object
+        """
+
         if 'id' not in request.session:
             raise PermissionDenied('You need to login')
 
@@ -18,17 +32,37 @@ class AuthenticationHelper:
                 raise PermissionDenied('Player is not in a team!')
 
     def validate_admin(self, request):
+        """
+        Validate Admin Login for given Request, checking Http session id in Admin ids in config
+
+        :param request: Http Request Object
+        """
+
         self.validate_login(request)
 
-        if request.session['id'] not in eval(handler.config[sC.PROJECT_DETAILS][sC.ADMIN_IDS]):
+        if request.session['id'] not in self.admins:
             handler.logHelper.log_it_visit(request, __name__ + '.validate_admin', authorized=False)
             raise PermissionDenied('You need to be an admin to access this page.')
 
-    def validate_captain(self, player_id, request, target_id):
+    @staticmethod
+    def validate_captain(player_id, request, target_id):
+        """
+        Check if Id of the player is same as Id of the Captain
+
+        :param player_id: Id of the Player
+        :param request: Http Request Object
+        :param target_id: Id of the Target Player
+        """
+
         if player_id != handler.dataHelper.get_team_id_by_player_id(player_id):
             handler.logHelper.log_it_api(request, __name__ + '.validate_captain', target=target_id, authorized=False)
             raise PermissionDenied('Only captains can modify their team.')
 
     def validate_mode_9(self):
+        """
+        Disable some apps if Mode is 9
+
+        """
+
         if self.mode9:
             raise PermissionDenied('You cannot access this now!')

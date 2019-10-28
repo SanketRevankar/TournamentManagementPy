@@ -1,20 +1,26 @@
 from django.http import HttpResponseServerError
 
-from Helpers.Util.CloudServerUtil import CloudServerUtil
+from helpers.Util.CloudServerUtil import CloudServerUtil
 from constants import StringConstants as sC
 from firestore_data.ServerData import ServerList
 
 
 class CloudServerHelper:
     def __init__(self, config):
+        """
+        Initiate Cloud Server Helper
+        This Class contains Cloud Server Functions
+
+        :param config: Config object
+        """
+
         self.util = CloudServerUtil(config)
 
         print('{} - Initialized'.format(__name__))
 
     def stop_server(self, server_id):
         """
-        Used to stop a Compute Engine Instance after getting confirmation from user. If already stopped no action will
-        be taken.
+        Used to stop a Compute Engine Instance. If already stopped no action will be taken.
 
         :param server_id: Id of the server
         """
