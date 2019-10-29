@@ -1188,7 +1188,7 @@ def team_details():
     teams = handler.dataHelper.get_teams()
     players = handler.dataHelper.get_players()
     for team in teams:
-        team_name = handler.dataHelper.get_team_name_by_steam_id(team)
+        team_name, _ = handler.dataHelper.team_name(team)
         team_name = re.sub(pC.REGEX_TO_REMOVE_UNWANTED_CHARS, sC.EMPTY_STRING, team_name)[:31]
         player_dict = {}
         count = 1
@@ -1257,16 +1257,17 @@ def team_list():
     return {'html':
                 """<div style="text-align: center; margin-top: 10vh; background: rgb(0,0,0,.25); padding: 4vh;">
         <h1>Team List updated successfully</h1>
-    </div>""", 'data': TeamList}
+    </div>"""}
 
 
 def player_list():
     PlayerList.clear()
+    SteamList.clear()
     handler.fireStoreHelper.util.load_player_data()
 
     return {'html': """<div style="text-align: center; margin-top: 10vh; background: rgb(0,0,0,.25); padding: 4vh;">
     <h1>Player List updated successfully</h1>
-    </div>""", 'data': SteamList}
+    </div>"""}
 
 
 def server_list():
@@ -1276,7 +1277,7 @@ def server_list():
     return {'html':
                 """<div style="text-align: center; margin-top: 10vh; background: rgb(0,0,0,.25); padding: 4vh;">
         <h1>Server List updated successfully</h1>
-    </div>""", 'data': ServerList}
+    </div>"""}
 
 
 def match_list():
@@ -1286,7 +1287,7 @@ def match_list():
     return {'html':
                 """<div style="text-align: center; margin-top: 10vh; background: rgb(0,0,0,.25); padding: 4vh;">
         <h1>Server List updated successfully</h1>
-    </div>""", 'data': MatchList}
+    </div>"""}
 
 
 def steam_ids_db():

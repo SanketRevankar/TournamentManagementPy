@@ -17,7 +17,6 @@ def logout(request):
 
 
 def me(request):
-    print(dict(request.session.items()))
     handler.authenticationHelper.validate_login(request)
     template = loader.get_template('me.html')
 

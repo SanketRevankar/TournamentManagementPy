@@ -70,14 +70,16 @@ def matches_started(_):
 
 def vac_bans(_):
     create_steam_id64_list()
-    ac = open(handler.config[sC.FILE_LOCATIONS][sC.STEAM_ID_LIST_TXT], sC.READ_PLUS_MODE)
+    ac = open(handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER] +
+              handler.config[sC.FILE_LOCATIONS][sC.STEAM_ID_LIST_TXT], sC.READ_PLUS_MODE)
     resp = acc_check_vac(ac)
 
     return {'html': resp}
 
 
 def create_steam_id64_list():
-    ac = open(handler.config[sC.FILE_LOCATIONS][sC.STEAM_ID_LIST_TXT], sC.WRITE_MODE)
+    ac = open(handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER] +
+              handler.config[sC.FILE_LOCATIONS][sC.STEAM_ID_LIST_TXT], sC.WRITE_MODE)
 
     players = handler.dataHelper.get_players()
     for player in players:
@@ -99,7 +101,8 @@ def acc_check_vac(ac):
         """
         res = ''
 
-        file_base = open(handler.config[sC.FILE_LOCATIONS][sC.BANNED_USERS_FILE], sC.READ_PLUS_MODE)
+        file_base = open(handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER] +
+                         handler.config[sC.FILE_LOCATIONS][sC.BANNED_USERS_FILE], sC.READ_PLUS_MODE)
         data = json.load(file_base)
         file_base.close()
 

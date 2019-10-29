@@ -26,7 +26,7 @@ class LocalDataHelper:
         self.logs_starting_ = config[sC.BUCKET_LOCATIONS][sC.LOGS_STARTING]
         self.steam_api_key = config[sC.PROJECT_DETAILS][sC.STEAM_API_KEY]
         self.steam_user_api_ = config[sC.PROJECT_DETAILS][sC.STEAM_USER_API]
-        self.banned_users_file_ = config[sC.FILE_LOCATIONS][sC.BANNED_USERS_FILE]
+        self.banned_users_file_ = self.temp + config[sC.FILE_LOCATIONS][sC.BANNED_USERS_FILE]
 
         print('{} - Initialized'.format(__name__))
 
