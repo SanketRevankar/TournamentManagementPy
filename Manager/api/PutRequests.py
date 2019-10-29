@@ -14,12 +14,17 @@ def create_match(request):
     match_id = request.POST['match_id']
     date_time = request.POST['datetime']
 
+    handler.logHelper.log_it_api(request, __name__ + '.create_match', target=match_id)
+
     return {'match_id': handler.fireStoreHelper.create_match(match_id, team_1, team_2, match_server, hltv_server,
                                                              request.session['id'], date_time)}
 
 
 def start_match(request):
     match_id = request.POST['match_id']
+
+    handler.logHelper.log_it_api(request, __name__ + '.start_match', target=match_id)
+
     match_server, hltv_server = handler.fireStoreHelper.util.get_servers_by_match_id(match_id)
 
     return {
@@ -74,6 +79,8 @@ def end_match(request):
     match_data = handler.fireStoreHelper.util.get_match_data_by_id(match_id)
     folder = handler.dataHelper.get_match_name(match_id, match_data)
     handler.localDataHelper.create_dirs_for_match_data(folder)
+
+    handler.logHelper.log_it_api(request, __name__ + '.end_match', target=match_id)
 
     return {
         'match_server': ServerList[match_server][sC.SERVER_NAME],

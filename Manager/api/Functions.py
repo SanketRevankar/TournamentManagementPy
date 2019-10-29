@@ -6,7 +6,7 @@ import pandas as pd
 from TournamentManagementPy import handler
 from constants import StringConstants as sC, PyConstants as pC
 from firestore_data.MatchData import MatchList
-from firestore_data.PlayerData import PlayerList
+from firestore_data.PlayerData import PlayerList, SteamList
 from firestore_data.ServerData import ServerList
 from firestore_data.TeamData import TeamList
 
@@ -1266,7 +1266,7 @@ def player_list():
 
     return {'html': """<div style="text-align: center; margin-top: 10vh; background: rgb(0,0,0,.25); padding: 4vh;">
     <h1>Player List updated successfully</h1>
-    </div>""", 'data': PlayerList}
+    </div>""", 'data': SteamList}
 
 
 def server_list():

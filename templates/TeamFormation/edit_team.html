@@ -22,29 +22,29 @@ Header
 ============================-->
 {% include "header.html" %}
 
-<div class="box-gradient wide">
+<div class="card bg-dark w-50 p-3 pr-5 pl-5">
     <form action="#" method="POST" onsubmit="return photoValidate()">
         {% csrf_token %}
         <div class="form-head" style="display: table; margin: 3vw auto;">
             <a id='my-headings'>Team Details</a>
         </div>
-        <div class="form-tab">
+        <div class="form-group">
             <label for="usr" class="form-tab-label">Team Name: &nbsp;&nbsp;</label>
-            <input type="text" class="button_form" placeholder="Enter Full Team Name Here" id="usr" name="usr"
+            <input type="text" class="form-control" placeholder="Enter Full Team Name Here" id="usr" name="usr"
                    required value="{{ team_name }}">
         </div>
-        <div class="form-tab">
+        <div class="form-group">
             <label for="tag" class="form-tab-label">Team Tag: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" class="button_form" placeholder="Enter Tag of Your Team Here" id="tag" name="tag"
+            <input type="text" class="form-control" placeholder="Enter Tag of Your Team Here" id="tag" name="tag"
                    required value="{{ team_tag }}">
         </div>
-        <div class="form-tab">
+        <div class="form-group">
             <label for="logo_url" class="form-tab-label">Logo URL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" class="button_form" placeholder="Paste URL of High Quality Image of your Team's Logo"
+            <input type="text" class="form-control" placeholder="Paste URL of High Quality Image of your Team's Logo"
                    name="logo_url" id="logo_url" required value="{{ team_logo_url }}">
         </div>
         <div style="text-align: center;">
-            <div class="form-tab">
+            <div class="form-group">
                 <img id="logo_show" style="width:0; height: 0; visibility:hidden;" alt="" src="">
             </div>
             <input type="submit" value="Confirm" class="btn btn-success" style="width: 20%;margin-right: 2%;">

@@ -16,7 +16,7 @@ class DataHelper:
         """
 
         self.MODE = handler.config[sC.PROJECT_DETAILS][sC.MODE]
-        self.mode_9 = True if self.MODE == 9 else False
+        self.mode_9 = self.MODE == '9'
 
     def get_player_steam_id(self, player_id):
         """
@@ -84,8 +84,8 @@ class DataHelper:
         :return: Captain's and V. Captains Details as a Dict Object
         """
 
-        captain_data = self.get_player_data_by_id(team_id)
         team_data = self.get_team_data_by_id(team_id)
+        captain_data = self.get_player_data_by_id(team_data['captain'])
         vc_data_ = {}
         if 'vice_captain' in team_data:
             vc_data = self.get_player_data_by_id(team_data['vice_captain'])

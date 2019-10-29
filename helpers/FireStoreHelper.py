@@ -85,10 +85,11 @@ class FireStoreHelper:
 
         self.util.update_document(self.PLAYERS, doc_id, steam_login_data)
 
-    def create_team(self, team_name, team_tag, team_logo_url, player_id):
+    def create_team(self, team_id, team_name, team_tag, team_logo_url, player_id):
         """
         Create a new Team after validating no Team of same Name and Tag exists
 
+        :param team_id: Id of the team
         :param team_name: Name of the Team
         :param team_tag: Tag of the Team
         :param team_logo_url: Logo of the Team
@@ -97,7 +98,10 @@ class FireStoreHelper:
         """
 
         collection_ref = self.util.get_collection(self.TEAMS)
-        status_name, status_tag = False, False
+        status_name, status_tag, status_id = False, False, False
+
+        if self.util.check_team_with_id_exists(team_id):
+            status_id = True
 
         docs = collection_ref.where(u'team_name', u'==', team_name).stream()
         for doc in docs:
@@ -110,17 +114,17 @@ class FireStoreHelper:
                 status_tag = True
 
         if status_name or status_tag:
-            return status_name, status_tag
+            return status_name, status_tag, status_id
 
-        doc_ref = collection_ref.document(document_id=player_id)
+        doc_ref = collection_ref.document(document_id=team_id)
         doc_ref.create({'team_name': team_name, 'team_tag': team_tag, 'team_logo_url': team_logo_url,
                         'players': [player_id], 'join_requests': [], 'captain': player_id})
 
         join_team = self.util.clear_join_team_for_player(player_id)
         self.util.remove_player_id_from_all_teams_requests(join_team, player_id)
-        self.util.get_player_ref_by_player_id(player_id).update({'team': player_id})
+        self.util.get_player_ref_by_player_id(player_id).update({'team': team_id})
 
-        return False, False
+        return False, False, False
 
     def update_team(self, team_name, team_tag, team_logo_url, team_id):
         """

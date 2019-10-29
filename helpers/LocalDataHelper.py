@@ -527,7 +527,6 @@ class LocalDataHelper:
 
                 stats[team][stat[0]][stat[1]] += 1
 
-        print(stats)
         return stats
 
     def save_logs(self, match_name):

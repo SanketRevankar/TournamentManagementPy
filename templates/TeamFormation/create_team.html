@@ -24,31 +24,40 @@ Header
 ============================-->
 {% include "header.html" %}
 
-<div class="box-gradient wide">
-    <form action="#" method="POST" onsubmit="return photoValidate()">
+<div class="card bg-dark w-50 p-3 pr-5 pl-5">
+    <form action="#" method="POST" onsubmit="return validate()">
         {% csrf_token %}
-        <div class="form-head" style="display: table; margin: 3vw auto; text-align: center;">
+        <div class="form-head" style="display: table; margin: 1vw auto; text-align: center;">
             <a id='my-headings'>Team Details</a>
         </div>
-        <div class="form-tab">
-            <label for="usr" class="form-tab-label">Team Name: &nbsp;&nbsp;</label>
-            <input type="text" class="button_form" placeholder="Enter Full Team Name Here" id="usr" name="usr" required
-                   value="{{ team_name }}">
-            <p style="color: red;">{{ Team_name_exists }}</p>
+        <div class="form-group">
+            <label for="id_" class="form-group-label">Team Id:</label>
+            <input type="text" class="form-control" placeholder="Enter a ID Here" id="id_" name="id_" required
+                   value="{{ team_id }}" autocomplete="off">
+            <small>Your team's URL would be: {{ site_url }}/Teams/</small><small id="small_id_"></small><br>
+            <small class="invalid-feedback" style="color: red;">Should only contain A-Z, a-z and _</small>
+            <small style="color: red;">{% if Team_id_exists %}Team with this id already exists!{% endif %}</small>
         </div>
-        <div class="form-tab">
-            <label for="tag" class="form-tab-label">Team Tag: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" class="button_form" placeholder="Enter Tag of Your Team Here" id="tag" name="tag"
-                   required value="{{ team_tag }}">
-            <p style="color: red;">{{ Team_tag_exists }}</p>
+        <div class="form-group">
+            <label for="usr" class="form-group-label">Team Name:</label>
+            <input type="text" class="form-control" placeholder="Enter Full Team Name Here" id="usr" name="usr" required
+                   value="{{ team_name }}" autocomplete="off">
+            <small style="color: red;">{% if Team_name_exists %}Team with this name already exists!{% endif %}</small>
         </div>
-        <div class="form-tab">
-            <label for="logo_url" class="form-tab-label">Logo URL: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" class="button_form" placeholder="Paste URL of High Quality Image of your Team's Logo"
+        <div class="form-group">
+            <label for="tag" class="form-group-label">Team Tag:</label>
+            <input type="text" class="form-control" placeholder="Enter Tag of Your Team Here" id="tag" name="tag"
+                   required value="{{ team_tag }}" autocomplete="off">
+            <p style="color: red;">{% if Team_tag_exists %}Team with this tag already exists!{% endif %}</p>
+        </div>
+        <div class="form-group">
+            <label for="logo_url" class="form-group-label">Logo URL:</label>
+            <input type="text" class="form-control" placeholder="Paste URL of High Quality Image of your Team's Logo"
                    name="logo_url" id="logo_url" required value="{{ logo_url }}">
+            <small class="invalid-feedback" style="color: red;">Please validate the URL</small>
         </div>
         <div style="text-align: center;">
-            <div class="form-tab">
+            <div class="form-group">
                 <img id="logo_show" style="width:0; height: 0; visibility:hidden;" alt="" src="">
             </div>
             <input type="submit" value="Create Team" class="btn btn-success" style="width: 20%; margin-right: 2%;">
@@ -72,47 +81,57 @@ Footer
 </body>
 
 <script>
-    let isPhoto = false;
+    let logoUrl = $('#logo_url');
+    let logoShow = $("#logo_show");
+    let id = $('#id_');
 
     function testImage(url, timeoutT) {
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve, _) {
             const timeout = timeoutT || 5000;
             let timer, img = new Image();
             img.onerror = img.onabort = function () {
                 clearTimeout(timer);
-                $("#logo_show").attr("style", "width:0vh; height: 0vh;visibility: hidden;");
-                isPhoto = false;
+                logoShow.attr("style", "width:0vh; height: 0vh;visibility: hidden;");
+                logoUrl.removeClass('is-valid').removeClass('is-invalid');
+                logoUrl.addClass('is-invalid');
             };
             img.onload = function () {
                 clearTimeout(timer);
                 resolve("success");
-                isPhoto = true;
-                $("#logo_show").attr("style", "width:30vh; height: 30vh;visibility: inherit;").attr("src", url);
+                logoUrl.removeClass('is-valid').removeClass('is-invalid');
+                logoUrl.addClass('is-valid');
+                logoShow.attr("style", "width:30vh; height: 30vh;visibility: inherit;").attr("src", url);
             };
             timer = setTimeout(function () {
-                $("#logo_show").attr("style", "width:0vh; height: 0vh; visibility: hidden;");
+                logoShow.attr("style", "width:0vh; height: 0vh; visibility: hidden;");
             }, timeout);
             img.src = url;
         });
     }
 
-    $(document).ready(function () {
-        $('#logo_url').keyup(function () {
-            const search = $(this).val();
-            if (search !== '') {
-                testImage(search, 300);
-            } else {
-                $("#logo_show").attr("style", "width:0vh; height: 0vh;visibility: hidden;");
-            }
-        });
+    logoUrl.keyup(function () {
+        const search = $(this).val();
+        if (search.match('^http.*$')) {
+            testImage(search, 300);
+        } else {
+            logoUrl.removeClass('is-valid').removeClass('is-invalid');
+            logoUrl.addClass('is-invalid');
+            logoShow.attr("style", "width:0vh; height: 0vh;visibility: hidden;");
+        }
     });
 
-    function photoValidate() {
-        if (isPhoto)
-            return true;
-        else {
-            window.alert('Enter Valid Image URL to continue.');
-            return false;
-        }
+    function validate() {
+        return logoUrl.hasClass('is-valid') && id.hasClass('is-valid');
     }
+
+    id.on('input', function() {
+        const team_id = $(this).val();
+        $('#small_id_').html(team_id);
+        $(this).removeClass('is-valid').removeClass('is-invalid');
+        if (team_id.match('^[A-Za-z_]+$')) {
+            $(this).addClass('is-valid');
+        } else {
+            $(this).addClass('is-invalid');
+        }
+    });
 </script>

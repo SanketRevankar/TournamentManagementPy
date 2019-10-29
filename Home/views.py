@@ -59,7 +59,7 @@ def welcome(request):
             'max_players': max_players,
         }
 
-        if team_id == id_:
+        if team_data['captain'] == id_ or team_data.get('vice_captain') == id_:
             players = team_data['join_requests']
             join_requests = players.__len__() if players else 0
             context['join_requests'] = join_requests

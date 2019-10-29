@@ -54,7 +54,7 @@ Header
                     <a target="_blank" href="https://steamcommunity.com/profiles/{{ steam_url_id }}"> {{ username }}</a>
                 </td>
                 <td>
-                    {% if id != player_id %}
+                    {% if id != player_id and player_id != captain %}
                         <a href="#" class="btn btn-danger float-right ml-2" role="button"
                            data-toggle="confirmation" id="kick-{{ player_id }}"
                            data-btn-ok-label="Kick!" data-btn-ok-class="btn-danger"

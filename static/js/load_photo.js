@@ -1,7 +1,7 @@
 var isPhoto = false;
 
 function testImage(url, timeoutT) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, _) {
         var timeout = timeoutT || 5000;
         var timer, img = new Image();
         img.onerror = img.onabort = function () {

@@ -18,30 +18,34 @@ def create_team(request):
     context = {
         'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
         'Team_name_exists': '',
+        'site_url': request.build_absolute_uri('/')[:-1].strip("/"),
     }
 
     if 'usr' in request.POST:
+        team_id = request.POST['id_']
         team_name = request.POST['usr']
         team_tag = request.POST['tag']
         team_logo_url = request.POST['logo_url']
 
         player_id = request.session['id']
-        status_name, status_tag = handler.fireStoreHelper.create_team(team_name, team_tag, team_logo_url, player_id)
-        if status_tag is True and status_name is True:
-            context['logo_url'] = team_logo_url
-            context['Team_name_exists'] = 'Team with this name already exists!'
-            context['Team_tag_exists'] = 'Team with this tag already exists!'
-        elif status_name is True:
-            context['logo_url'] = team_logo_url
-            context['team_tag'] = team_tag
-            context['Team_name_exists'] = 'Team with this name already exists!'
-        elif status_tag is True:
-            context['logo_url'] = team_logo_url
-            context['team_name'] = team_name
-            context['Team_tag_exists'] = 'Team with this tag already exists!'
-        else:
+        status_name, status_tag, status_id = handler.fireStoreHelper.create_team(team_id, team_name, team_tag,
+                                                                                 team_logo_url, player_id)
+
+        if not status_name and not status_tag and not status_id:
             handler.adminHelper.add_admin(player_id)
             return redirect('/Home')
+
+        context['team_id'] = team_id
+        context['logo_url'] = team_logo_url
+        context['team_name'] = team_name
+        context['team_tag'] = team_tag
+
+        if status_name is True:
+            context['Team_name_exists'] = True
+        if status_tag is True:
+            context['Team_tag_exists'] = True
+        if status_id is True:
+            context['Team_id_exists'] = True
 
     return HttpResponse(template.render(context, request))
 
@@ -91,8 +95,7 @@ def edit_team(request):
         team_tag = request.POST['tag']
         team_logo_url = request.POST['logo_url']
 
-        player_id = request.session['id']
-        handler.fireStoreHelper.update_team(team_name, team_tag, team_logo_url, player_id)
+        handler.fireStoreHelper.update_team(team_name, team_tag, team_logo_url, team_id)
         return redirect('/Home')
 
     return HttpResponse(template.render(context, request))
