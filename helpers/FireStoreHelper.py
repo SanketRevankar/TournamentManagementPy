@@ -42,7 +42,7 @@ class FireStoreHelper:
         collection_ref = self.util.get_collection(self.PLAYERS)
         doc_ref = collection_ref.document(fb_id)
 
-        if doc_ref.get().exists():
+        if doc_ref.get().exists:
             doc_data = doc_ref.get().to_dict()
 
             if 'steam_id' in doc_data:
