@@ -42,19 +42,22 @@ class FireStoreHelper:
         collection_ref = self.util.get_collection(self.PLAYERS)
         doc_ref = collection_ref.document(fb_id)
 
-        doc_data = doc_ref.to_dict()
-        if 'steam_id' in doc_data:
-            ips = doc_data['ips']
-            if ip not in ips:
-                ips[ip] = {'city': city, 'location': location}
-            doc_ref.update({'ips': ips})
-            return fb_id, True, {'steam_id': doc_data['steam_id'], 'steam_url_id': doc_data['steam_url_id'],
-                                  'avatar_url': doc_data['avatar_url'], 'username': doc_data['username']}
+        if doc_ref.get().exists():
+            doc_data = doc_ref.get().to_dict()
+
+            if 'steam_id' in doc_data:
+                ips = doc_data['ips']
+                if ip not in ips:
+                    ips[ip] = {'city': city, 'location': location}
+                doc_ref.update({'ips': ips})
+                return fb_id, True, {'steam_id': doc_data['steam_id'], 'steam_url_id': doc_data['steam_url_id'],
+                                      'avatar_url': doc_data['avatar_url'], 'username': doc_data['username']}
+            else:
+                return fb_id, False, {}
         else:
             doc_ref.create({'name': name, 'email': email, 'fb_id': fb_id, 'facebook_login': login_time, 'join_team': [],
                             'ips': [ip]})
 
-            return fb_id, False, {}
 
     def steam_login(self, steam_url, steam_id, username, avatar_url, steam_account_created, doc_id, login_time):
         """

@@ -37,7 +37,6 @@ def steam_login(request):
     fb_id = request.POST["id"]
     request.session["name"] = name
     request.session["fb_id"] = fb_id
-    request.session["join_team"] = []
 
     ip = request.META.get('HTTP_X_APPENGINE_USER_IP') if 'HTTP_X_APPENGINE_USER_IP' in request.META \
         else request.META.get('HTTP_X_FORWARDED_FOR')
