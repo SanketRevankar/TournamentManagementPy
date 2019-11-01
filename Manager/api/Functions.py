@@ -1247,7 +1247,9 @@ def vac_bans():
             });
 
         })
-    });"""}
+    });
+</script>
+"""}
 
 
 def team_list():

@@ -46,7 +46,7 @@ Header
         {% for i, fb_id, name, avatar_url, steam_url_id, username, player_id in players %}
             <tr>
                 <td>
-                    <img src="https://graph.facebook.com/{{ fb_id }}/picture?type=large" height="30vh" width="30vh">
+                    <img src="https://graph.facebook.com/{{ fb_id }}/picture?type=large" height="30vh" width="30vh" alt="">
                     <a target="_blank" href="https://www.facebook.com/app_scoped_user_id/{{ fb_id }}"> {{ name }}</a>
                 </td>
                 <td>
@@ -95,7 +95,7 @@ Header
     {% if players_count == 1 %}
         <div style="text-align: center;"><h3>No Player other than you Found!</h3></div>
         <!--suppress HtmlUnknownTarget -->
-        <a href="delete" class="btn btn-danger" role="button" style="font-weight: 700; font-family: Montserrat, sans-serif; width: fit-content; margin: 5vh auto; margin-bottom:0; display: block;">Delete Team</a>
+        <a href="delete" class="btn btn-danger" role="button" style="font-weight: 700; font-family: Montserrat, sans-serif; width: fit-content; margin: 5vh auto 0;display: block;">Delete Team</a>
     {% endif %}
 </div>
 
@@ -108,11 +108,11 @@ Footer
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
-        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-        crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
         integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2@4.0.2/dist/bootstrap-confirmation.min.js"
         integrity="sha256-kXOU25SzGb87lJUwyN168lZkoc8s5XwbNuvt8VaBEl4=" crossorigin="anonymous"></script>
@@ -120,74 +120,4 @@ Footer
 </body>
 </html>
 
-<script>
-    $('[data-toggle=confirmation]').confirmation({
-        rootSelector: '[data-toggle=confirmation]',
-        container: 'body',
-
-        onConfirm: function (_) {
-            const id = $(this).attr('id');
-
-            if (id.match('^kick')) {
-                const query = id.replace("kick-", "");
-
-                $.ajax({
-                    url: "/TeamFormation/api/v1/func/remove_player",
-                    method: "post",
-                    data: {
-                        'query': query,
-                        'csrfmiddlewaretoken': Cookies.get('csrftoken'),
-                    },
-                    success: function (_) {
-                        $('#' + id).text('Kicked!').attr('class', 'btn btn-success');
-                        setTimeout(function () {
-                            $('a#' + id).closest('tr').remove();
-                        }, 1000);
-                        setTimeout(function () {
-                            if ($("tbody tr").length === 1) {
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 1020);
-                            }
-                        }, 1000);
-                    }
-                });
-            }
-
-            if (id.match('^rem')) {
-                const query = id.replace("rem-", "");
-
-                $.ajax({
-                    url: "/TeamFormation/api/v1/func/remove_captain",
-                    method: "post",
-                    data: {
-                        'query': query,
-                        'csrfmiddlewaretoken': Cookies.get('csrftoken'),
-                    },
-                    success: function (_) {
-                        window.location.reload();
-                    }
-                });
-            }
-
-            if (id.match('^capt')) {
-                const query = id.replace("capt-", "");
-
-                $.ajax({
-                    url: "/TeamFormation/api/v1/func/make_captain",
-                    method: "post",
-                    data: {
-                        'query': query,
-                        'csrfmiddlewaretoken': Cookies.get('csrftoken'),
-                    },
-                    success: function (_) {
-                        window.location.reload();
-                    }
-                });
-            }
-        },
-
-        onCancel: function () {
-        }
-    });
-</script>
+<script src="{% static "js/manage_team.js" %}"></script>
