@@ -55,8 +55,23 @@ class FireStoreHelper:
             else:
                 return fb_id, False, {}
         else:
-            doc_ref.create({'name': name, 'email': email, 'fb_id': fb_id, 'facebook_login': login_time, 'join_team': [],
-                            'ips': [ip]})
+            doc_ref.create(
+                {
+                    'name': name,
+                    'email': email,
+                    'fb_id': fb_id,
+                    'facebook_login': login_time,
+                    'join_team': [],
+                    'ips': {
+                        ip: {
+                            'city': city,
+                            'location': location
+                        }
+                    }
+                }
+            )
+
+            return fb_id, False, {}
 
 
     def steam_login(self, steam_url, steam_id, username, avatar_url, steam_account_created, doc_id, login_time):
