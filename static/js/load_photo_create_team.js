@@ -26,7 +26,7 @@ function testImage(url, timeoutT) {
     });
 }
 
-logoUrl.keyup(function () {
+logoUrl.bind("change keyup input",function() {
     const search = $(this).val();
     if (search.match('^http.*$')) {
         testImage(search, 300);

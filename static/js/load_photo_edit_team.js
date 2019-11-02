@@ -25,7 +25,7 @@ function testImage(url, timeoutT) {
 $(document).ready(function () {
     let $logoUrl = $('#logo_url');
     testImage($logoUrl.val(), 300);
-    $logoUrl.keyup(function () {
+    $logoUrl.bind("change keyup input",function() {
         var search = $(this).val();
         if (search !== '') {
             testImage(search, 300);
