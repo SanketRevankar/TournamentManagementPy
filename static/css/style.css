@@ -213,10 +213,6 @@ footer#footer {
         font-size: 1rem;
     }
 
-    .form-group {
-        width: 90vw;
-    }
-
     .button_form { /*noinspection CssInvalidPropertyValue,CssInvalidPropertyValue*/
         width: -webkit-fill-available !important;
     }
@@ -227,6 +223,10 @@ footer#footer {
 
     .wide {
         width: 95%;
+    }
+
+    .form-control {
+        width: auto;
     }
 
     #youtube-autoplay {

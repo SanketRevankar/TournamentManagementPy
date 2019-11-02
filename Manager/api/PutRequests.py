@@ -156,7 +156,7 @@ def end_match_db(request):
         map_count += 1
 
     handler.fireStoreHelper.util.update_document('matches', match_id, {'status': 'Completed', 'stopped_by': id_,
-                                                                       'end_time': datetime.datetime.now()})
+                                                                       'end_time': datetime.datetime.utcnow()})
 
     handler.mySQLHelper.end_match(match_id)
 

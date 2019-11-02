@@ -25,7 +25,7 @@ class FireStoreHelper:
 
         print('{} - Initialized'.format(__name__))
 
-    def facebook_login(self, name, email, fb_id, login_time, ip, city, location):
+    def facebook_loogin(self, name, email, fb_id, login_time, ip, city, location):
         """
         Function for Facebook login
 

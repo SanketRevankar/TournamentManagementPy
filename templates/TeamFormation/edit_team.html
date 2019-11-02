@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link href="{% static "css/style.css" %}" rel="stylesheet">
 
 </head>
@@ -22,7 +24,7 @@ Header
 ============================-->
 {% include "header.html" %}
 
-<div class="card bg-dark w-50 p-3 pr-5 pl-5">
+<div class="card bg-dark wide mt-3 p-3 pr-5 pl-5">
     <form action="#" method="POST" onsubmit="return photoValidate()">
         {% csrf_token %}
         <div class="form-head" style="display: table; margin: 1vw auto;">
@@ -47,9 +49,9 @@ Header
             <div class="form-group">
                 <img id="logo_show" style="width:0; height: 0; visibility:hidden;" alt="" src="">
             </div>
-            <input type="submit" value="Confirm" class="btn btn-success" style="width: 20%;margin-right: 2%;">
+            <input type="submit" value="Confirm" class="btn btn-success" style="margin-right: 2%;">
             <!--suppress HtmlUnknownTarget -->
-            <a href="manage" class="btn btn-secondary" style="width: 20%;">Back</a>
+            <a href="manage" class="btn btn-secondary">Back</a>
         </div>
         <br>
     </form>
