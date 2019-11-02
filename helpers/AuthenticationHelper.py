@@ -57,6 +57,9 @@ class AuthenticationHelper:
         team_id = handler.dataHelper.get_team_id_by_player_id(player_id)
         team_data = handler.dataHelper.get_team_data_by_id(team_id)
 
+        if not team_data:
+            raise PermissionDenied('Only captains can access this function.')
+
         if player_id != team_data['captain'] and player_id != team_data.get('vice_captain'):
             handler.logHelper.log_it_api(request, __name__ + '.validate_captain', target=target_id, authorized=False)
             raise PermissionDenied('Only captains can modify their team.')

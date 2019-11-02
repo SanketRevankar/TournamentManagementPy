@@ -213,10 +213,6 @@ footer#footer {
         font-size: 1rem;
     }
 
-    #join_req_handle a.btn {
-        width: 6vw !important;
-    }
-
     .form-group {
         width: 90vw;
     }
@@ -236,6 +232,10 @@ footer#footer {
     #youtube-autoplay {
         width: 90vw !important;
         height: 30vh !important;
+    }
+
+    .steam-details {
+        display: none;
     }
 }
 

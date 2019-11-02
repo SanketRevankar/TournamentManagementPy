@@ -9,25 +9,22 @@ from constants import StringConstants as sC
 @ensure_csrf_cookie
 def welcome(request):
     # TODO: Remove (only for DEV)
-    # request.session['id'] = 'JsKT2F8df7bLxCCCl6gK'
-    # request.session["name"] = 'Sanket Revankar'
-    # request.session["fb_id"] = '109850146536478'
+    # request.session['id'] = '102254290631132'
+    # request.session["name"] = 'Open Z'
+    # request.session["fb_id"] = '102254290631132'
     # request.session["steam_id"] = 'STEAM_1:0:102553381'
-    # request.session["username"] = 'DarK PhoeniX'
+    # request.session["username"] = 'Z'
     # request.session["avatar_url"] = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/8a' \
     #                                 '/8aaa3cd00b85b7622f13b0994eff2f42a2a66adf_full.jpg'
-    # # request.session['team'] = 'JsKT2F8df7bLxCCCl6gK'
-    # # request.session['join_team'] = []
     # request.session['steam_url_id'] = '76561198165372490'
 
-    # request.session['id'] = 'hq4tpdiwF3njUDvYAlHa'
+    # request.session['id'] = '1849900058362481'
     # request.session["name"] = 'Sanket Revankar'
     # request.session["fb_id"] = '1849900058362481'
-    # request.session["steam_id"] = 'STEAM_1:0:102553381'
+    # request.session["steam_id"] = 'STEAM_1:0:25040471'
     # request.session["username"] = 'DarK PhoeniX'
     # request.session["avatar_url"] = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/ee/' \
     #                                 'ee5ec062fb9f7fa1d473a9b57de65ac24ee6830e_full.jpg'
-    # request.session['join_team'] = ['JsKT2F8df7bLxCCCl6gK']
     # request.session['steam_url_id'] = '76561198010346671'
     # ---------------------------------------------------------------------------------------------------------------
 

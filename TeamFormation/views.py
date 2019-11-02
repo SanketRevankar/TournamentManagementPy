@@ -53,6 +53,7 @@ def create_team(request):
 def manage_team(request):
     handler.authenticationHelper.validate_mode_9()
     handler.authenticationHelper.validate_login(request)
+    handler.authenticationHelper.validate_captain(request.session['id'], request, None)
     handler.logHelper.log_it_visit(request, __name__ + '.manage_team')
 
     template = loader.get_template('TeamFormation/manage_team.html')
