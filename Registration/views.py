@@ -44,7 +44,8 @@ def steam_login(request):
     location = request.META.get('HTTP_X_APPENGINE_CITYLATLONG') if 'HTTP_X_APPENGINE_CITYLATLONG' in request.META \
         else None
 
-    request.session['id'], status, doc_data = handler.fireStoreHelper.facebook_login(name, email, fb_id, datetime.now(),
+    request.session['id'], status, doc_data = handler.fireStoreHelper.facebook_login(name, email, fb_id,
+                                                                                     datetime.utcnow(),
                                                                                      ip, city, location)
 
     if status is True:
@@ -104,7 +105,7 @@ def steam_auth(request):
         account_created = datetime.fromtimestamp(resp['response']['players']['player'][0]['timecreated'])
 
         if handler.fireStoreHelper.steam_login(steam_url, steam_id, username, avatar_url, account_created,
-                                               request.session['id'], datetime.now()):
+                                               request.session['id'], datetime.utcnow()):
             template = loader.get_template('Registration/steamid.html')
             context = {
                 'mode': handler.config[sC.PROJECT_DETAILS][sC.MODE],
