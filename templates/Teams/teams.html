@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ SITE_NAME }} | Teams</title>
+    <title>Teams - {{ SITE_NAME }}</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -115,7 +115,7 @@ Header
             </div>
             <div class="row no-gutters">
                 <div class="col-md-6">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <ul class="list-group list-group-flush">
                             {% for i, fb_id, name, avatar_url, steam_url_id, username, player_idr in players %}
                                 <li class="list-group-item" style="background: transparent;">
@@ -125,7 +125,7 @@ Header
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="col-md-8"></div>
+                    <div class="col-md-6"></div>
                 </div>
             </div>
         {% else %}

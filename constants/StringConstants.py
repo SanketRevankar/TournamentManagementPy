@@ -161,7 +161,7 @@ TABLE_TEAMS_PL1 = "player_{} varchar(35),"
 TABLE_TEAMS = "create table if not exists {} (id varchar(20) not null primary key,"
 TABLE_MATCHES = "create table if not exists `{}` (id int not null primary key, team1 varchar(35), team2 varchar(35), team_tag1 varchar(35), team_tag2 varchar(35), ip varchar(35), team1_id varchar(35), team2_id varchar(35), time timestamp);"
 CREATE_DATABASE = "create database if not exists {};"
-TABLE_ADMINS = "CREATE TABLE `{}` (`auth` varchar(32) NOT NULL, `password` varchar(32) NOT NULL, `access` varchar(32) NOT NULL, `flags` varchar(32) NOT NULL)"
+TABLE_ADMINS = "CREATE TABLE if not exists `{}` (`auth` varchar(32) NOT NULL, `password` varchar(32) NOT NULL, `access` varchar(32) NOT NULL, `flags` varchar(32) NOT NULL)"
 
 """ --------------------------------------------------------------------------------------------------------------------
     Server constants

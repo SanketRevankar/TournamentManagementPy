@@ -222,6 +222,7 @@ class FireStoreHelper:
 
         if 'vice_captain' in team_data and team_data['vice_captain'] == player_id:
             handler.adminHelper.remove_admin(player_id)
+            team_ref.update({'vice_captain': firestore_v1.DELETE_FIELD})
 
         team_ref.update({'players': players})
 

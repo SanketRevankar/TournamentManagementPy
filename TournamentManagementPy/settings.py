@@ -26,6 +26,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'narcogaming.appspot.com',
+    'narco-gaming.appspot.com',
     '127.0.0.1'
 ]
 
@@ -134,10 +135,3 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 #
 # import logging.config
 # logging.config.fileConfig(r'config\logging.conf')
-
-ASGI_APPLICATION = "TournamentManagementPy.routing.application"
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
