@@ -20,9 +20,11 @@ def ignore_player(request):
     player_id = request.session['id']
     target_id = request.POST['query']
 
+    team_id = handler.dataHelper.get_team_id_by_player_id(player_id)
+
     handler.authenticationHelper.validate_captain(player_id, request, target_id)
     handler.logHelper.log_it_api(request, __name__ + '.ignore_player', target=target_id)
-    handler.fireStoreHelper.ignore_player(target_id, player_id)
+    handler.fireStoreHelper.ignore_player(target_id, team_id)
 
     return HttpResponse('')
 
