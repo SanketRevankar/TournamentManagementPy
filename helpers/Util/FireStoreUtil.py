@@ -216,19 +216,21 @@ class FireStoreUtil:
             PlayerData.SteamList.update(pickle.loads(steam_data_blob.download_as_string()))
             return
 
+        print('Loading Player List from FireStore')
         collection_ref = self.get_collection(self.PLAYERS)
         docs = collection_ref.stream()
         for doc in docs:
-            PlayerData.PlayerList[doc.id] = doc.to_dict()
-            PlayerData.SteamList[PlayerData.PlayerList[doc.id]['steam_id']] = doc.id
+            doc_dict = doc.to_dict()
+            if 'steam_id' not in doc_dict or 'team' not in doc_dict:
+                continue
+            PlayerData.PlayerList[doc.id] = doc_dict
+            PlayerData.SteamList[doc_dict['steam_id']] = doc.id
 
-        print('Loading Player List from FireStore')
         file_path = self.temp + 'player_list.pk'
         with open(file_path, 'wb+') as f:
             pickle.dump(PlayerData.PlayerList, f)
         handler.cloudStorageHelper.upload_file('resources/player_list.pk', file_path)
 
-        print('Loading Steam List from FireStore')
         file_path = self.temp + 'steam_list.pk'
         with open(file_path, 'wb+') as f:
             pickle.dump(PlayerData.SteamList, f)
