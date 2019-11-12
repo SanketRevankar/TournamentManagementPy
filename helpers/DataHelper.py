@@ -293,4 +293,3 @@ class DataHelper:
         """
 
         return re.sub(pC.REGEX_TO_REMOVE_UNWANTED_CHARS, sC.EMPTY_STRING, team_name)[:31]
-

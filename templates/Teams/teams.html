@@ -48,7 +48,9 @@ Header
                 </div>
                 <div class="col-md-8">
                     <div class="card-body" style="font-size: 1.2rem;">
-                        <h5 class="card-title" style="font-size: 2.5rem; font-weight: 800; font-family: righteous,cursive;"><a href="#" class="fas fa-link text-dark" id="copy-team-link" style="text-decoration: none;" title="Click to copy link!"></a> {{ team_name }} ({{ team_tag }})</h5>
+                        <h5 class="card-title" style="font-size: 2.5rem; font-weight: 800; font-family: righteous,cursive;">
+                            <button class="btn btn-dark">{{ n_players }}</button>
+                            <a href="#" class="fas fa-link text-dark" id="copy-team-link" style="text-decoration: none;" title="Click to copy link!"></a> {{ team_name }} ({{ team_tag }})</h5>
                         <div class="row">
                             <div class="col-md-6">
                                 <h3 class="card-text">Captain: </h3>
@@ -119,6 +121,7 @@ Header
                         <ul class="list-group list-group-flush">
                             {% for i, fb_id, name, avatar_url, steam_url_id, username, player_idr in players %}
                                 <li class="list-group-item" style="background: transparent;">
+                                    <span style='vertical-align: sub; padding-right: .75rem;'>{{ i }}. </span>
                                     <img src="{{ avatar_url }}" title="" alt="" style="height: 4vh; width: 4vh">
                                     <a target="_blank" href="https://steamcommunity.com/profiles/{{ steam_url_id }}" style='vertical-align: sub; padding-right: .75rem;'>{{ username }}</a>
                                 </li>

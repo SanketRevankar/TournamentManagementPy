@@ -56,8 +56,6 @@ def steam_login(request):
 
         return redirect('/Home')
 
-    handler.authenticationHelper.validate_mode_9()
-
     origin = request.META['HTTP_ORIGIN']
     steam_openid_url = 'https://steamcommunity.com/openid/login'
     u = {

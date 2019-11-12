@@ -83,7 +83,8 @@ def create_steam_id64_list():
 
     players = handler.dataHelper.get_players()
     for player in players:
-        ac.write(players[player][sC.STEAM_URL_ID] + '\n')
+        if 'steam_id' in players[player]:
+            ac.write(players[player][sC.STEAM_URL_ID] + '\n')
     ac.close()
 
 
@@ -110,16 +111,16 @@ def acc_check_vac(ac):
 
         for n in range(0, n):
             if (data[sC.PLAYERS][n][sC.VAC_BANNED]) == bool(pS.TRUE):
-                res += sC.NEW_LINE + data[sC.PLAYERS][n][sC.STEAM_ID_] + pS.VAC_BANNED_ + sC.SPACE + \
+                res += data[sC.PLAYERS][n][sC.STEAM_ID_] + pS.VAC_BANNED_ + sC.SPACE + \
                        str(data[sC.PLAYERS][n][sC.NUMBER_OF_VAC_BANS]) + sC.SPACE + pS.LAST_TIME_ + sC.SPACE + \
                        str(data[sC.PLAYERS][n][sC.DAYS_SINCE_LAST_BAN]) + sC.SPACE + pS.DAYS_AGO
-                res += sC.NEW_LINE + handler.localDataHelper.get_info(data[sC.PLAYERS][n][sC.STEAM_ID_])
+                res += sC.NEW_LINE + handler.localDataHelper.get_info(data[sC.PLAYERS][n][sC.STEAM_ID_]) + sC.NEW_LINE
 
             if (data[sC.PLAYERS][n][sC.COMMUNITY_BANNED]) == bool(pS.TRUE):
-                res += sC.NEW_LINE + data[sC.PLAYERS][n][sC.STEAM_ID_] + pS.P_COMMUNITY_BANNED
+                res += data[sC.PLAYERS][n][sC.STEAM_ID_] + pS.P_COMMUNITY_BANNED + sC.NEW_LINE
 
             if (data[sC.PLAYERS][n][sC.ECONOMY_BAN]) == bool(pS.TRUE):
-                res += sC.NEW_LINE + data[sC.PLAYERS][n][sC.STEAM_ID_] + pS.P_ECONOMY_BANN
+                res += data[sC.PLAYERS][n][sC.STEAM_ID_] + pS.P_ECONOMY_BANN + sC.NEW_LINE
 
         if n != 0:
             return res + acc_check_vac(ac)

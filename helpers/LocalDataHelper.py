@@ -258,10 +258,11 @@ class LocalDataHelper:
 
         for player in PlayerList:
             if PlayerList[player][sC.STEAM_URL_ID] == community_id:
-                return PlayerList[player][sC.TEAM] if sC.TEAM in PlayerList[player] else \
-                    '' + sC.NEW_LINE + sC.TAB + sC.STEAM_ID + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_URL_ID]\
+                return (PlayerList[player][sC.TEAM] if sC.TEAM in PlayerList[player] else '') + \
+                    sC.NEW_LINE + sC.TAB + sC.STEAM_ID + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_URL_ID]\
                     + sC.NEW_LINE + sC.TAB + sC.NAME_ + sC.COLON + sC.SPACE + PlayerList[player][sC.NAME] + \
-                    sC.NEW_LINE + sC.TAB + sC.NICK_ + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_NICK]
+                    sC.NEW_LINE + sC.TAB + sC.NICK_ + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_NICK] \
+                                                                                         + sC.NEW_LINE
 
     def get_data(self, ac):
         """
