@@ -24,7 +24,7 @@ class AuthenticationHelper:
         :param request: Http Request Object
         """
 
-        if 'id' not in request.session:
+        if 'id' not in request.session or 'steam_id' not in request.session:
             raise PermissionDenied('You need to login')
 
         if self.mode9:
