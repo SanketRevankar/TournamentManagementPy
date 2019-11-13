@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Admins - {{ SITE_NAME }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="{% static "css/sidebar.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="wrapper" style='font-family: "Righteous", cursive;'>
+    <div id="content" style="padding-top: 7vh; padding-bottom: 5vh; display: block">
+        <h1 class="text-dark" style="text-align: center;">{{ server_name }}</h1>
+        <div class="card-columns">
+            {% for steam_id, grantedOn, playerNick, playerName, playerFbUrl, grantedBy, access in admin_data %}
+                <div class="card">
+                    <div class="card-header bg-dark text-light d-flex" style="background: transparent; justify-content: space-between">
+                        <a>{{ playerNick }}</a>
+                        <span>{{ playerName }} <a href="{{ playerFbUrl }}" class="fab fa-facebook text-light ml-2"></a> </span>
+                    </div>
+                    <div class="card-body">
+                        <a>Created by <span class="text-primary">{{ grantedBy }}</span> on <span class="text-primary">{{ grantedOn }}</span></a>
+                        <p class="mb-0">Admin Access: <span class="text-primary">{{ access }}</span></p>
+                    </div>
+                    <div class="card-footer pb-1" style="background: transparent;">
+                        {% if access != 'Basic Admin' %}
+                            <button type="button" class="btn btn-dark mb-2" id="basic-{{ steam_id }}-{{ server_id }}">Basic</button>
+                        {% endif %}
+                        {% if access != 'Elite Admin' %}
+                            <button type="button" class="btn btn-dark mb-2" id="elite-{{ steam_id }}-{{ server_id }}">Elite</button>
+                        {% endif %}
+                        {% if access != 'Manager' %}
+                            <button type="button" class="btn btn-dark mb-2" id="manager-{{ steam_id }}-{{ server_id }}">Manager</button>
+                        {% endif %}
+                        {% if access != 'Owner' %}
+                            <button type="button" class="btn btn-dark mb-2" id="owner-{{ steam_id }}-{{ server_id }}">Owner</button>
+                        {% endif %}
+                        {% if access != 'Full Access' %}
+                            <button type="button" class="btn btn-dark mb-2" id="fullAccess-{{ steam_id }}-{{ server_id }}">Full Access</button>
+                        {% endif %}
+                        <button type="button" class="btn btn-danger mb-2" id="remove-{{ steam_id }}-{{ server_id }}">Remove</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2@4.0.2/dist/bootstrap-confirmation.min.js"
+        integrity="sha256-kXOU25SzGb87lJUwyN168lZkoc8s5XwbNuvt8VaBEl4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+</body>
+<script>
+    $('button').click(function () {
+        response = $(this).attr('id');
+        currBtn = $(this);
+
+        $.ajax({
+            url: '/Servers/api/v1/post/update_admin',
+            method: 'post',
+            data: {
+                'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+                'response': response,
+            },
+            success: function () {
+                window.location.reload();
+            },
+        });
+    });
+</script>

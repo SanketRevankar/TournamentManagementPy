@@ -18,6 +18,7 @@ class FireStoreUtil:
         """
 
         self.db = firestore_v1.Client()
+        self.GAME_SERVERS = u'game_servers'
         self.MATCHES = u'matches'
         self.SERVERS = u'servers'
         self.PLAYERS = u'players'
@@ -216,11 +217,15 @@ class FireStoreUtil:
             PlayerData.SteamList.update(pickle.loads(steam_data_blob.download_as_string()))
             return
 
+        print('Loading Player List from FireStore')
         collection_ref = self.get_collection(self.PLAYERS)
         docs = collection_ref.stream()
         for doc in docs:
-            PlayerData.PlayerList[doc.id] = doc.to_dict()
-            PlayerData.SteamList[PlayerData.PlayerList[doc.id]['steam_id']] = doc.id
+            doc_dict = doc.to_dict()
+            if 'steam_id' not in doc_dict or 'team' not in doc_dict:
+                continue
+            PlayerData.PlayerList[doc.id] = doc_dict
+            PlayerData.SteamList[doc_dict['steam_id']] = doc.id
 
         file_path = self.temp + 'player_list.pk'
         with open(file_path, 'wb+') as f:
@@ -245,6 +250,7 @@ class FireStoreUtil:
             TeamData.TeamList.update(pickle.loads(player_data_blob.download_as_string()))
             return
 
+        print('Loading Team List from FireStore')
         collection_ref = self.get_collection(self.TEAMS)
         docs = collection_ref.stream()
         for doc in docs:
@@ -269,6 +275,7 @@ class FireStoreUtil:
             ServerData.ServerList.update(pickle.loads(player_data_blob.download_as_string()))
             return
 
+        print('Loading Server List from FireStore')
         collection_ref = self.get_collection(self.SERVERS)
         docs = collection_ref.stream()
         for doc in docs:
@@ -346,3 +353,28 @@ class FireStoreUtil:
             if docs.id == team_id:
                 return True
         return False
+
+    def get_game_servers(self):
+        collection_ref = self.get_collection(self.GAME_SERVERS)
+        docs = collection_ref.stream()
+        game_servers = {}
+        for doc in docs:
+            game_servers[doc.id] = doc.to_dict()
+
+        return game_servers
+
+    def get_requester_data_by_id(self, steam_id, server_id):
+        doc_ref = self.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        return doc_ref.get().to_dict()['admin_requests'][steam_id]
+
+    def get_admin_data_by_id(self, steam_id, server_id):
+        doc_ref = self.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        return doc_ref.get().to_dict()['admins'][steam_id]
+
+    def get_admins_by_server_id(self, server_id):
+        doc_ref = self.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        return doc_ref.get(['admins']).to_dict()
+
+    def get_server_data_by_id(self, server_id):
+        doc_ref = self.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        return doc_ref.get(['ip', 'port']).to_dict()

@@ -16,9 +16,15 @@ class MySQLHelper:
 
         :param config: Config object
         """
-
         self.util = MySQLHelperUtil(config)
 
+        self.ACCESS = {
+            'basic': config[sC.COUNTER_STRIKE_ADMINS][sC.BASIC_ACCESS],
+            'elite': config[sC.COUNTER_STRIKE_ADMINS][sC.ELITE_ACCESS],
+            'manager': config[sC.COUNTER_STRIKE_ADMINS][sC.MANAGER_ACCESS],
+            'owner': config[sC.COUNTER_STRIKE_ADMINS][sC.OWNER_ACCESS],
+            'fullAccess': config[sC.COUNTER_STRIKE_ADMINS][sC.FULL_ACCESS],
+        }
         self.hostname = config[sC.MY_SQL][sC.HOSTNAME]
         self.database = config[sC.MY_SQL][sC.DATABASE]
         self.username = config[sC.MY_SQL][sC.USER_NAME]
@@ -102,3 +108,12 @@ class MySQLHelper:
         query = sC.DELETE_FROM_MATCHES_WHERE_ID_.format(match_id)
 
         self.execute_query(query)
+
+    def add_server_admin(self, steam_id, access_type, server_id):
+        self.execute_query(sC.INSERT_ADMINS_VALUES_.format(server_id, steam_id, self.ACCESS[access_type]))
+
+    def update_server_admin(self, steam_id, access_type, server_id):
+        self.execute_query(sC.UPDATE_ADMINS_ACCESS_.format(server_id, self.ACCESS[access_type], steam_id))
+
+    def remove_server_admin(self, steam_id, server_id):
+        self.execute_query(sC.DELETE_FROM_ADMINS_WHERE_ID_.format(server_id, steam_id))

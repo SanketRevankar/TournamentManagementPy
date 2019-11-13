@@ -59,3 +59,13 @@ class AdminHelper:
         """
 
         handler.mySQLHelper.execute_query(sC.TRUNCATE_TABLE_.format(self.table))
+
+    def add_game_server_admin_request(self, server_id, admin_data):
+        """
+        Give a player admin access to a server
+
+        :param server_id:
+        :param admin_data:
+        """
+
+        handler.fireStoreHelper.add_game_server_admin_request(server_id, admin_data)
