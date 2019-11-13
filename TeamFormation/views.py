@@ -14,6 +14,9 @@ def create_team(request):
     handler.authenticationHelper.validate_login(request)
     handler.logHelper.log_it_visit(request, __name__ + '.create_team')
 
+    if 'team' in handler.dataHelper.get_player_data_by_id():
+        raise PermissionDenied('Already in a team')
+
     template = loader.get_template('TeamFormation/create_team.html')
     context = {
         'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
@@ -77,6 +80,7 @@ def manage_team(request):
 def edit_team(request):
     handler.authenticationHelper.validate_mode_9()
     handler.authenticationHelper.validate_login(request)
+    handler.authenticationHelper.validate_captain(request.session['id'], request, None)
     handler.logHelper.log_it_visit(request, __name__ + '.edit_team')
 
     template = loader.get_template('TeamFormation/edit_team.html')
