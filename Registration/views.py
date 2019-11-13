@@ -100,10 +100,9 @@ def steam_auth(request):
         steam_id = steam.steamid.SteamID(steam_url).as_steam2_zero
         username = resp['response']['players']['player'][0]['personaname']
         avatar_url = resp['response']['players']['player'][0]['avatarfull']
-        account_created = datetime.fromtimestamp(resp['response']['players']['player'][0]['timecreated'])
 
-        if handler.fireStoreHelper.steam_login(steam_url, steam_id, username, avatar_url, account_created,
-                                               request.session['id'], datetime.utcnow()):
+        if handler.fireStoreHelper.steam_login(steam_url, steam_id, username, avatar_url, request.session['id'],
+                                               datetime.utcnow()):
             template = loader.get_template('Registration/steamid.html')
             context = {
                 'mode': handler.config[sC.PROJECT_DETAILS][sC.MODE],

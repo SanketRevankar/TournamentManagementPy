@@ -74,7 +74,7 @@ class FireStoreHelper:
 
             return fb_id, False, {}
 
-    def steam_login(self, steam_url, steam_id, username, avatar_url, steam_account_created, doc_id, login_time):
+    def steam_login(self, steam_url, steam_id, username, avatar_url, doc_id, login_time):
         """
         Function for Steam login
 
@@ -82,7 +82,6 @@ class FireStoreHelper:
         :param steam_id: Steam Id32
         :param username: Steam Username
         :param avatar_url: Steam Avatar
-        :param steam_account_created: Steam Account Created on
         :param doc_id: Player Id to add details in
         :param login_time: Time of Login
         """
@@ -92,7 +91,6 @@ class FireStoreHelper:
             'username': username,
             'avatar_url': avatar_url,
             'steam_url_id': steam_url,
-            'steam_account_created': steam_account_created,
             'steam_login': login_time
         }
 
