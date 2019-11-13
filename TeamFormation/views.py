@@ -14,7 +14,7 @@ def create_team(request):
     handler.authenticationHelper.validate_login(request)
     handler.logHelper.log_it_visit(request, __name__ + '.create_team')
 
-    if 'team' in handler.dataHelper.get_player_data_by_id():
+    if 'team' in handler.dataHelper.get_player_data_by_id(request.session['id']):
         raise PermissionDenied('Already in a team')
 
     template = loader.get_template('TeamFormation/create_team.html')
