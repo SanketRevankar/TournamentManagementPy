@@ -19,6 +19,7 @@ class FireStoreHelper:
 
         self.util = FireStoreUtil(config)
         self.MATCHES = u'matches'
+        self.GAME_SERVERS = u'game_servers'
         self.PLAYERS = u'players'
         self.TEAMS = u'teams'
         self.HELP = u'help'
@@ -51,7 +52,7 @@ class FireStoreHelper:
                     ips[ip] = {'city': city, 'location': location}
                 doc_ref.update({'ips': ips})
                 return fb_id, True, {'steam_id': doc_data['steam_id'], 'steam_url_id': doc_data['steam_url_id'],
-                                      'avatar_url': doc_data['avatar_url'], 'username': doc_data['username']}
+                                     'avatar_url': doc_data['avatar_url'], 'username': doc_data['username']}
             else:
                 return fb_id, False, {}
         else:
@@ -73,7 +74,6 @@ class FireStoreHelper:
 
             return fb_id, False, {}
 
-
     def steam_login(self, steam_url, steam_id, username, avatar_url, doc_id, login_time):
         """
         Function for Steam login
@@ -82,7 +82,6 @@ class FireStoreHelper:
         :param steam_id: Steam Id32
         :param username: Steam Username
         :param avatar_url: Steam Avatar
-        :param steam_account_created: Steam Account Created on
         :param doc_id: Player Id to add details in
         :param login_time: Time of Login
         """
@@ -284,3 +283,19 @@ class FireStoreHelper:
             return '<p class="text-danger">Match with id {} already exists</p>'.format(match_id)
 
         return '<p class="text-success">Match with id {} created</p>'.format(match_id)
+
+    def add_game_server_admin_request(self, server_id, admin_data):
+        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref.set({'admin_requests': admin_data}, merge=True)
+
+    def ignore_admin_request(self, steam_id, server_id):
+        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref.set({'admin_requests': {steam_id: firestore_v1.DELETE_FIELD}}, merge=True)
+
+    def remove_server_admin(self, steam_id, server_id):
+        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref.set({'admins': {steam_id: firestore_v1.DELETE_FIELD}}, merge=True)
+
+    def add_server_admin(self, access_data, server_id):
+        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref.set({'admins': access_data}, merge=True)

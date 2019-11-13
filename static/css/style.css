@@ -315,6 +315,11 @@ textarea::-webkit-scrollbar-track { background: #f1f1f1; } /* Track */
 textarea::-webkit-scrollbar-thumb { background: #888; } /* Handle */
 textarea::-webkit-scrollbar-thumb:hover { background: #555; } /* Handle on hover */
 
+div::-webkit-scrollbar { width: 10px; } /* width */
+div::-webkit-scrollbar-track { background: #f1f1f1; } /* Track */
+div::-webkit-scrollbar-thumb { background: #888; } /* Handle */
+div::-webkit-scrollbar-thumb:hover { background: #555; } /* Handle on hover */
+
 .button_form {
     display: inline-block;
     -webkit-box-sizing: border-box;

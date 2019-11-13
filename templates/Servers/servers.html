@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Servers - {{ SITE_NAME }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="wrapper" style='font-family: "Righteous", cursive;'>
+    <div id="content" style="padding-top: 7vh; padding-bottom: 5vh; display: block">
+        <div class="card-columns">
+            {% for server_name, players_online, player_data, map_name, server_ip, server_port, server_id, game, player_count in servers %}
+                <div class="card">
+                    <div class="card-header bg-dark d-flex" style="background: transparent; justify-content: space-between">
+                        <a>{{ server_name }}</a>
+                        <a>{{ players_online }}</a>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{ game }}</h5>
+                        <small class="text-dark">{{ map_name }}</small>
+                        <p class="text-dark">{{ server_ip }}:{{ server_port }}</p>
+                        <div class="d-flex">
+                            <a href="steam://connect/{{ server_ip }}:{{ server_port }}" class="btn btn-primary">Join</a>
+                            {% if logged_in %}
+                                <a href="#" class="btn btn-dark ml-auto" data-toggle="modal" data-target="#adminshipFormModal">Request Adminship</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if player_count > 0 %}
+                        <div class="card-footer bg-dark" style="max-height: 60vh; overflow-y: auto;">
+                            <table class="table-striped table">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Nick</th>
+                                    <th>Score</th>
+                                    <th>Duration</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for player_name, player_score, player_duration in player_data %}
+                                    <tr>
+                                        <td>{{ player_name }}</td>
+                                        <td>{{ player_score }}</td>
+                                        <td>{{ player_duration }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="modal fade bg-dark text-dark" id="adminshipFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Adminship Form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form">
+                        <div class="form-group">
+                            <label for="serverSelected">Select a Server</label>
+                            <select class="custom-select" id="serverSelected">
+                                <option selected>Select Server</option>
+                                {% for server_name, players_online, player_data, map_name, server_ip, server_port, server_id, game, player_count in servers %}
+                                    <option value="{{ server_id }}">{{ server_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="playerName">Name</label>
+                                <input type="text" class="form-control" id="playerName" placeholder="Enter your name" value="{{ name }}">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="playerNick">Nick</label>
+                                <input type="text" class="form-control" id="playerNick" placeholder="Enter your nick" value="{{ username }}">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="playerSteamId">Steam Id</label>
+                                <input type="text" class="form-control" id="playerSteamId" placeholder="Enter your Steam Id" value="{{ steam_id }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerFbUrl">Facebook Profile URL</label>
+                            <input type="text" class="form-control" id="playerFbUrl" placeholder="Enter your FB Profile Url">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="playerExp">Admin Experience (Years)</label>
+                                <input type="text" class="form-control" id="playerExp" placeholder="Enter your experience">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="playerAdmin">Are you admin on any other server?</label>
+                                <div id="playerAdmin" class="form-control" style="border: none;">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="Yes" name="playerAdmin" class="custom-control-input">
+                                        <label class="custom-control-label" for="Yes">Yes</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="No" name="playerAdmin" class="custom-control-input">
+                                        <label class="custom-control-label" for="No">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success mr-auto" id="requestInfo" hidden></button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary confirm-request" id="{{ server_id }}">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2@4.0.2/dist/bootstrap-confirmation.min.js"
+        integrity="sha256-kXOU25SzGb87lJUwyN168lZkoc8s5XwbNuvt8VaBEl4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+</body>
+<script>
+    let playerName = $('#playerName');
+    let playerNick = $('#playerNick');
+    let playerSteamId = $('#playerSteamId');
+    let playerFbUrl = $('#playerFbUrl');
+    let playerExp = $('#playerExp');
+    let serverSelected = $('#serverSelected');
+    let requestInfo = $('#requestInfo');
+
+    $('.confirm-request').click(function () {
+        let adminOnOtherSv = $('input[type="radio"]:checked').attr('id');
+
+        let details = true;
+        if (!adminOnOtherSv) {
+            $('#no').addClass('is-invalid');
+            $('#yes').addClass('is-invalid');
+            details = false;
+        }
+
+        if (!serverSelected.hasClass('is-valid')) {
+            serverSelected.addClass('is-invalid');
+            details = false;
+        }
+
+        if (!playerExp.hasClass('is-valid')) {
+            playerExp.addClass('is-invalid');
+            details = false;
+        }
+
+        if (!playerFbUrl.hasClass('is-valid')) {
+            playerFbUrl.addClass('is-invalid');
+            details = false;
+        }
+
+        if (!playerSteamId.hasClass('is-valid')) {
+            playerSteamId.addClass('is-invalid');
+            details = false;
+        }
+
+        if (!playerNick.hasClass('is-valid')) {
+            playerNick.addClass('is-invalid');
+            details = false;
+        }
+
+        if (!playerName.hasClass('is-valid')) {
+            playerName.addClass('is-invalid');
+            details = false;
+        }
+
+        if (details === false) {
+            return false;
+        } else {
+            $.ajax({
+                url: 'api/v1/post/adminship_request',
+                method: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': Cookies.get('csrftoken'),
+                    'playerName': playerName.val(),
+                    'playerNick': playerNick.val(),
+                    'playerSteamId': playerSteamId.val(),
+                    'playerFbUrl': playerFbUrl.val(),
+                    'playerExp': playerExp.val(),
+                    'serverSelected': serverSelected.val(),
+                    'adminOnOtherSv': adminOnOtherSv,
+                },
+                success: function (_) {
+                    requestInfo.removeAttr('hidden');
+                    requestInfo.html('Request Successful, you can apply for other server if you wish.')
+                },
+            });
+        }
+    });
+
+    $('input[type="radio"]').click(function () {
+        $('#yes').removeClass('is-invalid');
+        $('#no').removeClass('is-invalid');
+    });
+
+    serverSelected.bind("change keyup input", function () {
+        const serverSelected_ = $("#serverSelected option:selected").html();
+
+        serverSelected.removeClass('is-valid').removeClass('is-invalid');
+        if (!serverSelected_.match('Select Server')) {
+            serverSelected.addClass('is-valid');
+        } else {
+            serverSelected.addClass('is-invalid');
+        }
+    });
+
+    playerExp.bind("change keyup input", function () {
+        const pattern = /^\d+$/;
+        playerExp.removeClass('is-valid').removeClass('is-invalid');
+        if (pattern.test(playerExp.val())) {
+            playerExp.addClass('is-valid');
+        } else {
+            playerExp.addClass('is-invalid');
+        }
+    });
+
+    function validatePlayerSteamId() {
+        const pattern = /^STEAM_0:\d:\d+$/;
+        playerSteamId.removeClass('is-valid').removeClass('is-invalid');
+        if (pattern.test(playerSteamId.val())) {
+            playerSteamId.addClass('is-valid');
+        } else {
+            playerSteamId.addClass('is-invalid');
+        }
+    }
+
+    validatePlayerSteamId();
+    playerSteamId.bind("change keyup input", function () {
+        validatePlayerSteamId();
+    });
+
+    function validatePlayerNick() {
+        playerNick.removeClass('is-valid').removeClass('is-invalid');
+        if (playerNick.val() === '' || playerNick.val() === null) {
+            playerNick.addClass('is-invalid');
+        } else {
+            playerNick.addClass('is-valid');
+        }
+    }
+
+    validatePlayerNick();
+    playerNick.bind("change keyup input", function () {
+        validatePlayerNick();
+    });
+
+    function validatePlayerName() {
+        playerName.removeClass('is-valid').removeClass('is-invalid');
+        if (playerName.val() === '' || playerName.val() === null) {
+            playerName.addClass('is-invalid');
+        } else {
+            playerName.addClass('is-valid');
+        }
+    }
+
+    validatePlayerName();
+    playerName.bind("change keyup input", function () {
+        validatePlayerName();
+    });
+
+    playerFbUrl.bind("change keyup input",function() {
+        playerFbUrl.removeClass('is-valid').removeClass('is-invalid');
+        if (validateUrl() === true) {
+            playerFbUrl.addClass('is-valid');
+        } else {
+            playerFbUrl.addClass('is-invalid');
+        }
+    });
+
+    function validateUrl() {
+        let url = playerFbUrl.val();
+        console.log(url);
+        let pattern = /^(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\-.]+)+$/;
+        return pattern.test(url);
+    }
+
+</script>

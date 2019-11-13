@@ -9,3 +9,4 @@ channels
 apache-libcloud
 mysql-connector-python
 google-cloud-storage
+python-valve

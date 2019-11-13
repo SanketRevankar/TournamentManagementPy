@@ -16,6 +16,7 @@ class AuthenticationHelper:
 
         self.mode9 = config[sC.PROJECT_DETAILS][sC.MODE] == '9'
         self.admins = eval(handler.config[sC.PROJECT_DETAILS][sC.ADMIN_IDS])
+        self.approvers = eval(handler.config[sC.COUNTER_STRIKE_ADMINS][sC.APPROVERS])
 
     def validate_login(self, request):
         """
@@ -72,3 +73,8 @@ class AuthenticationHelper:
 
         if self.mode9:
             raise PermissionDenied('You cannot access this now!')
+
+    def validate_approver(self, request):
+        if request.session['id'] not in self.approvers:
+            handler.logHelper.log_it_visit(request, __name__ + '.validate_approver', authorized=False)
+            raise PermissionDenied('You cannot access this page!')
