@@ -115,17 +115,20 @@ def get_matches(request):
  <table class="w-50 table-striped table-hover table-bordered" style="margin: 2% auto;">
     <thead><tr><th>Map</th><th>Score</th></tr></thead>
     <tbody>"""
+                score = 0
                 for i in range(1, 6):
                     if 'map_{}'.format(i) in matches[match]:
+                        score_ = matches[match]['map_{}'.format(i)]['score'].split('-')
+                        score += 1 if int(score_[0]) > int(score_[1]) else -1
                         match_data_2 += '<tr><td>{}</td><td>{}</td></tr>'. \
                             format(matches[match]['map_{}'.format(i)]['name'],
                                    matches[match]['map_{}'.format(i)]['score'])
 
-                match_data_2 += "</tbody></table>"
-#                 """
-#
-# <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
-# """
+                match_data_2 += """</tbody>
+                </table>
+            <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
+            """.format(team_1_data['team_name'] if score > 0 else team_2_data['team_name'])
+                
             elif status == 'Created':
                 match_data_2 = """<h5>Match Scheduled on: {}</h5>
 <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">
@@ -280,17 +283,19 @@ def get_match_data(request, match_id=None):
      <table class="w-50 table-striped table-hover table-bordered" style="margin: 2% auto;">
         <thead><tr><th>Map</th><th>Score</th></tr></thead>
         <tbody>"""
+        score = 0
         for i in range(1, 6):
             if 'map_{}'.format(i) in match_details_:
+                score_ = match_details_['map_{}'.format(i)]['score'].split('-')
+                score += 1 if int(score_[0]) > int(score_[1]) else -1
                 match_data_2 += '<tr><td>{}</td><td>{}</td></tr>'. \
                     format(match_details_['map_{}'.format(i)]['name'],
                            match_details_['map_{}'.format(i)]['score'])
 
-        match_data_2 += "</tbody></table>"
-    #     """
-    #
-    # <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team Sanket Victory</h3>
-    # """
+        match_data_2 += """</tbody>
+        </table>
+    <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
+    """.format(team_1_data['team_name'] if score > 0 else team_2_data['team_name'])
     elif status == 'Created':
         match_data_2 = """<h5>Match Scheduled on: {}</h5>
     <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">
