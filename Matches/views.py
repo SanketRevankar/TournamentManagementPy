@@ -121,9 +121,9 @@ def get_matches(request):
                             format(matches[match]['map_{}'.format(i)]['name'],
                                    matches[match]['map_{}'.format(i)]['score'])
 
-                match_data_2 += ""
-#                 """</tbody>
-# </table>
+                match_data_2 += "</tbody></table>"
+#                 """
+#
 # <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
 # """
             elif status == 'Created':
@@ -286,9 +286,9 @@ def get_match_data(request, match_id=None):
                     format(match_details_['map_{}'.format(i)]['name'],
                            match_details_['map_{}'.format(i)]['score'])
 
-        match_data_2 += ""
-    #     """</tbody>
-    # </table>
+        match_data_2 += "</tbody></table>"
+    #     """
+    #
     # <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team Sanket Victory</h3>
     # """
     elif status == 'Created':
