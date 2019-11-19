@@ -576,13 +576,19 @@ class LocalDataHelper:
                     try:
                         nick = handler.dataHelper.get_username_by_steam_id(steam_id)
                     except AttributeError:
-                        print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
+                        print('[Exception]' + lS.ATTRIBUTE_ERROR_.format(steam_id))
+                        nick = steam_id
+                    except KeyError:
+                        print('[Exception]' + lS.KEY_ERROR_.format(steam_id))
                         nick = steam_id
 
                     try:
                         team = handler.dataHelper.get_team_name_by_steam_id(steam_id)
                     except AttributeError:
-                        print('[Exception]' + lS.ATTRIBUTE_ERROR_.split(steam_id))
+                        print('[Exception]' + lS.ATTRIBUTE_ERROR_.format(steam_id))
+                        team = steam_id
+                    except KeyError:
+                        print('[Exception]' + lS.KEY_ERROR_.format(steam_id))
                         team = steam_id
 
                     if sC.SAY_TEAM not in line:

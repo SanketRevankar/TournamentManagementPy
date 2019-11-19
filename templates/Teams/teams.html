@@ -26,7 +26,7 @@ Header
 {% include "header.html" %}
 
 <div class="wrapper">
-    <nav id="sidebar" style="background: #434a50 !important; height: 100vh;" {% if sidebar_active %}class="active"{% endif %}>
+    <nav id="sidebar" style="background: #434a50 !important; height: 100vh;" class="active">
         <ul class="list-unstyled components" style="padding-top: 7vh; padding-bottom: 4vh;">
             {% for i, team_, team_name, team_tag, team_logo in teams %}
                 <li id='{{ team_ }}' {% if team_ == team_id %}class="active"{% endif %}>

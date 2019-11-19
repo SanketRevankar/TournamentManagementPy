@@ -1212,8 +1212,8 @@ def team_details():
 
     return dict(html="""<div style="text-align: center; margin-top: 10vh; background: rgb(0,0,0,.25); padding: 4vh;">
             <h1>Team Details saved successfully</h1>
-            <h3>Click to download team details: <a target='_blank' href='https://storage.cloud.google.com/ncl/{}'>Team Details</a></h3>
-        </div>""".format(handler.config[sC.FILE_LOCATIONS][sC.TEAM_DETAILS_XLSX]))
+            <h3>Click to download team details: <a target='_blank' href='https://storage.cloud.google.com/{}/{}'>Team Details</a></h3>
+        </div>""".format(handler.config[sC.BUCKET_LOCATIONS][sC.FILES_HOME], handler.config[sC.FILE_LOCATIONS][sC.TEAM_DETAILS_XLSX]))
 
 
 def vac_bans():

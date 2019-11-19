@@ -128,7 +128,7 @@ def get_matches(request):
                 </table>
             <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
             """.format(team_1_data['team_name'] if score > 0 else team_2_data['team_name'])
-                
+
             elif status == 'Created':
                 match_data_2 = """<h5>Match Scheduled on: {}</h5>
 <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">
@@ -379,7 +379,7 @@ def get_match_data(request, match_id=None):
 <div class="card" style="border-top: none;">
     <div class="row no-gutters">
         <div class="col-md-6">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <ul class="list-group list-group-flush">
         """
 
@@ -398,8 +398,8 @@ def get_match_data(request, match_id=None):
             <div class="col-md-6"></div>
         </div>
         <div class="col-md-6">
-            <div class="col-md-8"></div>
-            <div class="col-md-4 ml-md-auto text-right">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 ml-md-auto text-right">
                 <ul class="list-group list-group-flush">
         """
 
