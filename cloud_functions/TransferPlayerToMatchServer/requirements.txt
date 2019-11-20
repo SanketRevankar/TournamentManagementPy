@@ -1,0 +1,3 @@
+oauth2client
+google-cloud-firestore
+google-api-python-client

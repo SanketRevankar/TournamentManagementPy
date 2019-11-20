@@ -106,7 +106,7 @@ def upload_file(file_name, file_path):
     """
 
     client = storage.Client()
-    bucket_name = 'ncl'
+    bucket_name = 'ncl_6'
     bucket = client.get_bucket(bucket_name)
 
     blob = Blob(file_name, bucket)
