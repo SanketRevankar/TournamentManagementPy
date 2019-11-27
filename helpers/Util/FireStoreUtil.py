@@ -222,7 +222,7 @@ class FireStoreUtil:
         docs = collection_ref.stream()
         for doc in docs:
             doc_dict = doc.to_dict()
-            if 'steam_id' not in doc_dict or 'team' not in doc_dict:
+            if 'steam_id' not in doc_dict:
                 continue
             PlayerData.PlayerList[doc.id] = doc_dict
             PlayerData.SteamList[doc_dict['steam_id']] = doc.id
@@ -378,3 +378,12 @@ class FireStoreUtil:
     def get_server_data_by_id(self, server_id):
         doc_ref = self.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
         return doc_ref.get(['ip', 'port']).to_dict()
+
+    def check_game_server_admin(self, steam_id):
+        collection_ref = self.get_collection(self.GAME_SERVERS)
+        docs = collection_ref.stream()
+        admin = {}
+        for doc in docs:
+            admin[doc.id] = steam_id in doc.to_dict()['admins']
+
+        return admin

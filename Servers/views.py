@@ -12,6 +12,8 @@ def welcome(request):
     origin = request.build_absolute_uri('/')[:-1].strip("/")
 
     servers = handler.fireStoreHelper.util.get_game_servers()
+    admin_check = handler.fireStoreHelper.util.check_game_server_admin(request.session['steam_id'])
+    approver = handler.dataHelper.check_admin_approver(request.session['id'])
 
     server_data = []
     for server in servers:
@@ -34,6 +36,7 @@ def welcome(request):
                 server,
                 decoded_contents['game'],
                 decoded_contents['player_count'],
+                admin_check[server],
             ])
 
     context = {
@@ -44,6 +47,7 @@ def welcome(request):
         'name': request.session['name'] if 'name' in request.session else None,
         'username': request.session['username'] if 'username' in request.session else None,
         'steam_id': request.session['steam_id'] if 'steam_id' in request.session else None,
+        'approver': approver,
     }
 
     return HttpResponse(template.render(context, request))

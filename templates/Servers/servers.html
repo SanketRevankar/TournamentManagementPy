@@ -27,7 +27,7 @@ Header
 <div class="wrapper" style='font-family: "Righteous", cursive;'>
     <div id="content" style="padding-top: 7vh; padding-bottom: 5vh; display: block">
         <div class="card-columns">
-            {% for server_name, players_online, player_data, map_name, server_ip, server_port, server_id, game, player_count in servers %}
+            {% for server_name, players_online, player_data, map_name, server_ip, server_port, server_id, game, player_count, admin in servers %}
                 <div class="card">
                     <div class="card-header bg-dark d-flex" style="background: transparent; justify-content: space-between">
                         <a>{{ server_name }}</a>
@@ -39,8 +39,15 @@ Header
                         <p class="text-dark">{{ server_ip }}:{{ server_port }}</p>
                         <div class="d-flex">
                             <a href="steam://connect/{{ server_ip }}:{{ server_port }}" class="btn btn-primary">Join</a>
-                            {% if logged_in %}
+                            {% if logged_in and not admin %}
                                 <a href="#" class="btn btn-dark ml-auto" data-toggle="modal" data-target="#adminshipFormModal">Request Adminship</a>
+                            {% elif admin or approver %}
+                                {% if approver %}
+                                    <!--suppress HtmlUnknownTarget -->
+                                    <a href="AdminRequests" class="btn btn-dark ml-auto">Admin Requests</a>
+                                {% else %}
+                                    <button class="btn btn-dark ml-auto"><span class="fas fa-user-shield"></span> Admin</button>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -87,8 +94,10 @@ Header
                             <label for="serverSelected">Select a Server</label>
                             <select class="custom-select" id="serverSelected">
                                 <option selected>Select Server</option>
-                                {% for server_name, players_online, player_data, map_name, server_ip, server_port, server_id, game, player_count in servers %}
-                                    <option value="{{ server_id }}">{{ server_name }}</option>
+                                {% for server_name, players_online, player_data, map_name, server_ip, server_port, server_id, game, player_count, admin in servers %}
+                                    {% if not admin %}
+                                        <option value="{{ server_id }}">{{ server_name }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>

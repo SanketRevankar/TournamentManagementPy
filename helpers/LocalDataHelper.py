@@ -508,6 +508,12 @@ class LocalDataHelper:
                 except TypeError:
                     print('[Exception]' + lS.NOT_FOUND_.format(stat[0]))
                     continue
+                except KeyError:
+                    print('[Exception]' + lS.NOT_FOUND_.format(stat[0]))
+                    continue
+
+                if not team:
+                    continue
 
                 if team not in stats:
                     stats[team] = {}
@@ -586,17 +592,17 @@ class LocalDataHelper:
                         team = handler.dataHelper.get_team_name_by_steam_id(steam_id)
                     except AttributeError:
                         print('[Exception]' + lS.ATTRIBUTE_ERROR_.format(steam_id))
-                        team = steam_id
+                        team = None
                     except KeyError:
                         print('[Exception]' + lS.KEY_ERROR_.format(steam_id))
-                        team = steam_id
+                        team = None
 
                     if sC.SAY_TEAM not in line:
-                        write_file.write(sC.TAB + str(team).ljust(team_len) + str(nick).ljust(38) + sC.COLON +
+                        write_file.write(sC.TAB + str(team).ljust(team_len) + sC.TAB + str(nick).ljust(38) + sC.COLON +
                                          sC.SPACE + line_split[3] + sC.NEW_LINE)
                     else:
-                        write_file_team.write(sC.TAB + str(team).ljust(team_len) + str(nick).ljust(38) + sC.COLON +
-                                              sC.SPACE + line_split[3] + sC.NEW_LINE)
+                        write_file_team.write(sC.TAB + str(team).ljust(team_len) + sC.TAB + str(nick).ljust(38) +
+                                              sC.COLON + sC.SPACE + line_split[3] + sC.NEW_LINE)
 
         write_file.close()
         write_file_team.close()

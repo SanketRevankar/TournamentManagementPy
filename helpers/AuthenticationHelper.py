@@ -1,4 +1,5 @@
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
@@ -28,9 +29,9 @@ class AuthenticationHelper:
         if 'id' not in request.session or 'steam_id' not in request.session:
             raise PermissionDenied('You need to login')
 
-        if self.mode9:
-            if 'team' not in PlayerList[request.session['id']]:
-                raise PermissionDenied('Player is not in a team!')
+        # if self.mode9:
+        #     if 'team' not in PlayerList[request.session['id']]:
+        #         raise PermissionDenied('Player is not in a team!')
 
     def validate_admin(self, request):
         """
@@ -75,6 +76,12 @@ class AuthenticationHelper:
             raise PermissionDenied('You cannot access this now!')
 
     def validate_approver(self, request):
-        if request.session['id'] not in self.approvers:
+        """
+        Validate if a user is admin approver
+
+        :param request: Request object
+        """
+
+        if not handler.dataHelper.check_admin_approver(request.session['id']):
             handler.logHelper.log_it_visit(request, __name__ + '.validate_approver', authorized=False)
             raise PermissionDenied('You cannot access this page!')
