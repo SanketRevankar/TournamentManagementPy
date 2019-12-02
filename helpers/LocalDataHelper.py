@@ -1,5 +1,6 @@
 import json
 import os
+import pickle
 from time import sleep
 
 import requests
@@ -24,6 +25,7 @@ class LocalDataHelper:
         self.hltv_starting_ = config[sC.BUCKET_LOCATIONS][sC.HLTV_STARTING]
         self.score_starting_ = config[sC.BUCKET_LOCATIONS][sC.SCORE_STARTING]
         self.logs_starting_ = config[sC.BUCKET_LOCATIONS][sC.LOGS_STARTING]
+        self.stats_starting_ = config[sC.BUCKET_LOCATIONS][sC.STATS_]
         self.steam_api_key = config[sC.PROJECT_DETAILS][sC.STEAM_API_KEY]
         self.steam_user_api_ = config[sC.PROJECT_DETAILS][sC.STEAM_USER_API]
         self.banned_users_file_ = self.temp + config[sC.FILE_LOCATIONS][sC.BANNED_USERS_FILE]
@@ -720,3 +722,10 @@ class LocalDataHelper:
             print(lS.PRINTED_IP_MATCHES)
         else:
             print(lS.NO_IP_MATCHES_FOUND)
+
+    def upload_stats_to_bucket(self, match_name, stats):
+        file_name = match_name + '.pickle'
+        temp_file_name = self.temp + file_name
+        with open(temp_file_name, 'wb') as f:
+            pickle.dump(stats, f)
+        handler.cloudStorageHelper.upload_file('stats/' + file_name, temp_file_name)
