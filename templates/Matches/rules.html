@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Rules - {{ SITE_NAME }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="en">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <style>
+        body::-webkit-scrollbar { width: 0; }
+    </style>
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="container">
+    <div id="content" style="padding-top: 7vh; padding-bottom: 5vh; display: block">
+        <h1 class="text-center">Rules</h1>
+        <div class="accordion" id="accordian">
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#format" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Format of the Tournament</h5>
+                    </a>
+                </div>
+                <div id="format" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">This will be a Round Robin tournament and Matches will be held every Saturday and Sunday</p>
+                        <small>NCL Management Team will provide a time slot during which the match will be conducted</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#criteria" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Player Criteria for Teams</h5>
+                    </a>
+                </div>
+                <div id="criteria" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">Match will be 14 vs 14 players out of which at least 10 should be present on the server to start the match and in any case match will not be delayed for more than 10 minutes</p>
+                        <small>If less than 10 players are available, the other team wins</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#maps" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Maps for Tournament</h5>
+                    </a>
+                </div>
+                <div id="maps" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">Maps will be decided by a knife round between captain (or any other player nominated by the captain) of that team</p>
+                        <p class="mb-1">Map Pool:</p>
+                        <ul>
+                            <li>de_dust2</li>
+                            <li>de_inferno</li>
+                            <li>de_train</li>
+                            <li>de_nuke</li>
+                            <li>de_mirage</li>
+                        </ul>
+                        <small>Matches will be BO3</small><br>
+                        <small>No repetition of maps in the same match</small><br>
+                        <small>Each map will be chosen by 1v1 knife</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#sides" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Choosing Sides in Match</h5>
+                    </a>
+                </div>
+                <div id="sides" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">CT or T will be decided by a team knife round, players should not camp and try to end it asap</p>
+                        <small>If less than 10 players are available, the other team wins</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#results" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Match Results</h5>
+                    </a>
+                </div>
+                <div id="results" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">First team to win 16 rounds will win that map, OverTime will be conducted in case of a tie, swap after 3 rounds and the first team to win 4 rounds wins the match</p>
+                        <small>Infinite OT until either team wins</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#Timeouts" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Timeouts in Match</h5>
+                    </a>
+                </div>
+                <div id="Timeouts" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">Each team gets 3 timeouts for each map, in case of Overtime timeouts will reset to 1 for both teams</p>
+                        <small>Remaining timeouts if any will be removed in OT</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#DDoS" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">DDoS in Match</h5>
+                    </a>
+                </div>
+                <div id="DDoS" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">In case of DDoS or lag the match will be paused and will be resumed from the same score going on</p>
+                        <small>In case of server crash we will still resume from the same score</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#Demos" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Recording Demos</h5>
+                    </a>
+                </div>
+                <div id="Demos" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">Demo will be auto recorded, and no one should stop recording demo</p>
+                        <small>Players playing from cafe's should take a backup of their demo as soon as the match ends, you may take pen drives along with you and can upload demos from your home later</small><br>
+                        <small>The player who is unable to provide match demo will be disqualified from the tournament</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#RequestDemos" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Request for Demos</h5>
+                    </a>
+                </div>
+                <div id="RequestDemos" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">Captains can ask up to 3 demos of their opposite team players, in case you want demo of certain players contact NCL Management Team</p>
+                        <small>Players playing from cafe's should take a backup of their demo as soon as the match ends, you may take pen drives along with you and can upload demos from your home later</small><br>
+                        <small>If any player is not able to provide his demo after match after being asked by the opposite team’s captains or NCL Management Team, then that player will be banned and player's team will will lose that match</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#Hacking" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Punishment for Hacking</h5>
+                    </a>
+                </div>
+                <div id="Hacking" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">If any player is found hacking during a match, then that player will be banned and player's team will will lose that match</p>
+                        <small>No Rematch at any Condition</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#AutoBans" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Auto-Bans by Server</h5>
+                    </a>
+                </div>
+                <div id="AutoBans" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">If any player gets banned for any script/hacks or for AWP crosshair by server plugin then he will be disqualified from NCL</p>
+                        <small>Scroll ducking is not allowed</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#SteamIDs" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Sharing Steam IDs</h5>
+                    </a>
+                </div>
+                <div id="SteamIDs" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">Any player found playing from two IDs or someone else playing from registered players ID, the ID will be banned from tournament along with the player he played for</p>
+                        <small>We have plugins to track IP addresses</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#Disputes" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Dispute Resolution</h5>
+                    </a>
+                </div>
+                <div id="Disputes" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">In case of any kind of dispute in match or regarding any issue faced in between the match should be conveyed by the captain directly to NCL Management Team or in captains group</p>
+                        <small>Posts on main group will be ignored</small>
+                    </div>
+                </div>
+            </div>
+            <p class="mb-1 text-center">In case of any kind of dispute the decision of NCL Management Team will be FINAL</p>
+        </div>
+
+    </div>
+</div>
+
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+</body>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>

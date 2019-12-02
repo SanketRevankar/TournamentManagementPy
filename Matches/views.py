@@ -421,3 +421,13 @@ def get_match_data(request, match_id=None):
 """
 
     return JsonResponse({'match_data': match_data + team_data})
+
+
+def rules(request):
+    template = loader.get_template('Matches/rules.html')
+
+    context = {
+        'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
+    }
+
+    return HttpResponse(template.render(context, request))
