@@ -86,7 +86,7 @@ def get_matches(request):
     <div class="row no-gutters">
         <div class="col-md-2">
             <img src="{}" class="card-img" alt="" style="border-radius: 0;">
-            <div class="card-header bg-dark border-dark text-light">{} ({})</div>
+                <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-6">
@@ -201,7 +201,7 @@ function pad(n) {{
         <div class="col-md-2">
             <img src="{}"
                  class="card-img" alt="" style="border-radius: 0;">
-            <div class="card-header bg-dark border-dark text-light">{} ({})</div>
+            <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
         </div>
     </div>
 </div>""".format(team_2_data['team_logo_url'], team_2_data['team_name'],
@@ -253,14 +253,14 @@ def get_match_data(request, match_id=None):
         <div class="row no-gutters">
             <div class="col-md-2">
                 <img src="{}" class="card-img" alt="" style="border-radius: 0;">
-                <div class="card-header bg-dark border-dark text-light">{} ({})</div>
+                <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-6">
                 <div class="card-body">
                     <h3 class="card-title" style="border-bottom: 1px solid black;padding-bottom: 1%;font-weight: 600;
                     color: #343a40;"><a href='#' class='fas fa-link text-dark text-decoration-none' id='{}' title='Click to copy link!'></a>
-                    <a href="{}" class='text-dark'> Match #{} {} vs {}</a></h3>
+                    <a class='text-dark'> Match #{} {} vs {}</a></h3>
                     <script>
                         $('#{}').click(function() {{
                             var textArea = document.createElement("textarea");
@@ -273,7 +273,7 @@ def get_match_data(request, match_id=None):
                         }});
                     </script>
                     """. \
-        format(team_1_data['team_logo_url'], team_1_data['team_name'], team_1_data['team_tag'], match_id, match_id,
+        format(team_1_data['team_logo_url'], team_1_data['team_name'], team_1_data['team_tag'], match_id,
                match_id, team_1_data['team_name'], team_2_data['team_name'], match_id,
                request.get_raw_uri().split('api')[0] + match_id)
 
@@ -368,7 +368,7 @@ def get_match_data(request, match_id=None):
             <div class="col-md-2">
                 <img src="{}"
                      class="card-img" alt="" style="border-radius: 0;">
-                <div class="card-header bg-dark border-dark text-light">{} ({})</div>
+                <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
             </div>
         </div>
     </div>""".format(team_2_data['team_logo_url'], team_2_data['team_name'], team_2_data['team_tag'])
