@@ -138,14 +138,14 @@ def join_team(request, team_id):
 
 
 def leave_team(request):
-    handler.authenticationHelper.validate_mode_9()
-    handler.authenticationHelper.validate_login(request)
-    handler.logHelper.log_it_api(request, __name__ + '.leave_team')
-
-    player_id = request.session['id']
-    team_id = handler.dataHelper.get_team_id_by_player_id(player_id)
-    handler.fireStoreHelper.leave_team(player_id)
-    handler.fireStoreHelper.remove_player_from_team(team_id, player_id)
+    # handler.authenticationHelper.validate_mode_9()
+    # handler.authenticationHelper.validate_login(request)
+    # handler.logHelper.log_it_api(request, __name__ + '.leave_team')
+    #
+    # player_id = request.session['id']
+    # team_id = handler.dataHelper.get_team_id_by_player_id(player_id)
+    # handler.fireStoreHelper.leave_team(player_id)
+    # handler.fireStoreHelper.remove_player_from_team(team_id, player_id)
 
     return redirect('/Home')
 
