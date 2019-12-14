@@ -54,7 +54,6 @@ def create_team(request):
 
 
 def manage_team(request):
-    handler.authenticationHelper.validate_mode_9()
     handler.authenticationHelper.validate_login(request)
     handler.authenticationHelper.validate_captain(request.session['id'], request, None)
     handler.logHelper.log_it_visit(request, __name__ + '.manage_team')
@@ -63,7 +62,7 @@ def manage_team(request):
 
     player_id = request.session['id']
     team_id = handler.dataHelper.get_team_id_by_player_id(player_id)
-    team_data = handler.dataHelper.get_team_data_by_id(team_id)
+    team_data = handler.fireStoreHelper.util.fsh_get_team_data_by_id(team_id)
     players = handler.dataHelper.get_player_data_arr_by_id(team_data['players'])
 
     context = {
@@ -153,16 +152,23 @@ def leave_team(request):
 
 
 def api_handler(request, name):
-    handler.authenticationHelper.validate_mode_9()
     handler.authenticationHelper.validate_login(request)
+
+    always_allowed = {
+        'make_captain': make_captain,
+        'remove_captain': remove_captain,
+    }
+
+    if name in always_allowed:
+        return always_allowed[name](request)
+
+    handler.authenticationHelper.validate_mode_9()
 
     api_names = {
         'accept_player': accept_player,
         'team_count': team_count,
         'ignore_player': ignore_player,
         'remove_player': remove_player,
-        'make_captain': make_captain,
-        'remove_captain': remove_captain,
     }
 
     if not name or name not in api_names:
