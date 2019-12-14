@@ -50,7 +50,7 @@ class MatchBannerHelper:
         path = self.temp + match_id +'.png'
         banner.save(path)
 
-        return open(path, 'rb')
+        return path
 
     def add_team_1_name(self, text, draw, font):
         (x, y) = (75, 562)
