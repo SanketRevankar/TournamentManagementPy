@@ -47,7 +47,7 @@ class MatchBannerHelper:
         banner.paste(team_1_logo, (74, 148))
         banner.paste(team_2_logo, (865, 148))
 
-        path = self.temp + 'banner.png'
+        path = self.temp + match_id +'.png'
         banner.save(path)
 
         return open(path, 'rb')
