@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta, timezone
 
 from django.http import HttpResponse, JsonResponse, Http404
@@ -519,5 +520,7 @@ def get_banner(request):
     with open(match_banner, 'rb') as img:
         response = HttpResponse(img, content_type="image/png")
     response['Content-Disposition'] = 'attachment; filename=Match_{}_Banner.png'.format(match_id)
+
+    os.remove(match_banner)
 
     return response
