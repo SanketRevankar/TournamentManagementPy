@@ -9,3 +9,4 @@ authenticationHelper = None
 ftpHelper = None
 dataHelper = None
 adminHelper = None
+matchBannerHelper = None

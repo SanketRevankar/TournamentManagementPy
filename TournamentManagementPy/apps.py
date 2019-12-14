@@ -10,6 +10,7 @@ from helpers.FTPHelper import FTPHelper
 from helpers.FireStoreHelper import FireStoreHelper
 from helpers.LocalDataHelper import LocalDataHelper
 from helpers.LogHelper import LogHelper
+from helpers.MatchBannerHelper import MatchBannerHelper
 from helpers.MySQLHelper import MySQLHelper
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
@@ -34,6 +35,7 @@ class MyAppConfig(AppConfig):
         handler.mySQLHelper = MySQLHelper(handler.config)
         handler.cloudServerHelper = CloudServerHelper(handler.config)
         handler.ftpHelper = FTPHelper(handler.config)
+        handler.matchBannerHelper = MatchBannerHelper(handler.config)
         handler.fireStoreHelper.util.load_server_data()
 
         # Initialize Helper classes for MODE = 9 (Registration Closed and teams finalized)
