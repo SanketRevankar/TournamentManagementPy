@@ -518,4 +518,7 @@ def get_banner(request):
 
     response = HttpResponse(match_banner, content_type="image/png")
     response['Content-Disposition'] = 'attachment; filename=Match_{}_Banner.png'.format(match_id)
+
+    match_banner.close()
+
     return response
