@@ -260,6 +260,7 @@ LOG_HELPER = "log_helper"
 -------------------------------------------------------------------------------------------------------------------- """
 FOLDER_LOCATIONS = "Folder Locations"
 FILE_LOCATIONS = "File Locations"
+BANNERS = "BANNERS"
 FONT_PATH = 'FONT_PATH'
 CERT_IMG_PATH = 'CERT_IMG_PATH'
 BANNER_IMG = 'BANNER_IMG'

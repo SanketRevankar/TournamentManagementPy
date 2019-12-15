@@ -15,6 +15,7 @@ def create_match(request):
     date_time = request.POST['datetime']
 
     handler.logHelper.log_it_api(request, __name__ + '.create_match', target=match_id)
+    handler.matchBannerHelper.create_banner(match_id, team_1, team_2, date_time)
 
     return {'match_id': handler.fireStoreHelper.create_match(match_id, team_1, team_2, match_server, hltv_server,
                                                              request.session['id'], date_time)}

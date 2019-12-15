@@ -94,7 +94,7 @@ def get_matches(request):
             <div class="card-body">
                 <h3 class="card-title" style="border-bottom: 1px solid black;padding-bottom: 1%;font-weight: 600;
                 color: #343a40;"><a href='#' class='fas fa-link text-dark text-decoration-none' id='{}' title='Click to copy link!'></a>
-                <a href="{}" class='text-dark'> Match #{} {} vs {} </a><a class='far fa-image text-dark text-decoration-none' href="api/v1/get/banner?match_id={}"></a></h3>
+                <a href="{}" class='text-dark'> Match #{} {} vs {} </a></h3>
                 <script>
                     $('#{}').click(function() {{
                         var textArea = document.createElement("textarea");
@@ -108,7 +108,7 @@ def get_matches(request):
                 </script>
                 """. \
                 format(team_1_data['team_logo_url'], team_1_data['team_name'], team_1_data['team_tag'], match, match,
-                       match, team_1_data['team_name'], team_2_data['team_name'], match, match,
+                       match, team_1_data['team_name'], team_2_data['team_name'], match,
                        request.get_raw_uri().split('api')[0] + match)
 
             if status == 'Completed':
@@ -509,18 +509,3 @@ def rules(request):
     }
 
     return HttpResponse(template.render(context, request))
-
-
-def get_banner(request):
-    handler.authenticationHelper.validate_login(request)
-
-    match_id = (request.GET.get('match_id'))
-    match_banner = handler.matchBannerHelper.create_banner(match_id)
-
-    with open(match_banner, 'rb') as img:
-        response = HttpResponse(img, content_type="image/png")
-    response['Content-Disposition'] = 'attachment; filename=Match_{}_Banner.png'.format(match_id)
-
-    os.remove(match_banner)
-
-    return response
