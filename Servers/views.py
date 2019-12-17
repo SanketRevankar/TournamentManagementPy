@@ -6,7 +6,10 @@ from django.template import loader
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
 
-
+"""
+107.178.206.0/24
+GAE Ip
+"""
 def welcome(request):
     template = loader.get_template('Servers/servers.html')
     origin = request.build_absolute_uri('/')[:-1].strip("/")

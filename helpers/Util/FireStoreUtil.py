@@ -9,21 +9,26 @@ from firestore_data.MatchData import MatchList
 
 
 class FireStoreUtil:
-    def __init__(self, config):
+    def __init__(self, matches, game_servers, players, teams, servers, temp):
         """
         Initiate FireStore Util.
         This Class contains utilities for helping with FireStore operations
 
-        :param config: Config object
+        :param servers: Name of collection for servers in FireStore
+        :param matches: Name of collection for matches in FireStore
+        :param servers: Name of collection for servers in FireStore
+        :param players: Name of collection for players in FireStore
+        :param teams: Name of collection for teams in FireStore
+        :param temp: Path to temp dir
         """
 
         self.db = firestore_v1.Client()
-        self.GAME_SERVERS = u'game_servers'
-        self.MATCHES = u'matches'
-        self.SERVERS = u'servers'
-        self.PLAYERS = u'players'
-        self.TEAMS = u'teams'
-        self.temp = config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER]
+        self.GAME_SERVERS = game_servers
+        self.MATCHES = matches
+        self.PLAYERS = players
+        self.TEAMS = teams
+        self.SERVERS = servers
+        self.temp = temp
 
         print('{} - Initialized'.format(__name__))
 

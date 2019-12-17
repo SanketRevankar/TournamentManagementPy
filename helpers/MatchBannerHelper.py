@@ -1,6 +1,5 @@
 import os
-import subprocess
-from datetime import timezone, datetime
+from datetime import datetime
 from io import BytesIO
 
 import requests
@@ -21,8 +20,10 @@ class MatchBannerHelper:
         """
         Prints the name on the certificate using position defined in Config file
 
-        :param team: Team of the player
-        :param c_name: Name of the player
+        :param match_id: Match Id
+        :param team_1: Id of team 1
+        :param team_2: Id of team 2
+        :param date_time: Match start time
         """
 
         image = Image.open(self.banner_img_path)
@@ -51,7 +52,7 @@ class MatchBannerHelper:
 
         path = self.temp + match_id +'.png'
         banner.save(path)
-        handler.cloudStorageHelper.upload_file(self.banners + match_id + '.png', path)
+        handler.cloudStorageHelper.upload_file(self.banners + match_id + '.png', path, True)
         os.remove(path)
 
     def add_team_1_name(self, text, draw, font):

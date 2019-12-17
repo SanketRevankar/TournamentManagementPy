@@ -66,7 +66,7 @@ def start_match_db(request):
     if match_id_:
         return {'error': 'Match with id {} is already set, stop that match before starting this one.'.format(match_id_)}
 
-    handler.fireStoreHelper.util.update_document('matches', match_id,
+    handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.MATCHES, match_id,
                                                  {'status': 'Started', 'start_time': datetime.datetime.utcnow(),
                                                   'started_by': id_, 'hltv_external_ip': hltv_ip,
                                                   'match_external_ip': match_ip})
@@ -149,7 +149,7 @@ def end_match_db(request):
     map_count = 1
     for map_ in scores:
         score = '{}-{}'.format(scores[map_]['team_1'], scores[map_]['team_2'])
-        handler.fireStoreHelper.util.update_document('matches', match_id, {
+        handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.MATCHES, match_id, {
             'map_{}'.format(map_count): {
                 'name': map_,
                 'score': score,
@@ -157,8 +157,9 @@ def end_match_db(request):
         })
         map_count += 1
 
-    handler.fireStoreHelper.util.update_document('matches', match_id, {'status': 'Completed', 'stopped_by': id_,
-                                                                       'end_time': datetime.datetime.utcnow()})
+    handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.MATCHES, match_id,
+                                                 {'status': 'Completed', 'stopped_by': id_,
+                                                  'end_time': datetime.datetime.utcnow()})
 
     handler.mySQLHelper.end_match(match_id)
 

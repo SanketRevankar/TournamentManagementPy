@@ -34,7 +34,7 @@ class CloudStorageHelper:
         blob.upload_from_string('')
         handler.logHelper.log_it_storage(folder, 'dir')
 
-    def upload_file(self, file_name, file_path):
+    def upload_file(self, file_name, file_path, public=False):
         """
         Upload a file from local storage to bucket
 
@@ -45,6 +45,8 @@ class CloudStorageHelper:
         blob = Blob(file_name, self.bucket)
         with open(file_path, "rb") as my_file:
             blob.upload_from_file(my_file)
+            if public:
+                blob.make_public()
         handler.logHelper.log_it_storage(file_name, 'file')
 
     def get_blobs_by_prefix(self, prefix):

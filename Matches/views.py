@@ -1,4 +1,3 @@
-import os
 from datetime import timedelta, timezone
 
 from django.http import HttpResponse, JsonResponse, Http404
@@ -94,7 +93,7 @@ def get_matches(request):
             <div class="card-body">
                 <h3 class="card-title" style="border-bottom: 1px solid black;padding-bottom: 1%;font-weight: 600;
                 color: #343a40;"><a href='#' class='fas fa-link text-dark text-decoration-none' id='{}' title='Click to copy link!'></a>
-                <a href="{}" class='text-dark'> Match #{} {} vs {} </a></h3>
+                <a href="{}" class='text-dark'> Match #{} {} vs {} </a><a class='far fa-image text-dark text-decoration-none' target="_blank"   href="https://storage.googleapis.com/ncl_6/banners/{}.png"></a></h3>
                 <script>
                     $('#{}').click(function() {{
                         var textArea = document.createElement("textarea");
@@ -108,7 +107,7 @@ def get_matches(request):
                 </script>
                 """. \
                 format(team_1_data['team_logo_url'], team_1_data['team_name'], team_1_data['team_tag'], match, match,
-                       match, team_1_data['team_name'], team_2_data['team_name'], match,
+                       match, team_1_data['team_name'], team_2_data['team_name'], match, match,
                        request.get_raw_uri().split('api')[0] + match)
 
             if status == 'Completed':

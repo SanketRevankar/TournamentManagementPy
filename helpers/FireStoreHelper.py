@@ -17,12 +17,15 @@ class FireStoreHelper:
         :param config: Config object
         """
 
-        self.util = FireStoreUtil(config)
-        self.MATCHES = u'matches'
-        self.GAME_SERVERS = u'game_servers'
-        self.PLAYERS = u'players'
-        self.TEAMS = u'teams'
-        self.HELP = u'help'
+        self.temp = config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER]
+        self.fs_matches = config[sC.FIRESTORE_COLLECTION_NAMES][sC.FS_MATCHES]
+        self.fs_game_servers = config[sC.FIRESTORE_COLLECTION_NAMES][sC.FS_GAME_SERVERS]
+        self.fs_players = config[sC.FIRESTORE_COLLECTION_NAMES][sC.FS_PLAYERS]
+        self.fs_teams = config[sC.FIRESTORE_COLLECTION_NAMES][sC.FS_TEAMS]
+        self.fs_servers = config[sC.FIRESTORE_COLLECTION_NAMES][sC.FS_SERVERS]
+
+        self.util = FireStoreUtil(self.fs_matches, self.fs_game_servers, self.fs_players, self.fs_teams,
+                                  self.fs_servers, self.temp)
 
         print('{} - Initialized'.format(__name__))
 
@@ -40,7 +43,7 @@ class FireStoreHelper:
         :return: Document Id -> Id of the player, Status -> Player Data is Created or not, Player Data if Data exists
         """
 
-        collection_ref = self.util.get_collection(self.PLAYERS)
+        collection_ref = self.util.get_collection(self.fs_players)
         doc_ref = collection_ref.document(fb_id)
 
         if doc_ref.get().exists:
@@ -94,7 +97,7 @@ class FireStoreHelper:
             'steam_login': login_time
         }
 
-        self.util.update_document(self.PLAYERS, doc_id, steam_login_data)
+        self.util.update_document(self.fs_players, doc_id, steam_login_data)
 
     def create_team(self, team_id, team_name, team_tag, team_logo_url, player_id):
         """
@@ -108,7 +111,7 @@ class FireStoreHelper:
         :return: Boolean, Boolean if Team with same Name, Tag Exists
         """
 
-        collection_ref = self.util.get_collection(self.TEAMS)
+        collection_ref = self.util.get_collection(self.fs_teams)
         status_name, status_tag, status_id = False, False, False
 
         if self.util.check_team_with_id_exists(team_id):
@@ -129,7 +132,7 @@ class FireStoreHelper:
 
         doc_ref = collection_ref.document(document_id=team_id)
         doc_ref.create({'team_name': team_name, 'team_tag': team_tag, 'team_logo_url': team_logo_url,
-                        'players': [player_id], 'join_requests': [], 'captain': player_id})
+                        self.fs_players: [player_id], 'join_requests': [], 'captain': player_id})
 
         join_team = self.util.clear_join_team_for_player(player_id)
         self.util.remove_player_id_from_all_teams_requests(join_team, player_id)
@@ -148,7 +151,7 @@ class FireStoreHelper:
         """
 
         new_team_data = {'team_name': team_name, 'team_tag': team_tag, 'team_logo_url': team_logo_url}
-        self.util.update_document(self.TEAMS, team_id, new_team_data)
+        self.util.update_document(self.fs_teams, team_id, new_team_data)
 
     def delete_team(self, team_id, player_id):
         """
@@ -159,7 +162,7 @@ class FireStoreHelper:
         :return: Boolean, Whether Team is Deleted or not
         """
 
-        if self.util.fsh_get_team_data_by_id(team_id)['players'].__len__() > 1:
+        if self.util.fsh_get_team_data_by_id(team_id)[self.fs_players].__len__() > 1:
             return False
 
         self.util.get_team_ref_by_team_id(team_id).delete()
@@ -194,11 +197,11 @@ class FireStoreHelper:
         """
 
         team_ref = self.util.get_team_ref_by_team_id(team_id)
-        players = team_ref.get(['players']).get('players')
+        players = team_ref.get([self.fs_players]).get(self.fs_players)
         if players.__len__() >= int(handler.config[sC.PROJECT_DETAILS][sC.MAX_PLAYERS]):
             raise PermissionDenied('Team already has max players')
         team_ref.update({
-            'players': players + [player_id],
+            self.fs_players: players + [player_id],
         })
 
         join_team = self.util.clear_join_team_for_player(player_id)
@@ -215,14 +218,14 @@ class FireStoreHelper:
 
         team_ref = self.util.get_team_ref_by_team_id(team_id)
         team_data = self.util.fsh_get_team_data_by_id(team_id)
-        players = team_data['players']
+        players = team_data[self.fs_players]
         players.remove(player_id)
 
         if 'vice_captain' in team_data and team_data['vice_captain'] == player_id:
             handler.adminHelper.remove_admin(player_id)
             team_ref.update({'vice_captain': firestore_v1.DELETE_FIELD})
 
-        team_ref.update({'players': players})
+        team_ref.update({self.fs_players: players})
 
     def ignore_player(self, player_id, team_id):
         """
@@ -267,7 +270,7 @@ class FireStoreHelper:
         :return: Html string for indicating match creation status
         """
 
-        match_ref = self.util.get_collection(self.MATCHES).document(match_id)
+        match_ref = self.util.get_collection(self.fs_matches).document(match_id)
 
         try:
             match_ref.create({
@@ -285,17 +288,17 @@ class FireStoreHelper:
         return '<p class="text-success">Match with id {} created</p>'.format(match_id)
 
     def add_game_server_admin_request(self, server_id, admin_data):
-        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref = self.util.get_doc_by_id_collection(self.fs_game_servers, server_id)
         doc_ref.set({'admin_requests': admin_data}, merge=True)
 
     def ignore_admin_request(self, steam_id, server_id):
-        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref = self.util.get_doc_by_id_collection(self.fs_game_servers, server_id)
         doc_ref.set({'admin_requests': {steam_id: firestore_v1.DELETE_FIELD}}, merge=True)
 
     def remove_server_admin(self, steam_id, server_id):
-        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref = self.util.get_doc_by_id_collection(self.fs_game_servers, server_id)
         doc_ref.set({'admins': {steam_id: firestore_v1.DELETE_FIELD}}, merge=True)
 
     def add_server_admin(self, access_data, server_id):
-        doc_ref = self.util.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
+        doc_ref = self.util.get_doc_by_id_collection(self.fs_game_servers, server_id)
         doc_ref.set({'admins': access_data}, merge=True)
