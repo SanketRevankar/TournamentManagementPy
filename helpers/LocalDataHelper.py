@@ -1,6 +1,7 @@
 import json
 import os
 import pickle
+from datetime import datetime
 from time import sleep
 
 import requests
@@ -386,8 +387,7 @@ class LocalDataHelper:
                         stats[stat[0]][stat[1]] += 1
         return stats
 
-    @staticmethod
-    def load_time_from_data(steam_id_):
+    def load_time_from_data(self, steam_id_):
         """
         Get Time of first and last login
 
@@ -405,7 +405,8 @@ class LocalDataHelper:
                         sC.START_TIME: steam_id_[steam_id][ip][sC.START_TIME],
                         sC.END_TIME: steam_id_[steam_id][ip][sC.END_TIME],
                     }
-        return ips
+
+        return self.print_ip_matches(ips)
 
     def get_top_n(self, stat_current, number, stats, count_matches):
         """
@@ -455,33 +456,38 @@ class LocalDataHelper:
 
         steam_id = {}
 
-        for file_ac in os.listdir(self.logs_starting_):
-            print(lS.LOADING_IP_DATA_OF_.format(file_ac))
-            for file_c in os.listdir(self.logs_starting_ + file_ac):
-                if pS.IP_ + sC.UNDERSCORE in file_c:
-                    date_c = file_c.strip().replace(pS.IP_ + sC.UNDERSCORE, sC.EMPTY_STRING) \
-                        .replace(sC.TXT, sC.EMPTY_STRING)
+        for blob in handler.cloudStorageHelper.get_blobs_by_prefix('logs'):
+            if pS.IP_ + sC.UNDERSCORE in blob.name:
+                date_c = blob.name.strip().split('/')[-1].replace(pS.IP_ + sC.UNDERSCORE, sC.EMPTY_STRING) \
+                    .replace(sC.TXT, sC.EMPTY_STRING)
 
-                    with open(self.logs_starting_ + sC.UNIX_SEPARATOR + file_ac +
-                              sC.UNIX_SEPARATOR + file_c, encoding=pC.ENCODING) as f_c:
-                        for line_c in f_c:
-                            log_c = line_c.strip().split(sC.TAB_)
+                b_str = blob.download_as_string().decode()
 
-                            try:
-                                _ = handler.dataHelper.get_team_by_steam_id(log_c[2])
-                            except TypeError:
-                                continue
+                for line in b_str.split('\n'):
+                    log_c = line.strip().split(sC.TAB_)
+                    if log_c.__len__() == 1:
+                        continue
 
-                            if log_c[2] not in steam_id:
-                                steam_id[log_c[2]] = {}
+                    try:
+                        _ = handler.dataHelper.get_team_by_steam_id(log_c[2])
+                    except TypeError and KeyError:
+                        continue
 
-                            if log_c[3] not in steam_id[log_c[2]]:
-                                steam_id[log_c[2]][log_c[3]] = {}
-                                steam_id[log_c[2]][log_c[3]][sC.START_TIME] = date_c + sC.SPACE + log_c[0]
-                                steam_id[log_c[2]][log_c[3]][sC.END_TIME] = date_c + sC.SPACE + log_c[0]
-                            else:
-                                steam_id[log_c[2]][log_c[3]][sC.END_TIME] = date_c + sC.SPACE + log_c[0]
-            return steam_id
+                    if log_c[2] not in steam_id:
+                        steam_id[log_c[2]] = {}
+
+                    date_time = datetime.strptime(date_c + sC.SPACE + log_c[0], '%Y-%m-%d %H:%M:%S')
+                    if log_c[3] not in steam_id[log_c[2]]:
+                        steam_id[log_c[2]][log_c[3]] = {}
+                        steam_id[log_c[2]][log_c[3]][sC.START_TIME] = date_time
+                        steam_id[log_c[2]][log_c[3]][sC.END_TIME] = date_time
+                    else:
+                        if date_time > steam_id[log_c[2]][log_c[3]][sC.END_TIME]:
+                            steam_id[log_c[2]][log_c[3]][sC.END_TIME] = date_time
+                        if date_time < steam_id[log_c[2]][log_c[3]][sC.START_TIME]:
+                            steam_id[log_c[2]][log_c[3]][sC.START_TIME] = date_time
+
+        return self.load_time_from_data(steam_id)
 
     def get_stats_from_logs(self, match_name):
         """
@@ -706,22 +712,25 @@ class LocalDataHelper:
         """
 
         count = 0
+        ip_matches_print = ''
         for ip in ips:
             if ips[ip].__len__() > 1:
-                print(ip)
+                ip_matches_print += ip + sC.NEW_LINE
                 count += 1
 
                 for steam in ips[ip]:
                     team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(steam)
-                    print(sC.TAB + sC.STAR + team[:pC.TEAM_PRINT_PADDING].ljust(pC.TEAM_PRINT_PADDING),
-                          name[:pC.NAME_PRINT_PADDING].ljust(pC.NAME_PRINT_PADDING),
-                          nick[:pC.NICK_PRINT_PADDING].ljust(pC.NICK_PRINT_PADDING),
-                          ips[ip][steam][sC.START_TIME], ips[ip][steam][sC.END_TIME], sC.TAB, steam)
+                    ip_matches_print += sC.TAB + sC.STAR + team[:pC.TEAM_PRINT_PADDING].ljust(pC.TEAM_PRINT_PADDING) + \
+                                        sC.SPACE + name[:pC.NAME_PRINT_PADDING].ljust(pC.NAME_PRINT_PADDING) + \
+                                        sC.SPACE + nick[:pC.NICK_PRINT_PADDING].ljust(pC.NICK_PRINT_PADDING)  + \
+                                        sC.SPACE + str(ips[ip][steam][sC.START_TIME]) + \
+                                        sC.SPACE + str(ips[ip][steam][sC.END_TIME]) + sC.SPACE +  sC.TAB + \
+                                        sC.SPACE +  steam + sC.NEW_LINE
 
         if count > 0:
-            print(lS.PRINTED_IP_MATCHES)
+            return ip_matches_print
         else:
-            print(lS.NO_IP_MATCHES_FOUND)
+            return lS.NO_IP_MATCHES_FOUND
 
     def upload_stats_to_bucket(self, match_name, stats):
         file_name = match_name + '.pickle'

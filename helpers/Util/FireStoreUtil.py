@@ -3,7 +3,6 @@ import pickle
 from google.cloud import firestore_v1
 
 from TournamentManagementPy import handler
-from constants import StringConstants as sC
 from firestore_data import PlayerData, TeamData, ServerData
 from firestore_data.MatchData import MatchList
 

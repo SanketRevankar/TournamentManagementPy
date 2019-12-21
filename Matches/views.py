@@ -296,6 +296,9 @@ def get_match_data(request, match_id=None):
         </table>
     <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
     """.format(team_1_data['team_name'] if score > 0 else team_2_data['team_name'])
+        if 'hltv_demo' in match_details_:
+            match_data_2 += "<a class='btn btn-dark' href={} target='_blank'>HLTV Demos</a>"\
+                .format(match_details_['hltv_demo'])
     elif status == 'Created':
         match_data_2 = """<h5>Match Scheduled on: {}</h5>
     <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">

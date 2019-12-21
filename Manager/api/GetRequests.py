@@ -80,6 +80,12 @@ def vac_bans(_):
     return {'html': resp}
 
 
+def ip_matches(_):
+    ip_matches = handler.localDataHelper.get_ip_data_from_logs()
+
+    return {'html': ip_matches}
+
+
 def create_steam_id64_list():
     ac = open(handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER] +
               handler.config[sC.FILE_LOCATIONS][sC.STEAM_ID_LIST_TXT], sC.WRITE_MODE)
