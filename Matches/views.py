@@ -8,7 +8,7 @@ from constants import StringConstants as sC
 
 
 def welcome(request):
-    handler.authenticationHelper.validate_login(request)
+    # handler.authenticationHelper.validate_login(request)
     # handler.logHelper.log_it_visit(request, __name__ + '.welcome')
 
     template = loader.get_template('Matches/matches.html')
@@ -24,8 +24,8 @@ def welcome(request):
 
 
 def match_details(request, match_id=None):
-    handler.authenticationHelper.validate_login(request)
-    handler.logHelper.log_it_visit(request, __name__ + '.match_details')
+    # handler.authenticationHelper.validate_login(request)
+    # handler.logHelper.log_it_visit(request, __name__ + '.match_details')
 
     template = loader.get_template('Matches/match.html')
 
@@ -40,7 +40,7 @@ def match_details(request, match_id=None):
 
 
 def get_matches(request):
-    handler.authenticationHelper.validate_login(request)
+    # handler.authenticationHelper.validate_login(request)
     # handler.logHelper.log_it_api(request, __name__ + '.get_matches')
 
     statuses = {
@@ -311,8 +311,8 @@ def get_match_data(request, match_id=None):
         </div>
     </div>
     <script>
-    var target_date_{} = '{}';
 
+2497
     var countdown_{} = document.getElementById("tiles_{}");
     setInterval(function () {{ getCountdown_{}(); }}, 1000);
 
