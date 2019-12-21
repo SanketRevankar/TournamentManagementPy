@@ -8,7 +8,7 @@ from constants import StringConstants as sC
 
 
 def welcome(request):
-    handler.authenticationHelper.validate_login(request)
+    # handler.authenticationHelper.validate_login(request)
     # handler.logHelper.log_it_visit(request, __name__ + '.welcome')
 
     template = loader.get_template('Matches/matches.html')
@@ -24,8 +24,8 @@ def welcome(request):
 
 
 def match_details(request, match_id=None):
-    handler.authenticationHelper.validate_login(request)
-    handler.logHelper.log_it_visit(request, __name__ + '.match_details')
+    # handler.authenticationHelper.validate_login(request)
+    # handler.logHelper.log_it_visit(request, __name__ + '.match_details')
 
     template = loader.get_template('Matches/match.html')
 
@@ -40,7 +40,7 @@ def match_details(request, match_id=None):
 
 
 def get_matches(request):
-    handler.authenticationHelper.validate_login(request)
+    # handler.authenticationHelper.validate_login(request)
     # handler.logHelper.log_it_api(request, __name__ + '.get_matches')
 
     statuses = {
@@ -86,14 +86,14 @@ def get_matches(request):
     <div class="row no-gutters">
         <div class="col-md-2">
             <img src="{}" class="card-img" alt="" style="border-radius: 0;">
-            <div class="card-header bg-dark border-dark text-light">{} ({})</div>
+                <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-6">
             <div class="card-body">
                 <h3 class="card-title" style="border-bottom: 1px solid black;padding-bottom: 1%;font-weight: 600;
                 color: #343a40;"><a href='#' class='fas fa-link text-dark text-decoration-none' id='{}' title='Click to copy link!'></a>
-                <a href="{}" class='text-dark'> Match #{} {} vs {}</a></h3>
+                <a href="{}" class='text-dark'> Match #{} {} vs {} </a><a class='far fa-image text-dark text-decoration-none' target="_blank"   href="https://storage.googleapis.com/ncl_6/banners/{}.png"></a></h3>
                 <script>
                     $('#{}').click(function() {{
                         var textArea = document.createElement("textarea");
@@ -107,7 +107,7 @@ def get_matches(request):
                 </script>
                 """. \
                 format(team_1_data['team_logo_url'], team_1_data['team_name'], team_1_data['team_tag'], match, match,
-                       match, team_1_data['team_name'], team_2_data['team_name'], match,
+                       match, team_1_data['team_name'], team_2_data['team_name'], match, match,
                        request.get_raw_uri().split('api')[0] + match)
 
             if status == 'Completed':
@@ -115,16 +115,20 @@ def get_matches(request):
  <table class="w-50 table-striped table-hover table-bordered" style="margin: 2% auto;">
     <thead><tr><th>Map</th><th>Score</th></tr></thead>
     <tbody>"""
+                score = 0
                 for i in range(1, 6):
                     if 'map_{}'.format(i) in matches[match]:
+                        score_ = matches[match]['map_{}'.format(i)]['score'].split('-')
+                        score += 1 if int(score_[0]) > int(score_[1]) else -1
                         match_data_2 += '<tr><td>{}</td><td>{}</td></tr>'. \
                             format(matches[match]['map_{}'.format(i)]['name'],
                                    matches[match]['map_{}'.format(i)]['score'])
 
                 match_data_2 += """</tbody>
-</table>
-<h3 class="card-text" style="font-weight: 600;color: #343a40;">Team Sanket Victory</h3>
-"""
+                </table>
+            <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
+            """.format(team_1_data['team_name'] if score > 0 else team_2_data['team_name'])
+
             elif status == 'Created':
                 match_data_2 = """<h5>Match Scheduled on: {}</h5>
 <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">
@@ -197,7 +201,7 @@ function pad(n) {{
         <div class="col-md-2">
             <img src="{}"
                  class="card-img" alt="" style="border-radius: 0;">
-            <div class="card-header bg-dark border-dark text-light">{} ({})</div>
+            <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
         </div>
     </div>
 </div>""".format(team_2_data['team_logo_url'], team_2_data['team_name'],
@@ -248,15 +252,15 @@ def get_match_data(request, match_id=None):
     <div class="card text-center" style="border-bottom: none;">
         <div class="row no-gutters">
             <div class="col-md-2">
+                <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
                 <img src="{}" class="card-img" alt="" style="border-radius: 0;">
-                <div class="card-header bg-dark border-dark text-light">{} ({})</div>
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-6">
                 <div class="card-body">
                     <h3 class="card-title" style="border-bottom: 1px solid black;padding-bottom: 1%;font-weight: 600;
                     color: #343a40;"><a href='#' class='fas fa-link text-dark text-decoration-none' id='{}' title='Click to copy link!'></a>
-                    <a href="{}" class='text-dark'> Match #{} {} vs {}</a></h3>
+                    <a class='text-dark'> Match #{} {} vs {}</a></h3>
                     <script>
                         $('#{}').click(function() {{
                             var textArea = document.createElement("textarea");
@@ -269,7 +273,7 @@ def get_match_data(request, match_id=None):
                         }});
                     </script>
                     """. \
-        format(team_1_data['team_logo_url'], team_1_data['team_name'], team_1_data['team_tag'], match_id, match_id,
+        format(team_1_data['team_name'], team_1_data['team_tag'], team_1_data['team_logo_url'], match_id,
                match_id, team_1_data['team_name'], team_2_data['team_name'], match_id,
                request.get_raw_uri().split('api')[0] + match_id)
 
@@ -279,16 +283,22 @@ def get_match_data(request, match_id=None):
      <table class="w-50 table-striped table-hover table-bordered" style="margin: 2% auto;">
         <thead><tr><th>Map</th><th>Score</th></tr></thead>
         <tbody>"""
+        score = 0
         for i in range(1, 6):
             if 'map_{}'.format(i) in match_details_:
+                score_ = match_details_['map_{}'.format(i)]['score'].split('-')
+                score += 1 if int(score_[0]) > int(score_[1]) else -1
                 match_data_2 += '<tr><td>{}</td><td>{}</td></tr>'. \
                     format(match_details_['map_{}'.format(i)]['name'],
                            match_details_['map_{}'.format(i)]['score'])
 
         match_data_2 += """</tbody>
-    </table>
-    <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team Sanket Victory</h3>
-    """
+        </table>
+    <h3 class="card-text" style="font-weight: 600;color: #343a40;">Team {} Victory</h3>
+    """.format(team_1_data['team_name'] if score > 0 else team_2_data['team_name'])
+        if 'hltv_demo' in match_details_:
+            match_data_2 += "<a class='btn btn-dark' href={} target='_blank'>HLTV Demos</a>"\
+                .format(match_details_['hltv_demo'])
     elif status == 'Created':
         match_data_2 = """<h5>Match Scheduled on: {}</h5>
     <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">
@@ -301,8 +311,8 @@ def get_match_data(request, match_id=None):
         </div>
     </div>
     <script>
-    var target_date_{} = '{}';
 
+    var target_date_{} = '{}';
     var countdown_{} = document.getElementById("tiles_{}");
     setInterval(function () {{ getCountdown_{}(); }}, 1000);
 
@@ -359,58 +369,145 @@ def get_match_data(request, match_id=None):
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-2">
-                <img src="{}"
-                     class="card-img" alt="" style="border-radius: 0;">
-                <div class="card-header bg-dark border-dark text-light">{} ({})</div>
+                <div class="card-header bg-dark border-dark text-light" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{} ({})</div>
+                <img src="{}" class="card-img" alt="" style="border-radius: 0;">
             </div>
         </div>
-    </div>""".format(team_2_data['team_logo_url'], team_2_data['team_name'], team_2_data['team_tag'])
+    </div>""".format(team_2_data['team_name'], team_2_data['team_tag'], team_2_data['team_logo_url'])
 
     match_data += match_data_1 + match_data_2 + match_data_3
 
-    team_data = """
-<div class="card" style="border-top: none;">
-    <div class="row no-gutters">
-        <div class="col-md-6">
-            <div class="col-md-4">
-                <ul class="list-group list-group-flush">
-        """
-
-    for player_id in team_1_data['players']:
-        player_data = handler.dataHelper.get_player_data_by_id(player_id)
+    team_data = ''
+    if status == 'Completed':
         team_data += """
-                <li class="list-group-item" style='background: transparent;'>
-                    <img src="{}" title="" alt="" style="height: 4vh; width: 4vh">
-                    <a target="_blank" href="https://steamcommunity.com/profiles/{}" style='vertical-align: sub; padding-left: .75rem;'> {}</a>
-                </li>
-        """.format(player_data['avatar_url'], player_data['steam_url_id'], player_data['username'], )
+    <div class="card mt-3" style="border-top: none;">
+        <div class="row no-gutters">
+            <div class="col-md-6">
+                <table class="table table-hover table-responsive">
+                    <thead>
+                    <tr class="thead-dark text-center">
+                        <th scope="col" colspan="9">{}</th>
+                    </tr>
+                    <tr>
+                      <th scope="col">Nick</th>
+                      <th scope="col">Kills</th>
+                      <th scope="col">Deaths</th>
+                      <th scope="col">Headshots</th>
+                      <th scope="col">Knifes</th>
+                      <th scope="col">Grenade</th>
+                      <th scope="col">Suicides</th>
+                      <th scope="col">Plant</th>
+                      <th scope="col">Defuse</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+            """.format(team_1_data['team_name'])
 
-    team_data += """
-                </ul>
+        for player_id in team_1_data['players']:
+            player_data = handler.dataHelper.get_player_data_by_id(player_id)
+
+            if player_data['steam_id'] in match_details_['stats'][team_1]:
+                team_data += """
+                        <tr>
+                            <td style='width: 30vw;'>
+                                <img src="{}" title="" alt="" style="height: 4vh; width: 4vh">
+                                <a target="_blank" href="https://steamcommunity.com/profiles/{}" style='vertical-align: sub; padding-left: .75rem;'> {}</a>
+                            </td>"""\
+                    .format(player_data['avatar_url'], player_data['steam_url_id'], player_data['username'].replace('<', '&lt;'), )
+
+                team_data += """
+                            <td><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                        </tr>
+                        """.format(match_details_['stats'][team_1][player_data['steam_id']]['kills'],
+                                   match_details_['stats'][team_1][player_data['steam_id']]['deaths'],
+                                   match_details_['stats'][team_1][player_data['steam_id']]['headshot'],
+                                   match_details_['stats'][team_1][player_data['steam_id']]['knife'],
+                                   match_details_['stats'][team_1][player_data['steam_id']]['grenade'],
+                                   match_details_['stats'][team_1][player_data['steam_id']]['suicide'],
+                                   match_details_['stats'][team_1][player_data['steam_id']]['bomb_plant'],
+                                   match_details_['stats'][team_1][player_data['steam_id']]['bomb_defuse'],
+                                   )
+
+        team_data += """
+                    </tbody>
+                </table>
             </div>
-            <div class="col-md-6"></div>
-        </div>
-        <div class="col-md-6">
-            <div class="col-md-8"></div>
-            <div class="col-md-4 ml-md-auto text-right">
-                <ul class="list-group list-group-flush">
-        """
+            <div class="col-md-6">
+                <table class="table table-hover table-responsive">
+                    <thead>
+                    <tr class="thead-dark text-center">
+                        <th scope="col" colspan="9">{}</th>
+                    </tr>
+                    <tr>
+                      <th scope="col">Nick</th>
+                      <th scope="col">Kills</th>
+                      <th scope="col">Deaths</th>
+                      <th scope="col">Headshots</th>
+                      <th scope="col">Knifes</th>
+                      <th scope="col">Grenade</th>
+                      <th scope="col">Suicides</th>
+                      <th scope="col">Plant</th>
+                      <th scope="col">Defuse</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+            """.format(team_2_data['team_name'])
 
-    for player_id in team_2_data['players']:
-        player_data = handler.dataHelper.get_player_data_by_id(player_id)
+        for player_id in team_2_data['players']:
+            player_data = handler.dataHelper.get_player_data_by_id(player_id)
+
+            if player_data['steam_id'] in match_details_['stats'][team_2]:
+                team_data += """
+                        <tr>
+                            <td style='width: 30vw;'>
+                                <img src="{}" title="" alt="" style="height: 4vh; width: 4vh">
+                                <a target="_blank" href="https://steamcommunity.com/profiles/{}" style='vertical-align: sub; padding-left: .75rem;'> {}</a>
+                            </td>"""\
+                    .format(player_data['avatar_url'], player_data['steam_url_id'], player_data['username'].replace('<', '&lt;'), )
+
+                team_data += """
+                            <td><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                            <td class="text-center"><a style="vertical-align: sub;">{}</a></td>
+                        </tr>
+                        """.format(match_details_['stats'][team_2][player_data['steam_id']]['kills'],
+                                   match_details_['stats'][team_2][player_data['steam_id']]['deaths'],
+                                   match_details_['stats'][team_2][player_data['steam_id']]['headshot'],
+                                   match_details_['stats'][team_2][player_data['steam_id']]['knife'],
+                                   match_details_['stats'][team_2][player_data['steam_id']]['grenade'],
+                                   match_details_['stats'][team_2][player_data['steam_id']]['suicide'],
+                                   match_details_['stats'][team_2][player_data['steam_id']]['bomb_plant'],
+                                   match_details_['stats'][team_2][player_data['steam_id']]['bomb_defuse'],
+                                   )
+
         team_data += """
-                <li class="list-group-item" style='background: transparent;'>
-                    <a target="_blank" href="https://steamcommunity.com/profiles/{}" style='vertical-align: sub; padding-right: .75rem;'>{} </a>
-                    <img src="{}" title="" alt="" style="height: 4vh; width: 4vh">
-                </li>
-        """.format(player_data['steam_url_id'], player_data['username'], player_data['avatar_url'], )
-
-    team_data += """
-                </ul>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
-"""
+    """
 
     return JsonResponse({'match_data': match_data + team_data})
+
+
+def rules(request):
+    template = loader.get_template('Matches/rules.html')
+
+    context = {
+        'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
+    }
+
+    return HttpResponse(template.render(context, request))

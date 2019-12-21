@@ -11,7 +11,7 @@ class ConfigHelper:
         """
 
         self.config = configparser.ConfigParser()
-        self.config_conf = os.path.join(os.getcwd(), 'config', 'config.conf')
+        self.config_conf = os.path.join(os.getcwd(), 'config', 'config_prod.conf')
         self.config.read(self.config_conf)
 
         print('{} - Initialized'.format(__name__))

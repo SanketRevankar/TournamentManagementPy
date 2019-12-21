@@ -42,12 +42,13 @@ Header
             <div style="margin: 2vh 0 2vh 0">
                 <a>Team : </a>
                 <img src="{{ team_logo_url }}" title="" alt="" height="30vh" width="30vh" style="margin-left:1vw;"/>
-                <a>  {{ team_name }} ({{ team_tag }}) </a><br><br>
+                <a href="/Teams/{{ team_id }}">  {{ team_name }} ({{ team_tag }}) </a><br><br>
+                {% if captain == id or vice_captain == id %}
+                    <!--suppress HtmlUnknownTarget -->
+                    <a href="/TeamFormation/manage" class="btn btn-info" role="button" style="margin-left: 1vw;">Manage Your Team</a>
+                {% endif %}
                 {% if mode == '1' or mode == '2' %}
-                    {% if captain == id or vice_captain == id %}
-                        <!--suppress HtmlUnknownTarget -->
-                        <a href="/TeamFormation/manage" class="btn btn-info" role="button" style="margin-left: 1vw;">Manage Your Team</a>
-                    {% else %}
+                    {% if captain != id and vice_captain != id %}
                         <!--suppress HtmlUnknownTarget -->
                         <a href="/TeamFormation/leave" class="btn btn-danger" role="button" style="margin: 0 2vw;">Leave this Team</a>
                     {% endif %}

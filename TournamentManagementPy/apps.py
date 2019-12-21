@@ -10,6 +10,7 @@ from helpers.FTPHelper import FTPHelper
 from helpers.FireStoreHelper import FireStoreHelper
 from helpers.LocalDataHelper import LocalDataHelper
 from helpers.LogHelper import LogHelper
+from helpers.MatchBannerHelper import MatchBannerHelper
 from helpers.MySQLHelper import MySQLHelper
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
@@ -32,14 +33,15 @@ class MyAppConfig(AppConfig):
         handler.dataHelper = DataHelper()
         handler.adminHelper = AdminHelper(handler.config)
         handler.mySQLHelper = MySQLHelper(handler.config)
+        handler.cloudServerHelper = CloudServerHelper(handler.config)
+        handler.ftpHelper = FTPHelper(handler.config)
+        handler.matchBannerHelper = MatchBannerHelper(handler.config)
+        handler.fireStoreHelper.util.load_server_data()
 
         # Initialize Helper classes for MODE = 9 (Registration Closed and teams finalized)
         if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
-            handler.cloudServerHelper = CloudServerHelper(handler.config)
-            handler.ftpHelper = FTPHelper(handler.config)
             handler.fireStoreHelper.util.load_player_data()
             handler.fireStoreHelper.util.load_team_data()
-            handler.fireStoreHelper.util.load_server_data()
 
         # Create Folders and Buckets for storing logs and Create Databases and tables for 1st time run
         if eval(handler.config[sC.PROJECT_DETAILS][sC.INITIAL_SETUP]):

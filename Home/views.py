@@ -12,7 +12,7 @@ def welcome(request):
     # request.session['id'] = '102254290631132'
     # request.session["name"] = 'Open Z'
     # request.session["fb_id"] = '102254290631132'
-    # request.session["steam_id"] = 'STEAM_0:1:102553381'
+    # request.session["steam_id"] = 'STEAM_0:0:102553381'
     # request.session["username"] = 'Z'
     # request.session["avatar_url"] = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/8a' \
     #                                 '/8aaa3cd00b85b7622f13b0994eff2f42a2a66adf_full.jpg'

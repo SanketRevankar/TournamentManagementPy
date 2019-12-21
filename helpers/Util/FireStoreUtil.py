@@ -3,27 +3,31 @@ import pickle
 from google.cloud import firestore_v1
 
 from TournamentManagementPy import handler
-from constants import StringConstants as sC
 from firestore_data import PlayerData, TeamData, ServerData
 from firestore_data.MatchData import MatchList
 
 
 class FireStoreUtil:
-    def __init__(self, config):
+    def __init__(self, matches, game_servers, players, teams, servers, temp):
         """
         Initiate FireStore Util.
         This Class contains utilities for helping with FireStore operations
 
-        :param config: Config object
+        :param servers: Name of collection for servers in FireStore
+        :param matches: Name of collection for matches in FireStore
+        :param servers: Name of collection for servers in FireStore
+        :param players: Name of collection for players in FireStore
+        :param teams: Name of collection for teams in FireStore
+        :param temp: Path to temp dir
         """
 
         self.db = firestore_v1.Client()
-        self.GAME_SERVERS = u'game_servers'
-        self.MATCHES = u'matches'
-        self.SERVERS = u'servers'
-        self.PLAYERS = u'players'
-        self.TEAMS = u'teams'
-        self.temp = config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER]
+        self.GAME_SERVERS = game_servers
+        self.MATCHES = matches
+        self.PLAYERS = players
+        self.TEAMS = teams
+        self.SERVERS = servers
+        self.temp = temp
 
         print('{} - Initialized'.format(__name__))
 
@@ -222,7 +226,7 @@ class FireStoreUtil:
         docs = collection_ref.stream()
         for doc in docs:
             doc_dict = doc.to_dict()
-            if 'steam_id' not in doc_dict or 'team' not in doc_dict:
+            if 'steam_id' not in doc_dict:
                 continue
             PlayerData.PlayerList[doc.id] = doc_dict
             PlayerData.SteamList[doc_dict['steam_id']] = doc.id
@@ -378,3 +382,12 @@ class FireStoreUtil:
     def get_server_data_by_id(self, server_id):
         doc_ref = self.get_doc_by_id_collection(self.GAME_SERVERS, server_id)
         return doc_ref.get(['ip', 'port']).to_dict()
+
+    def check_game_server_admin(self, steam_id):
+        collection_ref = self.get_collection(self.GAME_SERVERS)
+        docs = collection_ref.stream()
+        admin = {}
+        for doc in docs:
+            admin[doc.id] = steam_id in doc.to_dict()['admins']
+
+        return admin

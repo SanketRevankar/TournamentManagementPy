@@ -1135,7 +1135,39 @@ def highest_stats():
 
 
 def ip_matches():
-    return {}
+    return {'html': """<div class="pt-2 pb-1 mb-2" style="border-bottom: 1px solid;">
+    <h2>Ip Matches</h2>
+    <h5>Check for Ip matches</h5>
+</div>
+
+<button class='btn btn-success' id='ip-matches'>Get Ip Matches</button>
+
+<div id="run-code" hidden class='mt-3'>
+    <label for="text-streaming">Checking for Ip Matches...</label>
+    <textarea class="form-control btn-dark" id="text-streaming" style='height: 50vh;' disabled></textarea>
+</div>
+
+<script>
+    $(document).ready(function() {
+        let textarea = $('#text-streaming');
+        let ip_matches = $('#ip-matches');
+
+        ip_matches.click(function () {          
+            $.ajax({
+                url: 'api/v1/func/get/ip_matches',
+                method: 'get',
+                data: {},
+                success: function (data) {
+                    ip_matches.attr('hidden', '');
+                    $('#run-code').removeAttr('hidden');
+                    textarea.html(data['html']);
+                }
+            });
+
+        })
+    });
+</script>
+"""}
 
 
 def connections():
@@ -1212,8 +1244,8 @@ def team_details():
 
     return dict(html="""<div style="text-align: center; margin-top: 10vh; background: rgb(0,0,0,.25); padding: 4vh;">
             <h1>Team Details saved successfully</h1>
-            <h3>Click to download team details: <a target='_blank' href='https://storage.cloud.google.com/ncl/{}'>Team Details</a></h3>
-        </div>""".format(handler.config[sC.FILE_LOCATIONS][sC.TEAM_DETAILS_XLSX]))
+            <h3>Click to download team details: <a target='_blank' href='https://storage.cloud.google.com/{}/{}'>Team Details</a></h3>
+        </div>""".format(handler.config[sC.BUCKET_LOCATIONS][sC.FILES_HOME], handler.config[sC.FILE_LOCATIONS][sC.TEAM_DETAILS_XLSX]))
 
 
 def vac_bans():

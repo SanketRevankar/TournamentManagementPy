@@ -15,6 +15,7 @@ class DataHelper:
 
         """
 
+        self.approvers = eval(handler.config[sC.COUNTER_STRIKE_ADMINS][sC.APPROVERS])
         self.MODE = handler.config[sC.PROJECT_DETAILS][sC.MODE]
         self.mode_9 = self.MODE == '9'
 
@@ -45,7 +46,7 @@ class DataHelper:
         """
 
         if self.mode_9:
-            return TeamList
+            return TeamList.copy()
         return handler.fireStoreHelper.util.fsh_get_teams()
 
     def get_servers(self):
@@ -249,8 +250,8 @@ class DataHelper:
         """
 
         if self.mode_9:
-            return PlayerList[SteamList[steam_id]]['team'], PlayerList[SteamList[steam_id]]['username'],\
-                   PlayerList[SteamList[steam_id]]['name']
+            return PlayerList[SteamList[steam_id]]['team'] if 'team' in PlayerList[SteamList[steam_id]] else None, \
+                PlayerList[SteamList[steam_id]]['username'], PlayerList[SteamList[steam_id]]['name']
 
     @staticmethod
     def get_steam_id(index, current_team):
@@ -293,3 +294,6 @@ class DataHelper:
         """
 
         return re.sub(pC.REGEX_TO_REMOVE_UNWANTED_CHARS, sC.EMPTY_STRING, team_name)[:31]
+
+    def check_admin_approver(self, player_id):
+        return player_id in self.approvers

@@ -15,6 +15,7 @@ def create_match(request):
     date_time = request.POST['datetime']
 
     handler.logHelper.log_it_api(request, __name__ + '.create_match', target=match_id)
+    handler.matchBannerHelper.create_banner(match_id, team_1, team_2, date_time)
 
     return {'match_id': handler.fireStoreHelper.create_match(match_id, team_1, team_2, match_server, hltv_server,
                                                              request.session['id'], date_time)}
@@ -65,7 +66,7 @@ def start_match_db(request):
     if match_id_:
         return {'error': 'Match with id {} is already set, stop that match before starting this one.'.format(match_id_)}
 
-    handler.fireStoreHelper.util.update_document('matches', match_id,
+    handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.util.MATCHES, match_id,
                                                  {'status': 'Started', 'start_time': datetime.datetime.utcnow(),
                                                   'started_by': id_, 'hltv_external_ip': hltv_ip,
                                                   'match_external_ip': match_ip})
@@ -133,7 +134,8 @@ def parse_match_logs(request):
 
     match_name = handler.dataHelper.get_match_name(match_id, match_data)
     stats = handler.localDataHelper.get_stats_from_logs(match_name)
-    handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.MATCHES, match_id, {'stats': stats})
+    handler.localDataHelper.upload_stats_to_bucket(match_name, stats)
+    handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.util.MATCHES, match_id, {'stats': stats})
     handler.localDataHelper.save_logs(match_name)
 
     return {'status': 'Completed'}
@@ -147,7 +149,7 @@ def end_match_db(request):
     map_count = 1
     for map_ in scores:
         score = '{}-{}'.format(scores[map_]['team_1'], scores[map_]['team_2'])
-        handler.fireStoreHelper.util.update_document('matches', match_id, {
+        handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.util.MATCHES, match_id, {
             'map_{}'.format(map_count): {
                 'name': map_,
                 'score': score,
@@ -155,8 +157,9 @@ def end_match_db(request):
         })
         map_count += 1
 
-    handler.fireStoreHelper.util.update_document('matches', match_id, {'status': 'Completed', 'stopped_by': id_,
-                                                                       'end_time': datetime.datetime.utcnow()})
+    handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.util.MATCHES, match_id,
+                                                 {'status': 'Completed', 'stopped_by': id_,
+                                                  'end_time': datetime.datetime.utcnow()})
 
     handler.mySQLHelper.end_match(match_id)
 

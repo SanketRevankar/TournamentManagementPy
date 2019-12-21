@@ -6,12 +6,21 @@ from django.template import loader
 from TournamentManagementPy import handler
 from constants import StringConstants as sC
 
-
+"""
+107.178.206.0/24
+GAE Ip
+"""
 def welcome(request):
     template = loader.get_template('Servers/servers.html')
     origin = request.build_absolute_uri('/')[:-1].strip("/")
 
     servers = handler.fireStoreHelper.util.get_game_servers()
+
+    admin_check = None
+    approver = None
+    if 'steam_id' in request.session and 'id' in request.session:
+        approver = handler.dataHelper.check_admin_approver(request.session['id'])
+        admin_check = handler.fireStoreHelper.util.check_game_server_admin(request.session['steam_id'])
 
     server_data = []
     for server in servers:
@@ -34,6 +43,7 @@ def welcome(request):
                 server,
                 decoded_contents['game'],
                 decoded_contents['player_count'],
+                admin_check[server] if admin_check else None,
             ])
 
     context = {
@@ -44,6 +54,7 @@ def welcome(request):
         'name': request.session['name'] if 'name' in request.session else None,
         'username': request.session['username'] if 'username' in request.session else None,
         'steam_id': request.session['steam_id'] if 'steam_id' in request.session else None,
+        'approver': approver,
     }
 
     return HttpResponse(template.render(context, request))

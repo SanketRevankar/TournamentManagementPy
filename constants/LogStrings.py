@@ -39,6 +39,7 @@ CLEARING_PREVIOUS_DATA = 'Creating files to store IP data and clearing previous 
 SAVING_IP_DATA_TO_ = 'Saving IP Data to {}'
 WRITTEN_SUCCESSFULLY = 'Files written successfully'
 ATTRIBUTE_ERROR_ = 'AttributeError: {}'
+KEY_ERROR_ = 'KeyError: {}'
 VALUE_ERROR_ = 'ValueError: {}'
 FOR_TEAM_SAY_LOGS = 'Creating a file for team_say logs'
 FILE_FOR_SAY_LOGS_ = 'Creating a file for say logs: {}'

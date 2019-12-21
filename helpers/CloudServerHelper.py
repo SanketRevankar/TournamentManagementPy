@@ -41,6 +41,7 @@ class CloudServerHelper:
         :param server_id: ID of the server
         :return: Instance variable which was started
         """
+
         node_name = ServerList[server_id][sC.INSTANCE_NAME]
         server_name = ServerList[server_id][sC.SERVER_NAME]
 

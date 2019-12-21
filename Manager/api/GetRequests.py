@@ -7,14 +7,17 @@ from constants import StringConstants as sC, PrintStrings as pS
 def teams(_):
     teams_ = handler.dataHelper.get_teams()
 
+    team_data = {}
     response = '<option selected>Select a Team</option>'
     for team in teams_:
         response += '<option value="{}" name="{}">{} [{}]</option>'.format(team, team, teams_[team]['team_name'],
                                                                            teams_[team]['team_tag'])
-        del teams_[team]['join_requests']
-        del teams_[team]['players']
+        team_data[team] = {
+            'team_name': teams_[team]['team_name'],
+            'team_tag': teams_[team]['team_tag'],
+        }
 
-    return {'html': response, 'team_data': {**teams_}}
+    return {'html': response, 'team_data': {**team_data}}
 
 
 def servers(_):
@@ -75,6 +78,12 @@ def vac_bans(_):
     resp = acc_check_vac(ac)
 
     return {'html': resp}
+
+
+def ip_matches(_):
+    ip_matches = handler.localDataHelper.get_ip_data_from_logs()
+
+    return {'html': ip_matches}
 
 
 def create_steam_id64_list():
