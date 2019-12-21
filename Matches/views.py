@@ -312,7 +312,7 @@ def get_match_data(request, match_id=None):
     </div>
     <script>
 
-2497
+    var target_date_{} = '{}';
     var countdown_{} = document.getElementById("tiles_{}");
     setInterval(function () {{ getCountdown_{}(); }}, 1000);
 
