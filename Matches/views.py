@@ -299,6 +299,9 @@ def get_match_data(request, match_id=None):
         if 'hltv_demo' in match_details_:
             match_data_2 += "<a class='btn btn-dark' href={} target='_blank'>HLTV Demos</a>"\
                 .format(match_details_['hltv_demo'])
+        if 'youtube' in match_details_:
+            match_data_2 += "<a class='btn btn-danger ml-3' href={} target='_blank'><span class='fab fa-youtube'></span> YouTube</a>"\
+                .format(match_details_['youtube'])
     elif status == 'Created':
         match_data_2 = """<h5>Match Scheduled on: {}</h5>
     <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">
