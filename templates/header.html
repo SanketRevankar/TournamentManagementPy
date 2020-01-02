@@ -28,6 +28,9 @@
                 <li class="nav-item">
                     <a class="nav-link" target="_blank" href="https://challonge.com/ncl6">Fixtures</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if rules %}active{% endif %}" href="/Matches/Rules" {% if rules %}onclick="return false;"{% endif %}>Rules</a>
+                </li>
                 <li class="nav-item mr-4">
                     <!--suppress HtmlUnknownTarget -->
                     <a class="nav-link" id="logoutBtn" href="/logout">Logout</a>

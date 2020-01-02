@@ -511,6 +511,7 @@ def rules(request):
 
     context = {
         'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
+        'rules': 'rules',
     }
 
     return HttpResponse(template.render(context, request))
