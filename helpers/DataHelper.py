@@ -310,3 +310,12 @@ class DataHelper:
 
     def check_admin_approver(self, player_id):
         return player_id in self.approvers
+
+
+    def fetch_details(self, row):
+        id_ = row.name
+        try:
+            return PlayerList[SteamList[id_]]['name'], PlayerList[SteamList[id_]]['username'], \
+                   TeamList[PlayerList[SteamList[id_]]['team']]['team_name']
+        except:
+            return PlayerList[SteamList[id_]]['name'], PlayerList[SteamList[id_]]['username'], 'No Team'

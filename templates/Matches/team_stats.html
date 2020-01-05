@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Stats - {{ SITE_NAME }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="en">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Salsa', cursive;
+            background: url("{% static "images/background.jpg" %}");
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+            z-index: 1;
+            height: -webkit-fill-available;
+        }
+        body:before {
+            content: "";
+            display: block;
+            position: absolute;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        @media (min-width: 576px) {
+            .card-body::-webkit-scrollbar {
+                width: 5px;
+                background: #9f9f9f;
+            }
+            .card-body::-webkit-scrollbar-thumb {
+                background: #1f1f1f;
+            }
+            .card-body {
+                place-self: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="container">
+    <div id="content" style="padding-top: 7vh; padding-bottom: 5vh; display: block; height: 100vh; overflow: auto;">
+        <h1 class="text-center" title="{{ team_details }}" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">Stats for {{ team_details }}</h1>
+        <div class="card" style="border: none; background: none;">
+            <div class="card-body" style="background-color: #fff; padding: 0; max-height: 80vh; overflow: auto;">
+                {% autoescape off %}
+                {{ html }}
+                {% endautoescape %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+</body>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="{% static "js/stats.js" %}"></script>

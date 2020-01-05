@@ -42,6 +42,7 @@ class MyAppConfig(AppConfig):
         if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
             handler.fireStoreHelper.util.load_player_data()
             handler.fireStoreHelper.util.load_team_data()
+            handler.localDataHelper.load_stats_from_bucket()
 
         # Create Folders and Buckets for storing logs and Create Databases and tables for 1st time run
         if eval(handler.config[sC.PROJECT_DETAILS][sC.INITIAL_SETUP]):
