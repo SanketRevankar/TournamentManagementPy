@@ -5,6 +5,7 @@ from datetime import datetime
 from time import sleep
 
 import pandas as pd
+import numpy as np
 import requests
 
 from TournamentManagementPy import handler
@@ -778,7 +779,8 @@ class LocalDataHelper:
 
         df_ = df_[['Kills', 'Deaths', 'Headshot', 'Grenade', 'Knife', 'Defuse', 'Plants', 'Suicide']].astype(int)
         df_['Name'], df_['Nick'], df_['Team'] = zip(*df_.apply(handler.dataHelper.fetch_details, axis=1))
-        df_ = df_[['Name', 'Nick', 'Team', 'Kills', 'Deaths', 'Headshot', 'Grenade', 'Knife',
+        df_['K/D'] = np.where(df_['Deaths'] < 1, df_['Kills'], df_['Kills']/df_['Deaths'])
+        df_ = df_[['Name', 'Nick', 'Team', 'Kills', 'Deaths', 'K/D', 'Headshot', 'Grenade', 'Knife',
                    'Defuse', 'Plants', 'Suicide']]
 
         with open(self.temp + 'match_stats.pickle', 'wb') as f:
