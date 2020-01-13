@@ -73,7 +73,7 @@ def get_matches(request):
             continue
 
         sorted_matches = list(map(int, matches.keys()))
-        sorted_matches.sort()
+        sorted_matches.sort(reverse=True)
 
         for match_id in sorted_matches:
             match = str(match_id)
