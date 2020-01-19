@@ -18,14 +18,14 @@ def welcome(request):
     #                                 '/8aaa3cd00b85b7622f13b0994eff2f42a2a66adf_full.jpg'
     # request.session['steam_url_id'] = '76561198165372490'
     #
-    # request.session['id'] = '1849900058362481'
-    # request.session["name"] = 'Sanket Revankar'
-    # request.session["fb_id"] = '1849900058362481'
-    # request.session["steam_id"] = 'STEAM_0:1:25040471'
-    # request.session["username"] = 'DarK PhoeniX'
-    # request.session["avatar_url"] = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/ee/' \
-    #                                 'ee5ec062fb9f7fa1d473a9b57de65ac24ee6830e_full.jpg'
-    # request.session['steam_url_id'] = '76561198010346671'
+    # request.session['id'] = '184990005561198010346671'8362481'
+    #     # request.session["name"] = 'Sanket Revankar'
+    #     # request.session["fb_id"] = '1849900058362481'
+    #     # request.session["steam_id"] = 'STEAM_0:1:25040471'
+    #     # request.session["username"] = 'DarK PhoeniX'
+    #     # request.session["avatar_url"] = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/ee/' \
+    #     #                                 'ee5ec062fb9f7fa1d473a9b57de65ac24ee6830e_full.jpg'
+    #     # request.session['steam_url_id'] = '76
     # ---------------------------------------------------------------------------------------------------------------
 
     handler.authenticationHelper.validate_login(request)

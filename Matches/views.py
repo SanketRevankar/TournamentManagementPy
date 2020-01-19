@@ -546,7 +546,7 @@ def top_stats(request):
     return HttpResponse(template.render(context, request))
 
 
-def get_top_stats(request, stat=None):
+def get_top_stats(_, stat=None):
     allowed_stats = ['Kills', 'Deaths', 'Headshot', 'Grenade', 'Knife', 'Defuse', 'Plants', 'Suicide']
     if stat is None or stat not in allowed_stats:
         raise Http404
