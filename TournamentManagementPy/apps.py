@@ -26,17 +26,17 @@ class MyAppConfig(AppConfig):
 
         # Initialize Helper classes
         handler.fireStoreHelper = FireStoreHelper(handler.config)
-        handler.localDataHelper = LocalDataHelper(handler.config)
-        handler.cloudStorageHelper = CloudStorageHelper(handler.config)
+        # handler.localDataHelper = LocalDataHelper(handler.config)
+        # handler.cloudStorageHelper = CloudStorageHelper(handler.config)
         handler.logHelper = LogHelper()
         handler.authenticationHelper = AuthenticationHelper(handler.config)
         handler.dataHelper = DataHelper()
         handler.adminHelper = AdminHelper(handler.config)
         handler.mySQLHelper = MySQLHelper(handler.config)
-        handler.cloudServerHelper = CloudServerHelper(handler.config)
-        handler.ftpHelper = FTPHelper(handler.config)
+        # handler.cloudServerHelper = CloudServerHelper(handler.config)
+        # handler.ftpHelper = FTPHelper(handler.config)
         handler.matchBannerHelper = MatchBannerHelper(handler.config)
-        handler.fireStoreHelper.util.load_server_data()
+        # handler.fireStoreHelper.util.load_server_data()
 
         # Initialize Helper classes for MODE = 9 (Registration Closed and teams finalized)
         if handler.config[sC.PROJECT_DETAILS][sC.MODE] == '9':
