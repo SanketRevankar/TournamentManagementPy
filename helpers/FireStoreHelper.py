@@ -162,7 +162,7 @@ class FireStoreHelper:
         :return: Boolean, Whether Team is Deleted or not
         """
 
-        if self.util.fsh_get_team_data_by_id(team_id)[self.fs_players].__len__() > 1:
+        if self.util.fsh_get_team_data_by_id(team_id)['players'].__len__() > 1:
             return False
 
         self.util.get_team_ref_by_team_id(team_id).delete()
@@ -197,11 +197,11 @@ class FireStoreHelper:
         """
 
         team_ref = self.util.get_team_ref_by_team_id(team_id)
-        players = team_ref.get([self.fs_players]).get(self.fs_players)
+        players = team_ref.get(['players']).get('players')
         if players.__len__() >= int(handler.config[sC.PROJECT_DETAILS][sC.MAX_PLAYERS]):
             raise PermissionDenied('Team already has max players')
         team_ref.update({
-            self.fs_players: players + [player_id],
+            'players': players + [player_id],
         })
 
         join_team = self.util.clear_join_team_for_player(player_id)
@@ -218,14 +218,14 @@ class FireStoreHelper:
 
         team_ref = self.util.get_team_ref_by_team_id(team_id)
         team_data = self.util.fsh_get_team_data_by_id(team_id)
-        players = team_data[self.fs_players]
+        players = team_data['players']
         players.remove(player_id)
 
         if 'vice_captain' in team_data and team_data['vice_captain'] == player_id:
             handler.adminHelper.remove_admin(player_id)
             team_ref.update({'vice_captain': firestore_v1.DELETE_FIELD})
 
-        team_ref.update({self.fs_players: players})
+        team_ref.update({'players': players})
 
     def ignore_player(self, player_id, team_id):
         """
