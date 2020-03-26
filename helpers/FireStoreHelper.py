@@ -132,7 +132,7 @@ class FireStoreHelper:
 
         doc_ref = collection_ref.document(document_id=team_id)
         doc_ref.create({'team_name': team_name, 'team_tag': team_tag, 'team_logo_url': team_logo_url,
-                        self.fs_players: [player_id], 'join_requests': [], 'captain': player_id})
+                        'players': [player_id], 'join_requests': [], 'captain': player_id})
 
         join_team = self.util.clear_join_team_for_player(player_id)
         self.util.remove_player_id_from_all_teams_requests(join_team, player_id)
