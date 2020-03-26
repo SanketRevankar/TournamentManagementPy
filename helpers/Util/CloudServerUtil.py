@@ -15,11 +15,11 @@ class CloudServerUtil:
         """
 
         self.ComputeEngine = get_driver(Provider.GCE)
-        # self.gc = self.ComputeEngine('', '', project=config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
+        self.gc = self.ComputeEngine('', '', project=config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
 
-        self.gc = self.ComputeEngine(config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_EMAIL],
-                                     config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_KEY_PATH],
-                                     project=config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
+        # self.gc = self.ComputeEngine(config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_EMAIL],
+        #                              config[sC.PROJECT_DETAILS][sC.SERVICE_ACCOUNT_KEY_PATH],
+        #                              project=config[sC.PROJECT_DETAILS][sC.PROJECT_ID])
 
         print('{} - Initialized'.format(__name__))
 
