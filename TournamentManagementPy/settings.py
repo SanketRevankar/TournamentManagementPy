@@ -25,7 +25,7 @@ SECRET_KEY = 'w!=2mcpxf$(c6mc&9$^cuzo0m92dj%q5-3&^q41m#&^*o+duvm!%'
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'narcotic-gaming-ncl.el.r.appspot.com/',
+    '.appspot.com',
     '127.0.0.1'
 ]
 
