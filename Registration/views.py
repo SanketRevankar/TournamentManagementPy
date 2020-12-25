@@ -25,6 +25,7 @@ def facebook(request):
     template = loader.get_template('Registration/facebook.html')
     context = {
         'mode': handler.config[sC.PROJECT_DETAILS][sC.MODE],
+        'fbId': handler.config[sC.PROJECT_DETAILS][sC.FACEBOOK_API_KEY],
         'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME]
     }
 

@@ -2,7 +2,7 @@ requests
 django
 google-cloud-firestore
 python3-openid
-steam
+steam==0.9.1
 xlsxwriter
 pandas
 channels
