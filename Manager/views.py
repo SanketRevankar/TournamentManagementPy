@@ -208,6 +208,7 @@ def get_api_handler(request, name=None):
         'vac_bans': GetR.vac_bans,
         'connections': GetR.connections,
         'ip_matches': GetR.ip_matches,
+        'get_ip_logs': GetR.get_ip_logs,
     }
 
     if not name or name not in functions:

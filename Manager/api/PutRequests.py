@@ -137,6 +137,7 @@ def parse_match_logs(request):
     handler.localDataHelper.upload_stats_to_bucket(match_name, stats)
     handler.fireStoreHelper.util.update_document(handler.fireStoreHelper.util.MATCHES, match_id, {'stats': stats})
     handler.localDataHelper.save_logs(match_name)
+    handler.localDataHelper.load_stats_from_bucket()
 
     return {'status': 'Completed'}
 

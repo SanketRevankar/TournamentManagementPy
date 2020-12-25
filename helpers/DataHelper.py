@@ -85,7 +85,7 @@ class DataHelper:
         :return: Captain's and V. Captains Details as a Dict Object
         """
 
-        team_data = self.get_team_data_by_id(team_id)
+        team_data = handler.fireStoreHelper.util.fsh_get_team_data_by_id(team_id)
         captain_data = self.get_player_data_by_id(team_data['captain'])
         vc_data_ = {}
         if 'vice_captain' in team_data:
@@ -253,6 +253,19 @@ class DataHelper:
             return PlayerList[SteamList[steam_id]]['team'] if 'team' in PlayerList[SteamList[steam_id]] else None, \
                 PlayerList[SteamList[steam_id]]['username'], PlayerList[SteamList[steam_id]]['name']
 
+    def get_ips_by_steam_id(self, steam_id):
+        """
+        Returns Ips of the player with given steam Id
+        Only Made to use in Mode 9
+
+        :param steam_id: Steam Id of the player
+        :return: Team, Username and Name
+        """
+
+        if self.mode_9:
+            return PlayerList[SteamList[steam_id]]['ips']
+
+
     @staticmethod
     def get_steam_id(index, current_team):
         """
@@ -297,3 +310,12 @@ class DataHelper:
 
     def check_admin_approver(self, player_id):
         return player_id in self.approvers
+
+
+    def fetch_details(self, row):
+        id_ = row.name
+        try:
+            return PlayerList[SteamList[id_]]['name'], PlayerList[SteamList[id_]]['username'], \
+                   TeamList[PlayerList[SteamList[id_]]['team']]['team_name']
+        except:
+            return PlayerList[SteamList[id_]]['name'], PlayerList[SteamList[id_]]['username'], 'No Team'

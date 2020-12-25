@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Stats - {{ SITE_NAME }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="en">
+
+    {% load static %}
+    <link href="{% static "images/logo.png" %}" rel="icon">
+    <link href="https://fonts.googleapis.com/css?family=Righteous|Salsa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <style>
+        #content::-webkit-scrollbar { width: 0; }
+        body {
+            font-family: 'Salsa', cursive;
+            background: url("{% static "images/background.jpg" %}");
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+            z-index: 1;
+            height: -webkit-fill-available;
+        }
+        body:before {
+            content: "";
+            display: block;
+            position: absolute;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+
+<body>
+<!--==========================
+Header
+============================-->
+{% include "header.html" %}
+
+<div class="container">
+    <div id="content" style="padding-top: 25vh; padding-bottom: 5vh; display: block; height: 100vh; overflow: auto;">
+        <h1 class="text-center">Stats for NCL 6</h1>
+
+        <div class="row mt-5">
+            <div class="col-sm-6 mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Top Stats</h5>
+                        <p class="card-text">View the highest of each stats so far</p>
+                        <a href="Stats/TopStats" class="btn btn-dark">View Stats</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Stats by Team</h5>
+                        <p class="card-text">View the stats for each Team</p>
+                        <div class="d-flex">
+                            <select class="form-control custom-select w-50" id="team_list">
+                                <option selected>Select a Team</option>
+                                {% for team, team_name in team_data %}
+                                    <option value="{{ team }}" name="{{ team }}">{{ team_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <a href="#" class="btn btn-dark ml-auto" id="view-stats">View Stats</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--==========================
+Footer
+============================-->
+{% include "footer.html" %}
+
+</body>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+<script src="{% static "js/stats.js" %}"></script>

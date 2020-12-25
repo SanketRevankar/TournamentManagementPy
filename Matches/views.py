@@ -1,3 +1,4 @@
+import pickle
 from datetime import timedelta, timezone
 
 from django.http import HttpResponse, JsonResponse, Http404
@@ -72,7 +73,7 @@ def get_matches(request):
             continue
 
         sorted_matches = list(map(int, matches.keys()))
-        sorted_matches.sort()
+        sorted_matches.sort(reverse=True)
 
         for match_id in sorted_matches:
             match = str(match_id)
@@ -299,6 +300,9 @@ def get_match_data(request, match_id=None):
         if 'hltv_demo' in match_details_:
             match_data_2 += "<a class='btn btn-dark' href={} target='_blank'>HLTV Demos</a>"\
                 .format(match_details_['hltv_demo'])
+        if 'youtube' in match_details_:
+            match_data_2 += "<a class='btn btn-danger ml-3' href={} target='_blank'><span class='fab fa-youtube'></span> YouTube</a>"\
+                .format(match_details_['youtube'])
     elif status == 'Created':
         match_data_2 = """<h5>Match Scheduled on: {}</h5>
     <div class="countdown pt-2 pb-1 w-75" id="countdown_{}" style="margin: auto;">
@@ -508,6 +512,81 @@ def rules(request):
 
     context = {
         'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
+        'rules': 'rules',
     }
 
     return HttpResponse(template.render(context, request))
+
+def stats(request):
+    template = loader.get_template('Matches/stats.html')
+
+    teams_ = handler.dataHelper.get_teams()
+
+    team_data = []
+    for team in teams_:
+        team_data.append([team, teams_[team]['team_name']])
+
+    context = {
+        'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
+        'stats': 'stats',
+        'team_data': team_data,
+    }
+
+    return HttpResponse(template.render(context, request))
+
+
+def top_stats(request):
+    template = loader.get_template('Matches/top_stats.html')
+
+    context = {
+        'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
+        'stats_': 'stats',
+    }
+
+    return HttpResponse(template.render(context, request))
+
+
+def get_top_stats(_, stat=None):
+    allowed_stats = ['Kills', 'Deaths', 'Headshot', 'Grenade', 'Knife', 'Defuse', 'Plants', 'Suicide']
+    if stat is None or stat not in allowed_stats:
+        raise Http404
+
+    temp = handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER]
+
+    with open(temp + 'match_stats.pickle', 'rb') as f:
+        df = pickle.load(f)
+
+    df = df[[stat, 'Name', 'Nick', 'Team']].sort_values(stat, ascending=False)[:10]
+    return JsonResponse({
+        'html': df.to_html(classes=['table', 'table-responsive', 'table-striped', 'table-hover', 'table-bordered'],
+                           index=False, justify='center', border=0)
+    })
+
+
+def team_stats(request, team=None):
+    template = loader.get_template('Matches/team_stats.html')
+    teams = handler.dataHelper.get_teams()
+
+    if team is None or team not in teams:
+        raise Http404
+
+    temp = handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER]
+    with open(temp + 'match_stats.pickle', 'rb') as f:
+        df = pickle.load(f)
+
+    team_name_ = handler.dataHelper.get_team_data_by_id(team)['team_name']
+    df = df.loc[df['Team'] == team_name_]
+    df = df.drop(['Team'], axis=1)
+    df = df.sort_values('Kills', ascending=False)
+
+    context = {
+        'SITE_NAME': handler.config[sC.PROJECT_DETAILS][sC.DISPLAY_NAME],
+        'stats_': 'stats',
+        'html': df.to_html(
+            classes=['table', 'table-responsive', 'table-striped', 'table-hover', 'table-bordered', 'mb-0'],
+            index=False, justify='center', border=0),
+        'team_details': team_name_,
+    }
+
+    return HttpResponse(template.render(context, request))
+

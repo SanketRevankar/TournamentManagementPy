@@ -86,6 +86,14 @@ def ip_matches(_):
     return {'html': ip_matches}
 
 
+def get_ip_logs(_):
+    steam_id = handler.localDataHelper.get_ip_data()
+    handler.localDataHelper.get_data_from_logs(steam_id)
+    handler.localDataHelper.get_ip_details(steam_id)
+    handler.localDataHelper.save_to_file(steam_id)
+
+    return {'html': ''}
+
 def create_steam_id64_list():
     ac = open(handler.config[sC.FOLDER_LOCATIONS][sC.TEMP_APP_ENGINE_FOLDER] +
               handler.config[sC.FILE_LOCATIONS][sC.STEAM_ID_LIST_TXT], sC.WRITE_MODE)
