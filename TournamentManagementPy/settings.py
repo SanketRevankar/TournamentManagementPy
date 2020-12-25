@@ -19,14 +19,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'w!=2mcpxf$(c6mc&9$^cuzo0m92dj%q5-3&^qm#&^*o+duvm!%'
+SECRET_KEY = 'w!=2mcpxf$(c6mc&9$^cuzo0m92dj%q5-3&^q41m#&^*o+duvm!%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'narcogaming.appspot.com',
-    'narco-gaming.appspot.com',
+    'narcotic-gaming-ncl.el.r.appspot.com/',
     '127.0.0.1'
 ]
 
@@ -123,9 +122,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True
