@@ -21,7 +21,7 @@ function checkLoginState() {
 
 window.fbAsyncInit = function () {
     FB.init({
-        appId: 570147366699494,
+        appId: fbId,
         cookie: true,  // enable cookies to allow the server to access
                        // the session
         xfbml: true,  // parse social plugins on this page
@@ -89,7 +89,7 @@ function testAPI() {
     if (d.getElementById(id)) return;
     js = d.createElement(s);
     js.id = id;
-    js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.12&appId=570147366699494&autoLogAppEvents=1';
+    js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.12&appId=' + fbId + '&autoLogAppEvents=1';
     fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
