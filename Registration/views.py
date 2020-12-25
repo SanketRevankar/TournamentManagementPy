@@ -92,7 +92,7 @@ def steam_auth(request):
         steam_url = request.GET.get("openid.claimed_id").split('/')[-1]
 
         api_url = 'https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v1/'
-        api = 'CE2F17B690727C15D03459D48013AFA4'
+        api = handler.localDataHelper.steam_api_key
 
         r = requests.get(api_url + '?key={}&steamids={}'.format(api, steam_url))
         resp = r.json()
