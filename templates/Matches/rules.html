@@ -17,7 +17,28 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
           integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <style>
-        body::-webkit-scrollbar { width: 0; }
+        #content::-webkit-scrollbar { width: 0; }
+        body {
+            font-family: 'Salsa', cursive;
+            background: url("{% static "images/background.jpg" %}");
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+            z-index: 1;
+            height: -webkit-fill-available;
+        }
+        body:before {
+            content: "";
+            display: block;
+            position: absolute;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
     </style>
 </head>
 
@@ -28,7 +49,7 @@ Header
 {% include "header.html" %}
 
 <div class="container">
-    <div id="content" style="padding-top: 7vh; padding-bottom: 5vh; display: block">
+    <div id="content" style="padding-top: 7vh; padding-bottom: 5vh; display: block; height: 100vh; overflow: auto;">
         <h1 class="text-center">Rules</h1>
         <div class="accordion" id="accordian">
             <div href="#" class="card">
@@ -39,7 +60,7 @@ Header
                 </div>
                 <div id="format" class="collapse" data-parent="#accordian">
                     <div class="card-body">
-                        <p class="mb-1">This will be a Double Elimination tournament and Matches will be held every Saturday and Sunday</p>
+                        <p class="mb-1">This will be a Group -> Single Elimination tournament and Matches will be held everyday. There are 4 groups of 5 teams each and top 2 teams will advance to the next stage. Each team in a group will play 1 match with every other team in the group. In case if the points clashes in between 2 teams in same group, the team with less rounds lost will be considered to advance to next stage.</p>
                         <small>NCL Management Team will provide a time slot during which the match will be conducted</small>
                     </div>
                 </div>
@@ -52,8 +73,8 @@ Header
                 </div>
                 <div id="criteria" class="collapse" data-parent="#accordian">
                     <div class="card-body">
-                        <p class="mb-1">Match will be 14 vs 14 players out of which at least 10 should be present on the server to start the match and in any case match will not be delayed for more than 10 minutes</p>
-                        <small>If less than 10 players are available, the other team wins</small>
+                        <p class="mb-1">Match will be 5 vs 5, all 5 players should be present on the server to start the match and in any case match will not be delayed for more than 10 minutes</p>
+                        <small>If less than 5 players are available, the other team wins</small>
                     </div>
                 </div>
             </div>
@@ -65,18 +86,19 @@ Header
                 </div>
                 <div id="maps" class="collapse" data-parent="#accordian">
                     <div class="card-body">
-                        <p class="mb-1">Maps will be decided by a knife round between captain (or any other player nominated by the captain) of that team</p>
+                        <p class="mb-1">For map pick Veto system will be followed which will be done on the server itself.</p>
                         <p class="mb-1">Map Pool:</p>
                         <ul>
-                            <li>de_dust2</li>
-                            <li>de_inferno</li>
-                            <li>de_train</li>
-                            <li>de_nuke</li>
-                            <li>de_mirage</li>
+                            <li>dust2</li>
+                            <li>inferno</li>
+                            <li>train</li>
+                            <li>nuke</li>
+                            <li>mirage</li>
+                            <li>cache</li>
+                            <li>overpass</li>
                         </ul>
-                        <small>Matches will be BO3</small><br>
-                        <small>No repetition of maps in the same match</small><br>
-                        <small>Each map will be chosen by 1v1 knife</small>
+                        <small>Matches will be BO1 for Group Stage</small><br>
+                        <small>Matches will be BO3 from the 2nd stage</small><br>
                     </div>
                 </div>
             </div>
@@ -89,7 +111,18 @@ Header
                 <div id="sides" class="collapse" data-parent="#accordian">
                     <div class="card-body">
                         <p class="mb-1">CT or T will be decided by a team knife round, players should not camp and try to end it asap</p>
-                        <small>If less than 10 players are available, the other team wins</small>
+                    </div>
+                </div>
+            </div>
+            <div href="#" class="card">
+                <div class="card-header">
+                    <a data-toggle="collapse" data-target="#playerSubstitution" href="#" style="text-decoration: none;">
+                        <h5 class="mb-1 text-dark">Player Substitution</h5>
+                    </a>
+                </div>
+                <div id="playerSubstitution" class="collapse" data-parent="#accordian">
+                    <div class="card-body">
+                        <p class="mb-1">In group stage in case a player is unable to connect then only the captain/VC can call the substitute player in the match. From Quarter stage a team can substitute a player or 2 after a map is played only or during the above circumstances. "No substitute during side change of the match".</p>
                     </div>
                 </div>
             </div>
@@ -108,19 +141,6 @@ Header
             </div>
             <div href="#" class="card">
                 <div class="card-header">
-                    <a data-toggle="collapse" data-target="#Timeouts" href="#" style="text-decoration: none;">
-                        <h5 class="mb-1 text-dark">Timeouts in Match</h5>
-                    </a>
-                </div>
-                <div id="Timeouts" class="collapse" data-parent="#accordian">
-                    <div class="card-body">
-                        <p class="mb-1">Each team gets 3 timeouts for each map, in case of Overtime timeouts will reset to 1 for both teams</p>
-                        <small>Remaining timeouts if any will be removed in OT</small>
-                    </div>
-                </div>
-            </div>
-            <div href="#" class="card">
-                <div class="card-header">
                     <a data-toggle="collapse" data-target="#DDoS" href="#" style="text-decoration: none;">
                         <h5 class="mb-1 text-dark">DDoS in Match</h5>
                     </a>
@@ -129,34 +149,6 @@ Header
                     <div class="card-body">
                         <p class="mb-1">In case of DDoS or lag the match will be paused and will be resumed from the same score going on</p>
                         <small>In case of server crash we will still resume from the same score</small>
-                    </div>
-                </div>
-            </div>
-            <div href="#" class="card">
-                <div class="card-header">
-                    <a data-toggle="collapse" data-target="#Demos" href="#" style="text-decoration: none;">
-                        <h5 class="mb-1 text-dark">Recording Demos</h5>
-                    </a>
-                </div>
-                <div id="Demos" class="collapse" data-parent="#accordian">
-                    <div class="card-body">
-                        <p class="mb-1">Demo will be auto recorded, and no one should stop recording demo</p>
-                        <small>Players playing from cafe's should take a backup of their demo as soon as the match ends, you may take pen drives along with you and can upload demos from your home later</small><br>
-                        <small>The player who is unable to provide match demo will be disqualified from the tournament</small>
-                    </div>
-                </div>
-            </div>
-            <div href="#" class="card">
-                <div class="card-header">
-                    <a data-toggle="collapse" data-target="#RequestDemos" href="#" style="text-decoration: none;">
-                        <h5 class="mb-1 text-dark">Request for Demos</h5>
-                    </a>
-                </div>
-                <div id="RequestDemos" class="collapse" data-parent="#accordian">
-                    <div class="card-body">
-                        <p class="mb-1">Captains can ask up to 3 demos of their opposite team players, in case you want demo of certain players contact NCL Management Team</p>
-                        <small>Players playing from cafe's should take a backup of their demo as soon as the match ends, you may take pen drives along with you and can upload demos from your home later</small><br>
-                        <small>If any player is not able to provide his demo after match after being asked by the opposite team’s captains or NCL Management Team, then that player will be banned and player's team will will lose that match</small>
                     </div>
                 </div>
             </div>

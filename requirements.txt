@@ -11,3 +11,4 @@ mysql-connector-python
 google-cloud-storage
 python-valve
 pillow
+numpy

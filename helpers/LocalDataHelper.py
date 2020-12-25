@@ -4,12 +4,12 @@ import pickle
 from datetime import datetime
 from time import sleep
 
+import pandas as pd
+import numpy as np
 import requests
 
 from TournamentManagementPy import handler
 from constants import StringConstants as sC, PrintStrings as pS, PyConstants as pC, LogStrings as lS
-from firestore_data.PlayerData import PlayerList
-from firestore_data.TeamData import TeamList
 
 
 class LocalDataHelper:
@@ -98,8 +98,7 @@ class LocalDataHelper:
 
         steam_id = {}
 
-        print(lS.THE_DATA_IS_STORED)
-        files = self.get_saved_log_files()
+        files = self.get_saved_log_files(sC.READ_MODE)
 
         c_steam = sC.UNKNOWN
         c_ip = sC.UNKNOWN
@@ -117,6 +116,10 @@ class LocalDataHelper:
 
                     if c_steam not in steam_id:
                         steam_id[c_steam] = {}
+
+                    if details.__len__() == 3:
+                        details.append('')
+
                     steam_id[c_steam][c_ip] = {
                         sC.REGION_NAME: details[0].strip(),
                         sC.CITY: details[1].strip(),
@@ -169,7 +172,7 @@ class LocalDataHelper:
                             stats[team][stat[0]][sC.MATCHES] += 1
                         stats[team][stat[0]][stat[1]] += 1
 
-    def get_saved_log_files(self):
+    def get_saved_log_files(self, mode):
         """
         Get list of files to store IP data
 
@@ -177,11 +180,14 @@ class LocalDataHelper:
         """
 
         files = {}
-        for team in TeamList:
-            file_name = self.ip_log_starting_ + handler.dataHelper.get_clean_team_name(TeamList[team][sC.TEAM_NAME]) +\
-                        sC.TXT
-            if os.path.exists(file_name):
-                files[team] = open(file_name, sC.READ_MODE, encoding=pC.ENCODING)
+        teams = handler.dataHelper.get_teams()
+        for team in teams:
+            file_name = team + sC.TXT
+            file = open(self.temp + file_name, mode, encoding=pC.ENCODING)
+            blob = handler.cloudStorageHelper.get_blob_with_path(self.ip_log_starting_ + file_name)
+            if blob.exists():
+                blob.download_to_file(file)
+            files[team] = file
         return files
 
     def get_data_from_logs(self, steam_id):
@@ -191,32 +197,34 @@ class LocalDataHelper:
         :param steam_id: List of all steam IDs
         """
 
-        print(lS.IP_DATA_FROM_MATCH_LOGS)
-        for file_a in os.listdir(self.logs_starting_):
-            for file in os.listdir(self.logs_starting_ + file_a):
-                if pS.IP_ + sC.UNDERSCORE in file:
-                    date = file.strip().replace(pS.IP_ + sC.UNDERSCORE, sC.EMPTY_STRING).replace(
-                        sC.TXT, sC.EMPTY_STRING)
-                    with open(self.logs_starting_ + sC.UNIX_SEPARATOR + file_a +
-                              sC.UNIX_SEPARATOR + file, encoding=pC.ENCODING) as f:
-                        for line in f:
-                            log = line.strip().split(sC.TAB_)
+        for blob in handler.cloudStorageHelper.get_blobs_by_prefix('logs'):
+            if pS.IP_ + sC.UNDERSCORE in blob.name:
+                date_c = blob.name.strip().split('/')[-1].replace(pS.IP_ + sC.UNDERSCORE, sC.EMPTY_STRING) \
+                    .replace(sC.TXT, sC.EMPTY_STRING)
 
-                            try:
-                                _ = handler.dataHelper.get_team_by_steam_id(log[2])
-                            except TypeError:
-                                continue
+                b_str = blob.download_as_string().decode()
+                for line in b_str.split('\n'):
+                    log = line.strip().split(sC.TAB_)
 
-                            if log[2] not in steam_id:
-                                steam_id[log[2]] = {}
+                    try:
+                        _ = handler.dataHelper.get_team_by_steam_id(log[2])
+                    except TypeError:
+                        continue
+                    except IndexError:
+                        continue
+                    except KeyError as e:
+                        continue
 
-                            if log[3] not in steam_id[log[2]]:
-                                steam_id[log[2]][log[3]] = {}
+                    if log[2] not in steam_id:
+                        steam_id[log[2]] = {}
 
-                            if sC.DATE_ + date not in steam_id[log[2]][log[3]]:
-                                steam_id[log[2]][log[3]][sC.DATE_ + date] = []
+                    if log[3] not in steam_id[log[2]]:
+                        steam_id[log[2]][log[3]] = {}
 
-                            steam_id[log[2]][log[3]][sC.DATE_ + date].append(log[0])
+                    if sC.DATE_ + date_c not in steam_id[log[2]][log[3]]:
+                        steam_id[log[2]][log[3]][sC.DATE_ + date_c] = []
+
+                    steam_id[log[2]][log[3]][sC.DATE_ + date_c].append(log[0])
 
         return steam_id
 
@@ -259,13 +267,15 @@ class LocalDataHelper:
         :param community_id: Community id of the player
         """
 
-        for player in PlayerList:
-            if PlayerList[player][sC.STEAM_URL_ID] == community_id:
-                return (PlayerList[player][sC.TEAM] if sC.TEAM in PlayerList[player] else '') + \
-                    sC.NEW_LINE + sC.TAB + sC.STEAM_ID + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_URL_ID]\
-                    + sC.NEW_LINE + sC.TAB + sC.NAME_ + sC.COLON + sC.SPACE + PlayerList[player][sC.NAME] + \
-                    sC.NEW_LINE + sC.TAB + sC.NICK_ + sC.COLON + sC.SPACE + PlayerList[player][sC.STEAM_NICK] \
-                                                                                         + sC.NEW_LINE
+        players = handler.dataHelper.get_players()
+
+        for player in players:
+            if players[player][sC.STEAM_URL_ID] == community_id:
+                return (players[player][sC.TEAM] if sC.TEAM in players[player] else '') + \
+                       sC.NEW_LINE + sC.TAB + sC.STEAM_ID + sC.COLON + sC.SPACE + players[player][sC.STEAM_URL_ID] \
+                       + sC.NEW_LINE + sC.TAB + sC.NAME_ + sC.COLON + sC.SPACE + players[player][sC.NAME] + \
+                       sC.NEW_LINE + sC.TAB + sC.NICK_ + sC.COLON + sC.SPACE + players[player][sC.STEAM_NICK] \
+                       + sC.NEW_LINE
 
     def get_data(self, ac):
         """
@@ -299,7 +309,7 @@ class LocalDataHelper:
         for steam in steam_id:
             for c_ip in steam_id[steam]:
                 try:
-                    _ = steam_id[steam][c_ip][sC.REGION_NAME]
+                    _ = steam_id[steam][c_ip][sC.CITY]
                     continue
                 except KeyError:
                     pass
@@ -308,10 +318,12 @@ class LocalDataHelper:
                 print(pS.FETCHING_DETAILS_OF_ + sC.COLON + sC.SPACE + c_ip)
                 response = requests.get(url_c)
                 resp = json.loads(response.text)
-                steam_id[steam][c_ip][sC.REGION_NAME] = resp[sC.REGION_NAME]
-                steam_id[steam][c_ip][sC.CITY] = resp[sC.CITY]
-                steam_id[steam][c_ip][sC.ISP] = resp[sC.ISP]
-                steam_id[steam][c_ip][sC.ORG] = resp[sC.ORG]
+
+                if resp['status'] != 'fail':
+                    steam_id[steam][c_ip][sC.REGION_NAME] = resp[sC.REGION_NAME]
+                    steam_id[steam][c_ip][sC.CITY] = resp[sC.CITY]
+                    steam_id[steam][c_ip][sC.ISP] = resp[sC.ISP]
+                    steam_id[steam][c_ip][sC.ORG] = resp[sC.ORG]
                 sleep(pC.SLEEP_TIME)
 
         return steam_id
@@ -622,24 +634,25 @@ class LocalDataHelper:
         """
         Save the current IP data
 
+        :param files: List of file objects to save data
         :param steam_id: Steam id of the player
         """
 
-        ip_log_starting_ = self.ip_log_starting_
-        files = {}
-
-        for team in TeamList:
-            files[team] = open(ip_log_starting_ + handler.dataHelper.get_clean_team_name(TeamList[team][sC.TEAM_NAME])
-                               + sC.TXT, sC.W_PLUS_MODE, encoding=pC.ENCODING)
+        files = self.get_saved_log_files(sC.W_PLUS_MODE)
 
         for steam in steam_id:
             try:
                 team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(steam)
+                ips = handler.dataHelper.get_ips_by_steam_id(steam)
             except TypeError:
                 print('[Exception] ' + lS.STEAM_ID_NOT_FOUND_.format(steam))
                 continue
 
             files[team].write((sC.NEW_LINE + pS.PRINT_PLAYER_INFO + sC.NEW_LINE).format(name, nick, steam.strip()))
+
+            for ip in ips:
+                files[team].write(sC.TAB + str(ip).ljust(15) + sC.TAB + str(ips[ip]['location']) +
+                                  sC.TAB + str(ips[ip][sC.CITY]) + sC.NEW_LINE)
 
             for c_ip in steam_id[steam]:
                 files[team].write(sC.TAB + str(c_ip).ljust(15) + sC.SPACE + sC.SEMI_COLON +
@@ -661,15 +674,16 @@ class LocalDataHelper:
         """
 
         stats = {}
+        players = handler.dataHelper.get_players()
 
-        for player in PlayerList:
-            if sC.TEAM not in PlayerList[player]:
+        for player in players:
+            if sC.TEAM not in players[player]:
                 continue
-            team = PlayerList[player][sC.TEAM]
+            team = players[player][sC.TEAM]
             if team not in stats:
                 stats[team] = {}
-            if PlayerList[player][sC.S_STEAM_ID] not in stats[team]:
-                stats[team][PlayerList[player][sC.S_STEAM_ID]] = {
+            if players[player][sC.S_STEAM_ID] not in stats[team]:
+                stats[team][players[player][sC.S_STEAM_ID]] = {
                     sC.KILLS: 0,
                     sC.DEATHS: 0,
                     sC.GRENADE: 0,
@@ -679,8 +693,8 @@ class LocalDataHelper:
                     sC.BOMB_DEFUSE: 0,
                     sC.KNIFE: 0,
                     sC.MATCHES: 0,
-                    sC.NAME_SMALL: PlayerList[player][sC.NAME],
-                    sC.NICK_SMALL: PlayerList[player][sC.STEAM_NICK],
+                    sC.NAME_SMALL: players[player][sC.NAME],
+                    sC.NICK_SMALL: players[player][sC.STEAM_NICK],
                 }
 
         print(lS.WITH_FOR_EACH_PLAYER)
@@ -722,10 +736,10 @@ class LocalDataHelper:
                     team, nick, name = handler.dataHelper.get_team_nick_name_by_s_id(steam)
                     ip_matches_print += sC.TAB + sC.STAR + team[:pC.TEAM_PRINT_PADDING].ljust(pC.TEAM_PRINT_PADDING) + \
                                         sC.SPACE + name[:pC.NAME_PRINT_PADDING].ljust(pC.NAME_PRINT_PADDING) + \
-                                        sC.SPACE + nick[:pC.NICK_PRINT_PADDING].ljust(pC.NICK_PRINT_PADDING)  + \
+                                        sC.SPACE + nick[:pC.NICK_PRINT_PADDING].ljust(pC.NICK_PRINT_PADDING) + \
                                         sC.SPACE + str(ips[ip][steam][sC.START_TIME]) + \
-                                        sC.SPACE + str(ips[ip][steam][sC.END_TIME]) + sC.SPACE +  sC.TAB + \
-                                        sC.SPACE +  steam + sC.NEW_LINE
+                                        sC.SPACE + str(ips[ip][steam][sC.END_TIME]) + sC.SPACE + sC.TAB + \
+                                        sC.SPACE + steam + sC.NEW_LINE
 
         if count > 0:
             return ip_matches_print
@@ -738,3 +752,36 @@ class LocalDataHelper:
         with open(temp_file_name, 'wb') as f:
             pickle.dump(stats, f)
         handler.cloudStorageHelper.upload_file('stats/' + file_name, temp_file_name)
+
+    def load_stats_from_bucket(self):
+        stats = 'stats'
+        if not os.path.exists(self.temp + stats):
+            os.mkdir(self.temp + stats)
+
+        df_ = pd.DataFrame()
+        for blob in handler.cloudStorageHelper.get_blobs_by_prefix(stats):
+            d = pickle.loads(blob.download_as_string())
+
+            data = []
+            for x in d:
+                for t in d[x]:
+                    data.append({'team': x, 'steam_id': t, **d[x][t]})
+            df = pd.DataFrame(data)
+            col_order = ['steam_id', 'name', 'nick', 'team', 'kills', 'deaths', 'headshot', 'grenade', 'knife',
+                         'bomb_defuse',
+                         'bomb_plant', 'suicide']
+            df = df[col_order]
+            df.columns = ['Steam Id', 'Name', 'Nick', 'Team', 'Kills', 'Deaths', 'Headshot', 'Grenade', 'Knife',
+                          'Defuse', 'Plants', 'Suicide']
+            df.set_index('Steam Id', inplace=True)
+            df = df.drop(['Name', 'Nick', 'Team'], axis=1)
+            df_ = df_.add(df, fill_value=0, axis=1, level='Kills')
+
+        df_ = df_[['Kills', 'Deaths', 'Headshot', 'Grenade', 'Knife', 'Defuse', 'Plants', 'Suicide']].astype(int)
+        df_['Name'], df_['Nick'], df_['Team'] = zip(*df_.apply(handler.dataHelper.fetch_details, axis=1))
+        df_['K/D'] = np.where(df_['Deaths'] < 1, df_['Kills'], df_['Kills']/df_['Deaths'])
+        df_ = df_[['Name', 'Nick', 'Team', 'Kills', 'Deaths', 'K/D', 'Headshot', 'Grenade', 'Knife',
+                   'Defuse', 'Plants', 'Suicide']]
+
+        with open(self.temp + 'match_stats.pickle', 'wb') as f:
+            pickle.dump(df_, f)
